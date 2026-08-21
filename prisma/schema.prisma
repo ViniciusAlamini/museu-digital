@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Campaign {
+  id          String      @id @default(cuid())
+  name        String
+  system      String
+  description String
+  coverImage  String?
+  startDate   DateTime
+  createdAt   DateTime    @default(now())
+  characters  Character[]
+  artworks    Artwork[]
+  posts       Post[]
+  messages    Message[]
+  folders     DiaryFolder[]
+  entries     DiaryEntry[]
+}
+
+model Character {
+  id             String       @id @default(cuid())
+  campaignId     String
+  campaign       Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  name           String
+  player         String
+  image          String?
+  race           String
+  characterClass String
+  description    String
+  createdAt      DateTime     @default(now())
+  messages       Message[]
+  entries        DiaryEntry[]
+}
+
+model Artwork {
+  id          String   @id @default(cuid())
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title       String
+  image       String
+  artist      String
+  description String
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title       String
+  content     String
+  image       String?
+  author      String
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id          String     @id @default(cuid())
+  campaignId  String
+  campaign    Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title       String?
+  content     String
+  author      String
+  characterId String?
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: SetNull)
+  eventDate   DateTime?
+  image       String?
+  type        String     // e.g. "Mensagem pessoal", "Pensamento", etc.
+  createdAt   DateTime   @default(now())
+}
+
+model DiaryFolder {
+  id             String        @id @default(cuid())
+  campaignId     String
+  campaign       Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  parentFolderId String?
+  parentFolder   DiaryFolder?  @relation("FolderHierarchy", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  subfolders     DiaryFolder[] @relation("FolderHierarchy")
+  name           String
+  description    String?
+  createdAt      DateTime      @default(now())
+  entries        DiaryEntry[]
+}
+
+model DiaryEntry {
+  id                 String       @id @default(cuid())
+  campaignId         String
+  campaign           Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  folderId           String?
+  folder             DiaryFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  title              String
+  content            String       // Rich text (HTML) with images
+  author             String
+  relatedCharacterId String?
+  relatedCharacter   Character?   @relation(fields: [relatedCharacterId], references: [id], onDelete: SetNull)
+  date               DateTime
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+

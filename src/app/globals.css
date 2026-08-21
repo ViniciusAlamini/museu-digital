@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0a0a0f;
+  --color-bg-card: #12121c;
+  --color-bg-elevated: #1a1a2e;
+  --color-accent-purple: #7c3aed;
+  --color-accent-gold: #d97706;
+  --color-accent-gold-light: #fbbf24;
+  --color-text-primary: #f1f0ef;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-border: #2a2a3e;
+  --color-border-hover: #4a4a6e;
+
+  --font-cinzel: var(--font-cinzel);
+  --font-inter: var(--font-inter);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-inter), sans-serif;
+}
+
+h1, h2, h3, .font-fantasy {
+  font-family: var(--font-cinzel), serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-purple);
+}
+
+/* Rich text content */
+.prose-rpg {
+  color: var(--color-text-primary);
+  line-height: 1.7;
+}
+.prose-rpg h1, .prose-rpg h2, .prose-rpg h3 {
+  font-family: var(--font-cinzel), serif;
+  color: var(--color-accent-gold-light);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose-rpg p {
+  margin-bottom: 1rem;
+}
+.prose-rpg strong { color: var(--color-accent-gold-light); }
+.prose-rpg em { color: var(--color-text-secondary); font-style: italic; }
+.prose-rpg ul, .prose-rpg ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.prose-rpg ul { list-style-type: disc; }
+.prose-rpg ol { list-style-type: decimal; }
+
+/* Tiptap editor */
+.tiptap {
+  outline: none;
+  min-height: 200px;
+  padding: 0.75rem;
+}
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Glow effect */
+.glow-purple {
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+}
+.glow-gold {
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
+}
