@@ -41,3 +41,12 @@ yarn-error.log*
 next-env.d.ts
 
 # database and uploads are intentionally tracked per user request
+
+# database
+prisma/dev.db
+prisma/dev.db-journal
+prisma/*.db
+
+# uploads
+/public/uploads/**/*
+!/public/uploads/.gitkeep
