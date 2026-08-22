@@ -40,10 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# database
-prisma/dev.db
-prisma/dev.db-journal
-
-# uploads (keep folder structure but not files)
-/public/uploads/**/*
-!/public/uploads/.gitkeep
+# database and uploads are intentionally tracked per user request
