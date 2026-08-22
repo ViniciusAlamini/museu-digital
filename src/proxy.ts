@@ -6,7 +6,7 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "default_super_secret_key_museu_rpg_2026_fallback"
 );
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const isProtectedPath =
     request.nextUrl.pathname.includes("/new") ||
     request.nextUrl.pathname.includes("/edit");
