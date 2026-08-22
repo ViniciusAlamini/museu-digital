@@ -102,7 +102,7 @@ export function ArtworkForm({
         label="Imagem *"
         aspectRatio="square"
       />
-      {errors.image && <p className={errorClass}>{errors.image.message}</p>}
+      {errors.image && <p className={errorClass}>{String(errors.image.message)}</p>}
 
       <div className="flex gap-3 pt-2">
         <button

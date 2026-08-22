@@ -40,7 +40,7 @@ export default async function NewArtworkFolderPage(props: {
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">
         <ArtworkFolderForm
           action={action}
-          folders={folders.map(f => ({ id: f.id, name: f.name }))}
+          folders={folders.map((f: { id: string; name: string }) => ({ id: f.id, name: f.name }))}
           currentParentId={parentId}
           cancelHref={`/campaigns/${id}/artworks`}
         />
