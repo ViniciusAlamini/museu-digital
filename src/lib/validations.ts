@@ -19,7 +19,7 @@ export const characterSchema = z.object({
 
 export const artworkSchema = z.object({
   title: z.string().min(1, "O título é obrigatório"),
-  image: z.any().optional(),
+  image: z.string().min(1, "A imagem é obrigatória"),
   artist: z.string().min(1, "O artista é obrigatório"),
   description: z.string(),
   date: z.string().min(1, "A data é obrigatória"),
