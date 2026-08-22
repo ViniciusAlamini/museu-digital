@@ -35,7 +35,13 @@ export async function loginAction(username: string, passwordRaw: string) {
   return { success: true, role: "player" as Role };
 }
 
-export async function registerAction(username: string, passwordRaw: string) {
+export async function registerAction(username: string, passwordRaw: string, invitePassword?: string) {
+  const envInvite = process.env.INVITE_PASSWORD || "convite123";
+  
+  if (invitePassword !== envInvite) {
+    return { success: false, error: "Senha de convite inválida." };
+  }
+
   if (username === "admin") {
     return { success: false, error: "O nome 'admin' é reservado." };
   }

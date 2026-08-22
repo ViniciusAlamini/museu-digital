@@ -9,6 +9,7 @@ import Link from "next/link";
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [invitePassword, setInvitePassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const res = await registerAction(username, password);
+      const res = await registerAction(username, password, invitePassword);
       if (res.success) {
         router.push("/");
         router.refresh();
@@ -80,6 +81,21 @@ export default function RegisterPage() {
               placeholder="Pelo menos 3 caracteres..."
               required
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+              Senha de Convite
+            </label>
+            <input
+              type="password"
+              value={invitePassword}
+              onChange={(e) => setInvitePassword(e.target.value)}
+              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-gold-light)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-gold-light)] transition-colors"
+              placeholder="Senha secreta da mesa..."
+              required
+            />
+            <p className="mt-1 text-xs text-[var(--color-text-muted)]">Peça ao Mestre a senha para poder se cadastrar.</p>
           </div>
 
           {error && (
