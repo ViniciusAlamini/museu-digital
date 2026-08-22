@@ -58,7 +58,7 @@ export function DiaryExplorer({ campaignId, folders, entries }: DiaryExplorerPro
     <div className="flex h-[700px] rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
       
       {/* Sidebar - Folder Tree */}
-      <div className="w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50 flex flex-col">
+      <div className="w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50 hidden md:flex flex-col">
         <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between">
           <span className="font-fantasy font-semibold text-[var(--color-text-primary)]">Pastas</span>
           <Link
@@ -93,6 +93,14 @@ export function DiaryExplorer({ campaignId, folders, entries }: DiaryExplorerPro
             {currentFolder ? currentFolder.name : "Raiz do Diário"}
           </div>
           <div className="flex items-center gap-2">
+            {/* Botão de Nova Pasta visível apenas no mobile */}
+            <Link
+              href={`/campaigns/${campaignId}/diary/new-folder${currentFolderId ? `?parentId=${currentFolderId}` : ""}`}
+              className="flex items-center gap-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-1.5 text-xs font-semibold text-[var(--color-text-primary)] hover:bg-[var(--color-border-hover)] transition-colors md:hidden"
+            >
+              <Plus className="h-3.5 w-3.5" /> Pasta
+            </Link>
+
             <Link
               href={`/campaigns/${campaignId}/diary/new-entry${currentFolderId ? `?folderId=${currentFolderId}` : ""}`}
               className="flex items-center gap-1.5 rounded bg-[var(--color-accent-purple)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-700 transition-colors"

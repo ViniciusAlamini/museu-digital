@@ -92,18 +92,25 @@ export function ArtworkExplorer({ campaignId, folders, artworks }: ArtworkExplor
             {currentFolder ? currentFolder.name : "Raiz de Desenhos"}
           </div>
           <div className="flex items-center gap-2">
-            {/* Mobile folders trigger could go here later if needed */}
+            {/* Botão de Nova Pasta visível apenas no mobile (já que no PC fica na barra lateral) */}
+            <Link
+              href={`/campaigns/${campaignId}/artworks/new-folder${currentFolderId ? `?parentId=${currentFolderId}` : ""}`}
+              className="flex items-center gap-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-1.5 text-xs font-semibold text-[var(--color-text-primary)] hover:bg-[var(--color-border-hover)] transition-colors md:hidden"
+            >
+              <Plus className="h-3.5 w-3.5" /> Pasta
+            </Link>
+
             <Link
               href={`/campaigns/${campaignId}/artworks/new${currentFolderId ? `?folderId=${currentFolderId}` : ""}`}
               className="flex items-center gap-1.5 rounded bg-[var(--color-accent-purple)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-700 transition-colors"
             >
-              <Plus className="h-3.5 w-3.5" /> Adicionar Imagem
+              <Plus className="h-3.5 w-3.5" /> Imagem
             </Link>
             
             {currentFolder && (
               <DeleteDialog
                 title="Excluir Pasta"
-                description={`Tem certeza que deseja excluir a pasta "${currentFolder.name}" e TUDAS as imagens nela?`}
+                description={`Tem certeza que deseja excluir a pasta "${currentFolder.name}" e TODAS as imagens nela?`}
                 onConfirm={async () => {
                   await deleteArtworkFolder(currentFolder.id, campaignId);
                 }}
