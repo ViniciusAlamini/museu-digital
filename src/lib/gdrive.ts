@@ -1,8 +1,9 @@
-import { google } from "googleapis";
+import { drive, drive_v3 } from "@googleapis/drive";
+import { OAuth2Client } from "google-auth-library";
 import { Readable } from "stream";
 
 function getAuth() {
-  const oauth2Client = new google.auth.OAuth2(
+  const oauth2Client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
   );
@@ -17,7 +18,7 @@ function getAuth() {
 
 export function getDriveClient() {
   const auth = getAuth();
-  return google.drive({ version: "v3", auth });
+  return drive({ version: "v3", auth });
 }
 
 /**
@@ -74,12 +75,12 @@ export async function uploadToDrive(
  * Se não existir, cria ela.
  */
 async function getOrCreateSubfolder(
-  drive: ReturnType<typeof google.drive>,
+  driveClient: drive_v3.Drive,
   parentId: string,
   folderName: string
 ): Promise<string> {
   // Procurar pasta existente
-  const search = await drive.files.list({
+  const search = await driveClient.files.list({
     q: `name='${folderName}' and '${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
     fields: "files(id)",
   });
@@ -89,7 +90,7 @@ async function getOrCreateSubfolder(
   }
 
   // Criar pasta nova
-  const folder = await drive.files.create({
+  const folder = await driveClient.files.create({
     requestBody: {
       name: folderName,
       mimeType: "application/vnd.google-apps.folder",

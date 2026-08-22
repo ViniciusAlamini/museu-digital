@@ -9,7 +9,7 @@
  *   4. Copie o refresh_token que aparece no terminal e cole no .env
  */
 
-import { google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
 import http from "http";
 import { URL } from "url";
 
@@ -23,7 +23,7 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   process.exit(1);
 }
 
-const oauth2Client = new google.auth.OAuth2(
+const oauth2Client = new OAuth2Client(
   CLIENT_ID,
   CLIENT_SECRET,
   REDIRECT_URI
