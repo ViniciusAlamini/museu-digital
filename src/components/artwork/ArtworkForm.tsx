@@ -40,6 +40,7 @@ export function ArtworkForm({
       date: defaultValues?.date
         ? new Date(defaultValues.date).toISOString().split("T")[0]
         : "",
+      folderId: defaultValues?.folderId ?? "",
     },
   });
 
@@ -48,6 +49,10 @@ export function ArtworkForm({
   async function onSubmit() {
     const formData = new FormData(formRef.current!);
     formData.set("image", image ?? "");
+    // Ensure folderId is captured correctly
+    const folderId = watch("folderId");
+    if (folderId) formData.set("folderId", folderId);
+    
     await action(formData);
   }
 
@@ -58,6 +63,8 @@ export function ArtworkForm({
 
   return (
     <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <input type="hidden" {...register("folderId")} />
+      
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label className={labelClass}>Título *</label>

@@ -14,16 +14,18 @@ export async function createArtwork(campaignId: string, formData: FormData) {
     artist: formData.get("artist") as string,
     description: formData.get("description") as string,
     date: formData.get("date") as string,
+    folderId: formData.get("folderId") as string | null,
   };
 
   const validated = artworkSchema.parse(raw);
 
   const artwork = await prisma.artwork.create({
-    data: { ...validated, campaignId, date: new Date(validated.date) },
+    data: { ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
-  redirect(`/campaigns/${campaignId}/artworks/${artwork.id}`);
+  // Redireciona de volta para a lista daquela pasta ou da raiz
+  redirect(`/campaigns/${campaignId}/artworks${validated.folderId ? `?folder=${validated.folderId}` : ""}`);
 }
 
 export async function updateArtwork(
@@ -37,6 +39,7 @@ export async function updateArtwork(
     artist: formData.get("artist") as string,
     description: formData.get("description") as string,
     date: formData.get("date") as string,
+    folderId: formData.get("folderId") as string | null,
   };
 
   const validated = artworkSchema.parse(raw);

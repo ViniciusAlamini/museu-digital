@@ -20,9 +20,21 @@ export interface Character {
   createdAt: Date;
 }
 
+export interface ArtworkFolder {
+  id: string;
+  campaignId: string;
+  parentFolderId: string | null;
+  name: string;
+  description: string | null;
+  createdAt: Date;
+  subfolders?: ArtworkFolder[];
+  artworks?: Artwork[];
+}
+
 export interface Artwork {
   id: string;
   campaignId: string;
+  folderId: string | null;
   title: string;
   image: string;
   artist: string;

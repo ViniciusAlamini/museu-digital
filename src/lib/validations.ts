@@ -18,11 +18,18 @@ export const characterSchema = z.object({
 });
 
 export const artworkSchema = z.object({
-  title: z.string().min(1, "Título é obrigatório"),
-  image: z.string().min(1, "Imagem é obrigatória"),
-  artist: z.string().min(1, "Artista é obrigatório"),
-  description: z.string().min(1, "Descrição é obrigatória"),
-  date: z.string().min(1, "Data é obrigatória"),
+  title: z.string().min(1, "O título é obrigatório"),
+  image: z.any().optional(),
+  artist: z.string().min(1, "O artista é obrigatório"),
+  description: z.string(),
+  date: z.string().min(1, "A data é obrigatória"),
+  folderId: z.string().optional().nullable(),
+});
+
+export const artworkFolderSchema = z.object({
+  name: z.string().min(1, "O nome da pasta é obrigatório"),
+  description: z.string().optional().nullable(),
+  parentFolderId: z.string().optional().nullable(),
 });
 
 export const postSchema = z.object({
