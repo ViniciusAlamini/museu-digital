@@ -6,8 +6,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { requireAuth } from "@/lib/auth";
 
 export async function createCharacter(campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const raw = {
     name: formData.get("name") as string,
     player: formData.get("player") as string,
@@ -32,6 +35,8 @@ export async function updateCharacter(
   campaignId: string,
   formData: FormData
 ) {
+  await requireAuth("player");
+
   const raw = {
     name: formData.get("name") as string,
     player: formData.get("player") as string,
@@ -54,6 +59,8 @@ export async function updateCharacter(
 }
 
 export async function deleteCharacter(id: string, campaignId: string) {
+  await requireAuth("player");
+
   const character = await prisma.character.findUnique({ where: { id } });
 
   if (character?.image) {

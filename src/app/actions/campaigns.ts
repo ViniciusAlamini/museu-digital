@@ -6,8 +6,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { requireAuth } from "@/lib/auth";
 
 export async function createCampaign(formData: FormData) {
+  await requireAuth("admin"); // Somente mestre cria campanha
+  
   const raw = {
     name: formData.get("name") as string,
     system: formData.get("system") as string,
@@ -30,6 +33,8 @@ export async function createCampaign(formData: FormData) {
 }
 
 export async function updateCampaign(id: string, formData: FormData) {
+  await requireAuth("admin"); // Somente mestre edita campanha
+
   const raw = {
     name: formData.get("name") as string,
     system: formData.get("system") as string,
@@ -54,6 +59,8 @@ export async function updateCampaign(id: string, formData: FormData) {
 }
 
 export async function deleteCampaign(id: string) {
+  await requireAuth("admin"); // Exclusão de campanha restrita a Admin
+
   const campaign = await prisma.campaign.findUnique({
     where: { id },
     include: { characters: true, artworks: true, posts: true },

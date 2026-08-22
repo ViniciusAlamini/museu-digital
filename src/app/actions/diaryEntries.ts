@@ -3,8 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAuth } from "@/lib/auth";
 
 export async function createDiaryEntry(campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
@@ -33,6 +36,8 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
 }
 
 export async function updateDiaryEntry(entryId: string, campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
@@ -61,6 +66,8 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
 }
 
 export async function moveDiaryEntry(entryId: string, campaignId: string, newFolderId: string | null) {
+  await requireAuth("player");
+
   await prisma.diaryEntry.update({
     where: { id: entryId },
     data: { folderId: newFolderId },
@@ -69,6 +76,8 @@ export async function moveDiaryEntry(entryId: string, campaignId: string, newFol
 }
 
 export async function deleteDiaryEntry(entryId: string, campaignId: string, currentFolderId: string | null) {
+  await requireAuth("player");
+
   await prisma.diaryEntry.delete({ where: { id: entryId } });
   revalidatePath(`/campaigns/${campaignId}/diary`);
 }

@@ -14,12 +14,15 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { getSessionRole } from "@/lib/auth";
+
 export default async function CampaignPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const role = await getSessionRole();
 
   const campaign = await prisma.campaign.findUnique({
     where: { id },
@@ -56,29 +59,31 @@ export default async function CampaignPage({
   return (
     <div className="space-y-8">
       {/* Actions */}
-      <div className="flex justify-end gap-2">
-        <Link
-          href={`/campaigns/${id}/edit`}
-          className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
-        >
-          <Edit className="h-4 w-4" />
-          Editar
-        </Link>
-        <DeleteDialog
-          title="Excluir Campanha"
-          description={`Tem certeza que deseja excluir "${campaign.name}"? Todos os personagens, desenhos e posts serão excluídos permanentemente.`}
-          onConfirm={async () => {
-            "use server";
-            await deleteCampaign(id);
-          }}
-          trigger={
-            <button className="flex items-center gap-2 rounded-lg border border-red-900/40 px-4 py-2 text-sm text-red-400 hover:border-red-700 hover:bg-red-950/20 transition-colors">
-              <Trash2 className="h-4 w-4" />
-              Excluir
-            </button>
-          }
-        />
-      </div>
+      {role === "admin" && (
+        <div className="flex justify-end gap-2">
+          <Link
+            href={`/campaigns/${id}/edit`}
+            className="flex items-center gap-2 rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+          >
+            <Edit className="h-4 w-4" />
+            Editar
+          </Link>
+          <DeleteDialog
+            title="Excluir Campanha"
+            description={`Tem certeza que deseja excluir "${campaign.name}"? Todos os personagens, desenhos e posts serão excluídos permanentemente.`}
+            onConfirm={async () => {
+              "use server";
+              await deleteCampaign(id);
+            }}
+            trigger={
+              <button className="flex items-center gap-2 rounded-lg border border-red-900/40 px-4 py-2 text-sm text-red-400 hover:border-red-700 hover:bg-red-950/20 transition-colors">
+                <Trash2 className="h-4 w-4" />
+                Excluir
+              </button>
+            }
+          />
+        </div>
+      )}
 
       {/* Description */}
       <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">

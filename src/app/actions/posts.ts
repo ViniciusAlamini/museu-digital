@@ -6,8 +6,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { requireAuth } from "@/lib/auth";
 
 export async function createPost(campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const raw = {
     title: formData.get("title") as string,
     content: formData.get("content") as string,
@@ -35,6 +38,8 @@ export async function updatePost(
   campaignId: string,
   formData: FormData
 ) {
+  await requireAuth("player");
+
   const raw = {
     title: formData.get("title") as string,
     content: formData.get("content") as string,
@@ -59,6 +64,8 @@ export async function updatePost(
 }
 
 export async function deletePost(id: string, campaignId: string) {
+  await requireAuth("player");
+
   const post = await prisma.post.findUnique({ where: { id } });
 
   if (post?.image) {

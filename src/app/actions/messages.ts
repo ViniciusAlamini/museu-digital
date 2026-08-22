@@ -3,8 +3,11 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAuth } from "@/lib/auth";
 
 export async function createMessage(campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
   const type = formData.get("type") as string;
@@ -34,6 +37,8 @@ export async function createMessage(campaignId: string, formData: FormData) {
 }
 
 export async function updateMessage(messageId: string, campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const content = formData.get("content") as string;
   const author = formData.get("author") as string;
   const type = formData.get("type") as string;
@@ -63,6 +68,8 @@ export async function updateMessage(messageId: string, campaignId: string, formD
 }
 
 export async function deleteMessage(messageId: string, campaignId: string) {
+  await requireAuth("player");
+
   await prisma.message.delete({ where: { id: messageId } });
   revalidatePath(`/campaigns/${campaignId}/messages`);
 }

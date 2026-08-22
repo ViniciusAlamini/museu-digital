@@ -6,8 +6,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { requireAuth } from "@/lib/auth";
 
 export async function createArtwork(campaignId: string, formData: FormData) {
+  await requireAuth("player");
+
   const raw = {
     title: formData.get("title") as string,
     image: formData.get("image") as string,
@@ -33,6 +36,8 @@ export async function updateArtwork(
   campaignId: string,
   formData: FormData
 ) {
+  await requireAuth("player");
+
   const raw = {
     title: formData.get("title") as string,
     image: formData.get("image") as string,
@@ -55,6 +60,8 @@ export async function updateArtwork(
 }
 
 export async function deleteArtwork(id: string, campaignId: string) {
+  await requireAuth("player");
+
   const artwork = await prisma.artwork.findUnique({ where: { id } });
 
   if (artwork?.image) {
