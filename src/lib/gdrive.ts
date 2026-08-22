@@ -18,7 +18,8 @@ function getAuth() {
 
 export function getDriveClient() {
   const auth = getAuth();
-  return drive({ version: "v3", auth });
+  // Casting to any to bypass TS type mismatch between google-auth-library versions
+  return drive({ version: "v3", auth: auth as any });
 }
 
 /**
