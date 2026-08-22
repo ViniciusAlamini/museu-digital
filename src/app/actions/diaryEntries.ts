@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
 
 export async function createDiaryEntry(campaignId: string, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -20,6 +20,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
 
   await prisma.diaryEntry.create({
     data: {
+      addedBy: session.username,
       campaignId,
       title,
       content,
@@ -36,7 +37,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
 }
 
 export async function updateDiaryEntry(entryId: string, campaignId: string, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -51,6 +52,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
   await prisma.diaryEntry.update({
     where: { id: entryId },
     data: {
+      updatedBy: session.username,
       title,
       content,
       author,
@@ -66,17 +68,18 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
 }
 
 export async function moveDiaryEntry(entryId: string, campaignId: string, newFolderId: string | null) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   await prisma.diaryEntry.update({
     where: { id: entryId },
-    data: { folderId: newFolderId },
+    data: {
+      updatedBy: session.username, folderId: newFolderId },
   });
   revalidatePath(`/campaigns/${campaignId}/diary`);
 }
 
 export async function deleteDiaryEntry(entryId: string, campaignId: string, currentFolderId: string | null) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   await prisma.diaryEntry.delete({ where: { id: entryId } });
   revalidatePath(`/campaigns/${campaignId}/diary`);

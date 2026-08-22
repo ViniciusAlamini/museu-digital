@@ -9,7 +9,7 @@ import path from "path";
 import { requireAuth } from "@/lib/auth";
 
 export async function createArtwork(campaignId: string, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     title: formData.get("title") as string,
@@ -23,7 +23,8 @@ export async function createArtwork(campaignId: string, formData: FormData) {
   const validated = artworkSchema.parse(raw);
 
   const artwork = await prisma.artwork.create({
-    data: { ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
+    data: {
+      addedBy: session.username, ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
@@ -36,7 +37,7 @@ export async function updateArtwork(
   campaignId: string,
   formData: FormData
 ) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     title: formData.get("title") as string,
@@ -51,7 +52,8 @@ export async function updateArtwork(
 
   await prisma.artwork.update({
     where: { id },
-    data: { ...validated, date: new Date(validated.date) },
+    data: {
+      updatedBy: session.username, ...validated, date: new Date(validated.date) },
   });
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
@@ -60,7 +62,7 @@ export async function updateArtwork(
 }
 
 export async function deleteArtwork(id: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const artwork = await prisma.artwork.findUnique({ where: { id } });
 

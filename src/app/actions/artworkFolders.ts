@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
 
 export async function createArtworkFolder(campaignId: string, parentId: string | undefined, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     name: formData.get("name") as string,
@@ -17,14 +17,15 @@ export async function createArtworkFolder(campaignId: string, parentId: string |
   const validated = artworkFolderSchema.parse(raw);
 
   await prisma.artworkFolder.create({
-    data: { ...validated, parentFolderId: parentId || validated.parentFolderId, campaignId },
+    data: {
+      addedBy: session.username, ...validated, parentFolderId: parentId || validated.parentFolderId, campaignId },
   });
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
 }
 
 export async function deleteArtworkFolder(id: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   await prisma.artworkFolder.delete({ where: { id } });
   revalidatePath(`/campaigns/${campaignId}/artworks`);

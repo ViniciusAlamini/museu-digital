@@ -1,18 +1,22 @@
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
-// A chave secreta usada para criptografar o cookie. Em produção, use uma variável de ambiente forte.
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "default_super_secret_key_museu_rpg_2026_fallback"
 );
 
 export type Role = "visitor" | "player" | "admin";
 
+export type SessionPayload = {
+  role: Role;
+  username?: string;
+};
+
 /**
  * Cria um token JWT assinado para o usuário.
  */
-export async function signToken(role: Role): Promise<string> {
-  return await new SignJWT({ role })
+export async function signToken(role: Role, username?: string): Promise<string> {
+  return await new SignJWT({ role, username })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("30d")
@@ -22,38 +26,46 @@ export async function signToken(role: Role): Promise<string> {
 /**
  * Lê e valida um token JWT. Se inválido, retorna 'visitor'.
  */
-export async function verifyToken(token: string | undefined): Promise<Role> {
-  if (!token) return "visitor";
+export async function verifyToken(token: string | undefined): Promise<SessionPayload> {
+  if (!token) return { role: "visitor" };
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return (payload.role as Role) || "visitor";
+    return { 
+      role: (payload.role as Role) || "visitor",
+      username: payload.username as string | undefined,
+    };
   } catch (error) {
-    return "visitor";
+    return { role: "visitor" };
   }
 }
 
 /**
- * Lê o cookie de sessão da requisição atual e retorna o nível de acesso.
+ * Lê o cookie de sessão da requisição atual e retorna os dados.
  */
-export async function getSessionRole(): Promise<Role> {
+export async function getSession(): Promise<SessionPayload> {
   const cookieStore = await cookies();
   const token = cookieStore.get("museu_auth")?.value;
   return await verifyToken(token);
 }
 
+export async function getSessionRole(): Promise<Role> {
+  const { role } = await getSession();
+  return role;
+}
+
 /**
- * Validador para Server Actions. Dispara um erro se o usuário não tiver o cargo mínimo.
+ * Validador para Server Actions.
  */
-export async function requireAuth(minimumRole: "player" | "admin" = "player"): Promise<Role> {
-  const role = await getSessionRole();
+export async function requireAuth(minimumRole: "player" | "admin" = "player"): Promise<SessionPayload> {
+  const session = await getSession();
   
-  if (role === "visitor") {
+  if (session.role === "visitor") {
     throw new Error("Não autorizado. Faça login para realizar esta ação.");
   }
 
-  if (minimumRole === "admin" && role !== "admin") {
+  if (minimumRole === "admin" && session.role !== "admin") {
     throw new Error("Permissão de Mestre/Administrador necessária para esta ação.");
   }
 
-  return role;
+  return session;
 }

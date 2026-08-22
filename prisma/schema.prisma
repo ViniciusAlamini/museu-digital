@@ -9,6 +9,13 @@ datasource db {
   provider = "sqlite"
 }
 
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
 model Campaign {
   id             String          @id @default(cuid())
   name           String
@@ -24,6 +31,8 @@ model Campaign {
   messages       Message[]
   folders        DiaryFolder[]
   entries        DiaryEntry[]
+  addedBy        String?
+  updatedBy      String?
 }
 
 model Character {
@@ -39,6 +48,8 @@ model Character {
   createdAt      DateTime     @default(now())
   messages       Message[]
   entries        DiaryEntry[]
+  addedBy        String?
+  updatedBy      String?
 }
 
 model ArtworkFolder {
@@ -52,6 +63,8 @@ model ArtworkFolder {
   description    String?
   createdAt      DateTime        @default(now())
   artworks       Artwork[]
+  addedBy        String?
+  updatedBy      String?
 }
 
 model Artwork {
@@ -66,6 +79,8 @@ model Artwork {
   description String
   date        DateTime
   createdAt   DateTime       @default(now())
+  addedBy     String?
+  updatedBy   String?
 }
 
 model Post {
@@ -78,6 +93,8 @@ model Post {
   author      String
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
+  addedBy     String?
+  updatedBy   String?
 }
 
 model Message {
@@ -93,6 +110,8 @@ model Message {
   image       String?
   type        String // e.g. "Mensagem pessoal", "Pensamento", etc.
   createdAt   DateTime   @default(now())
+  addedBy     String?
+  updatedBy   String?
 }
 
 model DiaryFolder {
@@ -106,6 +125,8 @@ model DiaryFolder {
   description    String?
   createdAt      DateTime      @default(now())
   entries        DiaryEntry[]
+  addedBy        String?
+  updatedBy      String?
 }
 
 model DiaryEntry {
@@ -122,4 +143,6 @@ model DiaryEntry {
   date               DateTime
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
+  addedBy            String?
+  updatedBy          String?
 }

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Swords } from "lucide-react";
 import { AuthButton } from "./AuthButton";
-import { getSessionRole } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 export async function Navbar() {
-  const role = await getSessionRole();
+  const session = await getSession();
 
   return (
     <nav className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg-primary)]/90 backdrop-blur-md">
@@ -27,7 +27,7 @@ export async function Navbar() {
               Campanhas
             </Link>
             <div className="h-4 w-px bg-[var(--color-border)] mx-1" />
-            <AuthButton role={role} />
+            <AuthButton session={session} />
           </div>
         </div>
       </div>

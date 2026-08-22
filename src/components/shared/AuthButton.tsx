@@ -5,26 +5,33 @@ import { LogOut, User } from "lucide-react";
 import { logoutAction } from "@/app/actions/auth";
 import { useRouter } from "next/navigation";
 
-export function AuthButton({ role }: { role: "visitor" | "player" | "admin" }) {
+import { SessionPayload } from "@/lib/auth";
+
+export function AuthButton({ session }: { session: SessionPayload }) {
   const router = useRouter();
 
-  if (role === "visitor") {
+  if (session.role === "visitor") {
     return (
       <Link
         href="/login"
         className="flex items-center gap-1.5 rounded-full border border-[var(--color-border)] px-3 py-1 text-xs font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-accent-purple)] hover:text-[var(--color-accent-purple)] transition-colors"
       >
         <User className="h-3.5 w-3.5" />
-        Fazer Login
+        Entrar / Registrar
       </Link>
     );
   }
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs font-medium text-[var(--color-text-secondary)]">
-        {role === "admin" ? "👑 Mestre" : "⚔️ Jogador"}
-      </span>
+      <div className="flex flex-col items-end">
+        <span className="text-xs font-medium text-[var(--color-text-primary)]">
+          {session.username}
+        </span>
+        <span className="text-[10px] text-[var(--color-text-muted)]">
+          {session.role === "admin" ? "👑 Mestre" : "⚔️ Jogador"}
+        </span>
+      </div>
       <button
         onClick={async () => {
           await logoutAction();

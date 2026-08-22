@@ -61,7 +61,7 @@ export default async function CharactersPage({
       ) : (
         <div className="grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {characters.map((character) => (
-            <CharacterCard key={character.id} character={character} campaignId={id} />
+            <CharacterCard key={character.id} character={character} campaignId={id} isAdmin={role === "admin"} />
           ))}
         </div>
       )}

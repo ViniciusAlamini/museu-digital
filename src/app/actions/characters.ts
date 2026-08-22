@@ -9,7 +9,7 @@ import path from "path";
 import { requireAuth } from "@/lib/auth";
 
 export async function createCharacter(campaignId: string, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     name: formData.get("name") as string,
@@ -23,7 +23,8 @@ export async function createCharacter(campaignId: string, formData: FormData) {
   const validated = characterSchema.parse(raw);
 
   const character = await prisma.character.create({
-    data: { ...validated, campaignId },
+    data: {
+      addedBy: session.username, ...validated, campaignId },
   });
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
@@ -35,7 +36,7 @@ export async function updateCharacter(
   campaignId: string,
   formData: FormData
 ) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     name: formData.get("name") as string,
@@ -50,7 +51,7 @@ export async function updateCharacter(
 
   await prisma.character.update({
     where: { id },
-    data: validated,
+    data: { ...validated, updatedBy: session.username },
   });
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
@@ -59,7 +60,7 @@ export async function updateCharacter(
 }
 
 export async function deleteCharacter(id: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const character = await prisma.character.findUnique({ where: { id } });
 

@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginAction } from "@/app/actions/auth";
-import { KeyRound, ShieldAlert, User } from "lucide-react";
+import { registerAction } from "@/app/actions/auth";
+import { UserPlus, ShieldAlert, User } from "lucide-react";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,15 +19,15 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await loginAction(username, password);
+      const res = await registerAction(username, password);
       if (res.success) {
         router.push("/");
         router.refresh();
       } else {
-        setError(res.error || "Erro de autenticação.");
+        setError(res.error || "Erro ao registrar.");
       }
     } catch (err) {
-      setError("Ocorreu um erro ao tentar logar.");
+      setError("Ocorreu um erro inesperado.");
     } finally {
       setLoading(false);
     }
@@ -38,20 +38,20 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8 shadow-xl">
         <div className="mb-8 flex flex-col items-center text-center">
           <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-bg-elevated)] ring-4 ring-[var(--color-border)]">
-            <KeyRound className="h-8 w-8 text-[var(--color-accent-purple)]" />
+            <UserPlus className="h-8 w-8 text-[var(--color-accent-gold-light)]" />
           </div>
           <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)]">
-            Acesso Restrito
+            Novo Aventureiro
           </h1>
           <p className="mt-2 text-sm text-[var(--color-text-secondary)]">
-            Digite seu usuário e senha. Se for Mestre, use "admin" e a senha mestra.
+            Crie seu usuário para poder adicionar conteúdos ao museu e registrar seu nome nas artes e personagens.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-              Usuário
+              Nome de Usuário
             </label>
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[var(--color-text-muted)]">
@@ -61,7 +61,7 @@ export default function LoginPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] py-3 pl-10 pr-4 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors"
+                className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] py-3 pl-10 pr-4 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-gold-light)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-gold-light)] transition-colors"
                 placeholder="Ex: Lucas"
                 required
               />
@@ -70,14 +70,14 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
-              Senha
+              Senha Simples
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors"
-              placeholder="Sua senha..."
+              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-gold-light)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-gold-light)] transition-colors"
+              placeholder="Pelo menos 3 caracteres..."
               required
             />
           </div>
@@ -92,16 +92,16 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[var(--color-accent-purple)] px-4 py-3 font-semibold text-white hover:bg-purple-700 disabled:opacity-60 transition-colors"
+            className="w-full rounded-lg bg-[var(--color-accent-gold-light)] px-4 py-3 font-semibold text-black hover:bg-[var(--color-accent-gold)] disabled:opacity-60 transition-colors"
           >
-            {loading ? "Verificando..." : "Entrar no Museu"}
+            {loading ? "Registrando..." : "Criar Personagem (Conta)"}
           </button>
 
           <div className="mt-6 border-t border-[var(--color-border)] pt-6 text-center">
             <p className="text-sm text-[var(--color-text-secondary)]">
-              Não tem um usuário?{" "}
-              <Link href="/register" className="font-semibold text-[var(--color-accent-gold-light)] hover:underline">
-                Crie sua conta
+              Já tem uma conta?{" "}
+              <Link href="/login" className="font-semibold text-[var(--color-accent-purple)] hover:underline">
+                Faça login
               </Link>
             </p>
           </div>

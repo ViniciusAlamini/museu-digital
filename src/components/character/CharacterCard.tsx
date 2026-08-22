@@ -4,11 +4,12 @@ import { Character } from "@/types";
 import { User } from "lucide-react";
 
 interface CharacterCardProps {
-  character: Character;
+  character: Character & { addedBy?: string | null; updatedBy?: string | null };
   campaignId: string;
+  isAdmin?: boolean;
 }
 
-export function CharacterCard({ character, campaignId }: CharacterCardProps) {
+export function CharacterCard({ character, campaignId, isAdmin }: CharacterCardProps) {
   return (
     <Link
       href={`/campaigns/${campaignId}/characters/${character.id}`}
@@ -48,6 +49,13 @@ export function CharacterCard({ character, campaignId }: CharacterCardProps) {
               {character.characterClass}
             </span>
           </div>
+
+          {isAdmin && character.addedBy && (
+            <div className="mt-4 border-t border-[var(--color-border)] pt-2 text-[10px] text-[var(--color-text-muted)] flex justify-between">
+              <span>✍️ {character.addedBy}</span>
+              {character.updatedBy && <span>(editou: {character.updatedBy})</span>}
+            </div>
+          )}
         </div>
       </div>
     </Link>

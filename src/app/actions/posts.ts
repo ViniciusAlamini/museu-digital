@@ -9,7 +9,7 @@ import path from "path";
 import { requireAuth } from "@/lib/auth";
 
 export async function createPost(campaignId: string, formData: FormData) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     title: formData.get("title") as string,
@@ -23,6 +23,7 @@ export async function createPost(campaignId: string, formData: FormData) {
 
   const post = await prisma.post.create({
     data: {
+      addedBy: session.username,
       ...validated,
       campaignId,
       publishedAt: new Date(validated.publishedAt),
@@ -38,7 +39,7 @@ export async function updatePost(
   campaignId: string,
   formData: FormData
 ) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const raw = {
     title: formData.get("title") as string,
@@ -53,6 +54,7 @@ export async function updatePost(
   await prisma.post.update({
     where: { id },
     data: {
+      updatedBy: session.username,
       ...validated,
       publishedAt: new Date(validated.publishedAt),
     },
@@ -64,7 +66,7 @@ export async function updatePost(
 }
 
 export async function deletePost(id: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const post = await prisma.post.findUnique({ where: { id } });
 

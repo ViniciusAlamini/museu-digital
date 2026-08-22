@@ -2,27 +2,70 @@
 
 import { cookies } from "next/headers";
 import { signToken, Role } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
-export async function loginAction(password: string) {
-  const playerPassword = process.env.PLAYER_PASSWORD || "jogador123";
+export async function loginAction(username: string, passwordRaw: string) {
   const adminPassword = process.env.ADMIN_PASSWORD || "mestre123";
 
-  let role: Role = "visitor";
-
-  if (password === adminPassword) {
-    role = "admin";
-  } else if (password === playerPassword) {
-    role = "player";
+  // Login como Admin via .env
+  if (username === "admin" && passwordRaw === adminPassword) {
+    const token = await signToken("admin", "admin");
+    await setCookie(token);
+    return { success: true, role: "admin" as Role };
   }
 
-  if (role === "visitor") {
+  // Busca no banco de dados
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  if (!user) {
+    return { success: false, error: "Usuário não encontrado." };
+  }
+
+  const isValid = await bcrypt.compare(passwordRaw, user.password);
+  if (!isValid) {
     return { success: false, error: "Senha incorreta." };
   }
 
-  // Gera o token JWT
-  const token = await signToken(role);
+  // Login de jogador
+  const token = await signToken("player", user.username);
+  await setCookie(token);
+  return { success: true, role: "player" as Role };
+}
 
-  // Salva no cookie
+export async function registerAction(username: string, passwordRaw: string) {
+  if (username === "admin") {
+    return { success: false, error: "O nome 'admin' é reservado." };
+  }
+  if (!username || username.length < 3) {
+    return { success: false, error: "O nome de usuário deve ter pelo menos 3 caracteres." };
+  }
+  if (!passwordRaw || passwordRaw.length < 3) {
+    return { success: false, error: "A senha deve ter pelo menos 3 caracteres." };
+  }
+
+  const existing = await prisma.user.findUnique({ where: { username } });
+  if (existing) {
+    return { success: false, error: "Este nome de usuário já está em uso." };
+  }
+
+  const hashedPassword = await bcrypt.hash(passwordRaw, 10);
+  await prisma.user.create({
+    data: {
+      username,
+      password: hashedPassword,
+    },
+  });
+
+  // Autologin
+  const token = await signToken("player", username);
+  await setCookie(token);
+  return { success: true };
+}
+
+async function setCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set("museu_auth", token, {
     httpOnly: true,
@@ -31,8 +74,6 @@ export async function loginAction(password: string) {
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 dias
   });
-
-  return { success: true, role };
 }
 
 export async function logoutAction() {
