@@ -75,7 +75,7 @@ async function setCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set("museu_auth", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: false, // Precisa ser false porque o site está rodando em HTTP (IP direto) e não em HTTPS
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 dias
