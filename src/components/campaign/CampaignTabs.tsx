@@ -9,7 +9,7 @@ const tabs = [
   { label: "Início", href: "", icon: Home },
   { label: "Personagens", href: "/characters", icon: Users },
   { label: "Desenhos", href: "/artworks", icon: ImageIcon },
-  { label: "Posts", href: "/posts", icon: FileText },
+  { label: "Sessões", href: "/sessions", icon: FileText },
   { label: "Mensagens", href: "/messages", icon: MessageSquare },
   { label: "Diário", href: "/diary", icon: BookOpen },
 ];
