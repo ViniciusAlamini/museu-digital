@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Swords } from "lucide-react";
+import { Swords, Shield } from "lucide-react";
 import { AuthButton } from "./AuthButton";
 import { getSession } from "@/lib/auth";
 
@@ -26,6 +26,19 @@ export async function Navbar() {
             >
               Campanhas
             </Link>
+            {session.role === "admin" && (
+              <>
+                <div className="h-4 w-px bg-[var(--color-border)]" />
+                <Link
+                  href="/audit"
+                  className="flex items-center gap-1.5 text-sm text-red-400 hover:text-red-300 transition-colors"
+                  title="Painel de Auditoria"
+                >
+                  <Shield className="h-4 w-4" />
+                  Auditoria
+                </Link>
+              </>
+            )}
             <div className="h-4 w-px bg-[var(--color-border)] mx-1" />
             <AuthButton session={session} />
           </div>
