@@ -27,7 +27,7 @@ export async function createSession(campaignId: string, formData: FormData) {
     },
   });
 
-  await logAudit(campaignId, sessionUser.username, "CRIOU", "Sessão", title);
+  await logAudit(campaignId, sessionUser.username || "Desconhecido", "CRIOU", "Sessão", title);
 
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   redirect(`/campaigns/${campaignId}/sessions/${session.id}`);
@@ -58,7 +58,7 @@ export async function updateSession(
     },
   });
 
-  await logAudit(campaignId, sessionUser.username, "EDITOU", "Sessão", title);
+  await logAudit(campaignId, sessionUser.username || "Desconhecido", "EDITOU", "Sessão", title);
 
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   revalidatePath(`/campaigns/${campaignId}/sessions/${sessionId}`);
@@ -73,7 +73,7 @@ export async function deleteSession(sessionId: string, campaignId: string) {
 
   await prisma.session.delete({ where: { id: sessionId } });
 
-  await logAudit(campaignId, sessionUser.username, "EXCLUIU", "Sessão", session.title);
+  await logAudit(campaignId, sessionUser.username || "Desconhecido", "EXCLUIU", "Sessão", session.title);
 
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   redirect(`/campaigns/${campaignId}/sessions`);

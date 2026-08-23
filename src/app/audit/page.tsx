@@ -1,8 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Shield, Plus, Edit, Trash2 } from "lucide-react";
 
 export default async function AuditPage() {
@@ -100,7 +98,7 @@ export default async function AuditPage() {
                           {formatDate(log.createdAt)}
                         </span>
                         <span className="text-xs text-[var(--color-text-muted)]">
-                          {format(log.createdAt, "HH:mm", { locale: ptBR })}
+                          {new Date(log.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </div>
                     </td>

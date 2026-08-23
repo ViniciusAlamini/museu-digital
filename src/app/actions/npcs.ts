@@ -31,7 +31,7 @@ export async function createNpc(campaignId: string, formData: FormData) {
     },
   });
 
-  await logAudit(campaignId, session.username, "CRIOU", "NPC", name);
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "NPC", name);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   redirect(`/campaigns/${campaignId}/npcs/${npc.id}`);
@@ -66,7 +66,7 @@ export async function updateNpc(
     },
   });
 
-  await logAudit(campaignId, session.username, "EDITOU", "NPC", name);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "NPC", name);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   revalidatePath(`/campaigns/${campaignId}/npcs/${npcId}`);
@@ -81,7 +81,7 @@ export async function deleteNpc(npcId: string, campaignId: string) {
 
   await prisma.npc.delete({ where: { id: npcId } });
 
-  await logAudit(campaignId, session.username, "EXCLUIU", "NPC", npc.name);
+  await logAudit(campaignId, session.username || "Desconhecido", "EXCLUIU", "NPC", npc.name);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   redirect(`/campaigns/${campaignId}/npcs${npc.folderId ? `?folder=${npc.folderId}` : ""}`);
