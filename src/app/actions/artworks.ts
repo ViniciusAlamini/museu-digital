@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createArtwork(campaignId: string, formData: FormData) {
   const session = await requireAuth("player");
@@ -26,6 +27,8 @@ export async function createArtwork(campaignId: string, formData: FormData) {
     data: {
       addedBy: session.username, ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Arte", validated.title);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   // Redireciona de volta para a lista daquela pasta ou da raiz
@@ -56,6 +59,8 @@ export async function updateArtwork(
       updatedBy: session.username, ...validated, date: new Date(validated.date) },
   });
 
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Arte", validated.title);
+
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   revalidatePath(`/campaigns/${campaignId}/artworks/${id}`);
   redirect(`/campaigns/${campaignId}/artworks/${id}`);
@@ -75,6 +80,8 @@ export async function deleteArtwork(id: string, campaignId: string) {
   }
 
   await prisma.artwork.delete({ where: { id } });
+
+  await logAudit(campaignId, session.username || "Desconhecido", "EXCLUIU", "Arte", artwork?.title || "ID " + id);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   redirect(`/campaigns/${campaignId}/artworks`);

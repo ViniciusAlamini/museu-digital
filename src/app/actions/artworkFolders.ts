@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { artworkFolderSchema } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createArtworkFolder(campaignId: string, parentId: string | undefined, formData: FormData) {
   const session = await requireAuth("player");
@@ -15,6 +16,8 @@ export async function createArtworkFolder(campaignId: string, parentId: string |
   };
 
   const validated = artworkFolderSchema.parse(raw);
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Pasta de Artes", "Item Adicionado");
 
   await prisma.artworkFolder.create({
     data: {

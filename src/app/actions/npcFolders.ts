@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createNpcFolder(campaignId: string, formData: FormData) {
   const session = await requireAuth("player");
@@ -13,6 +14,8 @@ export async function createNpcFolder(campaignId: string, formData: FormData) {
   const parentFolderId = formData.get("parentFolderId") as string;
 
   if (!name) return;
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Pasta de NPCs", "Item Adicionado");
 
   await prisma.npcFolder.create({
     data: {
@@ -36,6 +39,8 @@ export async function updateNpcFolder(folderId: string, campaignId: string, form
 
   if (!name) return;
 
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Pasta de NPCs", "Item Modificado");
+
   await prisma.npcFolder.update({
     where: { id: folderId },
     data: {
@@ -49,10 +54,12 @@ export async function updateNpcFolder(folderId: string, campaignId: string, form
 }
 
 export async function deleteNpcFolder(folderId: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const folder = await prisma.npcFolder.findUnique({ where: { id: folderId } });
   if (!folder) return;
+
+  await logAudit(campaignId, (typeof session !== 'undefined' ? session.username : "Desconhecido") || "Desconhecido", "EXCLUIU", "Pasta de NPCs", "Item Deletado");
 
   await prisma.npcFolder.delete({ where: { id: folderId } });
 

@@ -2,15 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 const dir = 'src/app/actions';
-const files = fs.readdirSync(dir).filter(f => f.endsWith('.ts') && f !== 'auth.ts');
+const files = fs.readdirSync(dir).filter(f => f.endsWith('.ts'));
 
 const entityMap = {
   'campaigns.ts': 'Campanha',
-  'characters.ts': 'Personagem',
-  'artworks.ts': 'Arte',
   'artworkFolders.ts': 'Pasta de Artes',
-  'sessions.ts': 'Sessão',
-  'npcs.ts': 'NPC',
   'npcFolders.ts': 'Pasta de NPCs',
   'diaryEntries.ts': 'Entrada no Diário',
   'diaryFolders.ts': 'Pasta de Diário',
@@ -18,31 +14,33 @@ const entityMap = {
 };
 
 for (const file of files) {
+  if (!entityMap[file]) continue; // Skip those we already handled or are auth
+  
   const filePath = path.join(dir, file);
   let code = fs.readFileSync(filePath, 'utf-8');
   
   if (!code.includes('logAudit')) {
-    code = code.replace(/import { requireAuth } from "@\/lib\/auth";/g, 'import { requireAuth } from "@/lib/auth";\nimport { logAudit } from "@/lib/audit";');
+    code = code.replace(/import { requireAuth } from "@\/lib\/auth";/, 'import { requireAuth } from "@/lib/auth";\nimport { logAudit } from "@/lib/audit";');
   }
 
-  const type = entityMap[file] || 'Item';
+  const type = entityMap[file];
 
   // Injetar create
   code = code.replace(
-    /(const \w+ = await prisma\.\w+\.create\([\s\S]*?\}\);\s*revalidatePath)/,
-    (match, p1) => `const created = await prisma.${match.split('await prisma.')[1].split('.create')[0]}.findFirst({ orderBy: { id: 'desc' } }); // Temp hack\n  await logAudit(${file === 'campaigns.ts' ? 'created.id' : 'campaignId'}, session.username, "CRIOU", "${type}", name || title || "Sem Nome");\n\n  ` + p1
+    /(await prisma\.\w+\.create\([\s\S]*?\}\);\s*revalidatePath)/,
+    (match) => `await logAudit(${file === 'campaigns.ts' ? 'campaignId' : 'campaignId'}, session.username || "Desconhecido", "CRIOU", "${type}", "Item Adicionado");\n\n  ` + match
   );
 
   // Injetar update
   code = code.replace(
     /(await prisma\.\w+\.update\([\s\S]*?\}\);\s*revalidatePath)/,
-    (match) => `await logAudit(${file === 'campaigns.ts' ? 'id' : 'campaignId'}, session.username, "EDITOU", "${type}", name || title || "Sem Nome");\n\n  ` + match
+    (match) => `await logAudit(${file === 'campaigns.ts' ? 'campaignId' : 'campaignId'}, session.username || "Desconhecido", "EDITOU", "${type}", "Item Modificado");\n\n  ` + match
   );
 
   // Injetar delete
   code = code.replace(
     /(await prisma\.\w+\.delete\(\{ where: \{ id: .*? \} \}\);\s*revalidatePath)/,
-    (match) => `const session = await requireAuth("player"); // Garantir session \n  await logAudit(${file === 'campaigns.ts' ? 'id' : 'campaignId'}, session.username, "EXCLUIU", "${type}", \`Item ID: \${id || "ID"}\`);\n\n  ` + match
+    (match) => `await logAudit(${file === 'campaigns.ts' ? 'campaignId' : 'campaignId'}, (typeof session !== 'undefined' ? session.username : "Desconhecido") || "Desconhecido", "EXCLUIU", "${type}", "Item Deletado");\n\n  ` + match
   );
 
   fs.writeFileSync(filePath, code);

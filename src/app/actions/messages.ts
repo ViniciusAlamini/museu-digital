@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createMessage(campaignId: string, formData: FormData) {
   const session = await requireAuth("player");
@@ -18,6 +19,8 @@ export async function createMessage(campaignId: string, formData: FormData) {
   const characterId = formData.get("characterId") as string | null;
   const eventDateRaw = formData.get("eventDate") as string | null;
   const image = formData.get("image") as string | null;
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Mensagem", "Item Adicionado");
 
   await prisma.message.create({
     data: {
@@ -51,6 +54,8 @@ export async function updateMessage(messageId: string, campaignId: string, formD
   const eventDateRaw = formData.get("eventDate") as string | null;
   const image = formData.get("image") as string | null;
 
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Mensagem", "Item Modificado");
+
   await prisma.message.update({
     where: { id: messageId },
     data: {
@@ -71,6 +76,8 @@ export async function updateMessage(messageId: string, campaignId: string, formD
 
 export async function deleteMessage(messageId: string, campaignId: string) {
   const session = await requireAuth("player");
+
+  await logAudit(campaignId, (typeof session !== 'undefined' ? session.username : "Desconhecido") || "Desconhecido", "EXCLUIU", "Mensagem", "Item Deletado");
 
   await prisma.message.delete({ where: { id: messageId } });
   revalidatePath(`/campaigns/${campaignId}/messages`);

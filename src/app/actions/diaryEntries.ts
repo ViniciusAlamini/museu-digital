@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createDiaryEntry(campaignId: string, formData: FormData) {
   const session = await requireAuth("player");
@@ -17,6 +18,8 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
 
   const folderId = formData.get("folderId") as string | null;
   const relatedCharacterId = formData.get("relatedCharacterId") as string | null;
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Entrada no Diário", "Item Adicionado");
 
   await prisma.diaryEntry.create({
     data: {
@@ -49,6 +52,8 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
   const folderId = formData.get("folderId") as string | null;
   const relatedCharacterId = formData.get("relatedCharacterId") as string | null;
 
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Entrada no Diário", "Item Modificado");
+
   await prisma.diaryEntry.update({
     where: { id: entryId },
     data: {
@@ -80,6 +85,8 @@ export async function moveDiaryEntry(entryId: string, campaignId: string, newFol
 
 export async function deleteDiaryEntry(entryId: string, campaignId: string, currentFolderId: string | null) {
   const session = await requireAuth("player");
+
+  await logAudit(campaignId, (typeof session !== 'undefined' ? session.username : "Desconhecido") || "Desconhecido", "EXCLUIU", "Entrada no Diário", "Item Deletado");
 
   await prisma.diaryEntry.delete({ where: { id: entryId } });
   revalidatePath(`/campaigns/${campaignId}/diary`);
