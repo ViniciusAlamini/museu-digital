@@ -1,330 +1,144 @@
 import { prisma } from "@/lib/prisma";
-import { getSessionRole } from "@/lib/auth";
-import { notFound } from "next/navigation";
+import { requireAuth } from "@/lib/auth";
 import { formatDate } from "@/lib/utils";
-import {
-  Users,
-  ImageIcon,
-  BookOpen,
-  FileText,
-  MessageSquare,
-  FolderOpen,
-  Edit2,
-  Plus,
-  Shield,
-} from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Shield, Plus, Edit, Trash2 } from "lucide-react";
 
 export default async function AuditPage() {
-  const role = await getSessionRole();
+  // Somente admins podem acessar
+  await requireAuth("admin");
 
-  if (role !== "admin") {
-    notFound();
-  }
+  // Buscar logs mais recentes
+  const logs = await prisma.auditLog.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { campaign: { select: { name: true } } },
+    take: 200, // Limite para não sobrecarregar
+  });
 
-  // Busca tudo que tem addedBy/updatedBy
-  const [
-    characters,
-    artworks,
-    diaryEntries,
-    sessions,
-    messages,
-    artworkFolders,
-    diaryFolders,
-    npcs,
-    npcFolders,
-  ] = await Promise.all([
-    prisma.character.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.artwork.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.diaryEntry.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.session.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.message.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.artworkFolder.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.diaryFolder.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.npc.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.npcFolder.findMany({
-      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-      include: { campaign: { select: { name: true } } },
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  // Estatísticas de ações
+  const stats = {
+    CRIOU: logs.filter((l) => l.action === "CRIOU").length,
+    EDITOU: logs.filter((l) => l.action === "EDITOU").length,
+    EXCLUIU: logs.filter((l) => l.action === "EXCLUIU").length,
+  };
 
-  // Monta uma lista unificada de eventos de auditoria
-  const events = [
-    ...characters.map((c) => ({
-      id: c.id,
-      type: "Personagem",
-      icon: Users,
-      color: "text-purple-400",
-      bg: "bg-purple-950/30 border-purple-900/50",
-      name: c.name,
-      campaign: c.campaign.name,
-      addedBy: c.addedBy,
-      updatedBy: c.updatedBy,
-      date: c.createdAt,
-    })),
-    ...artworks.map((a) => ({
-      id: a.id,
-      type: "Arte",
-      icon: ImageIcon,
-      color: "text-pink-400",
-      bg: "bg-pink-950/30 border-pink-900/50",
-      name: a.title,
-      campaign: a.campaign.name,
-      addedBy: a.addedBy,
-      updatedBy: a.updatedBy,
-      date: a.createdAt,
-    })),
-    ...diaryEntries.map((d) => ({
-      id: d.id,
-      type: "Diário",
-      icon: BookOpen,
-      color: "text-amber-400",
-      bg: "bg-amber-950/30 border-amber-900/50",
-      name: d.title,
-      campaign: d.campaign.name,
-      addedBy: d.addedBy,
-      updatedBy: d.updatedBy,
-      date: d.createdAt,
-    })),
-    ...diaryFolders.map((f) => ({
-      id: f.id,
-      type: "Pasta Diário",
-      icon: BookOpen,
-      color: "text-amber-400",
-      bg: "bg-amber-950/30 border-amber-900/50",
-      name: f.name,
-      campaign: f.campaign.name,
-      addedBy: f.addedBy,
-      updatedBy: f.updatedBy,
-      date: f.createdAt,
-    })),
-    ...npcs.map((n) => ({
-      id: n.id,
-      type: "NPC",
-      icon: Users,
-      color: "text-teal-400",
-      bg: "bg-teal-950/30 border-teal-900/50",
-      name: n.name,
-      campaign: n.campaign.name,
-      addedBy: n.addedBy,
-      updatedBy: n.updatedBy,
-      date: n.createdAt,
-    })),
-    ...npcFolders.map((nf) => ({
-      id: nf.id,
-      type: "Pasta NPC",
-      icon: Users,
-      color: "text-emerald-400",
-      bg: "bg-emerald-950/30 border-emerald-900/50",
-      name: nf.name,
-      campaign: nf.campaign.name,
-      addedBy: nf.addedBy,
-      updatedBy: nf.updatedBy,
-      date: nf.createdAt,
-    })),
-    ...sessions.map((s) => ({
-      id: s.id,
-      type: "Sessão",
-      icon: FileText,
-      color: "text-blue-400",
-      bg: "bg-blue-950/30 border-blue-900/50",
-      name: s.title,
-      campaign: s.campaign.name,
-      addedBy: s.addedBy,
-      updatedBy: s.updatedBy,
-      date: s.createdAt,
-    })),
-    ...messages.map((m) => ({
-      id: m.id,
-      type: "Mensagem",
-      icon: MessageSquare,
-      color: "text-green-400",
-      bg: "bg-green-950/30 border-green-900/50",
-      name: m.title || m.content.slice(0, 40) + "...",
-      campaign: m.campaign.name,
-      addedBy: m.addedBy,
-      updatedBy: m.updatedBy,
-      date: m.createdAt,
-    })),
-    ...artworkFolders.map((f) => ({
-      id: f.id,
-      type: "Pasta de Arte",
-      icon: FolderOpen,
-      color: "text-orange-400",
-      bg: "bg-orange-950/30 border-orange-900/50",
-      name: f.name,
-      campaign: f.campaign.name,
-      addedBy: f.addedBy,
-      updatedBy: f.updatedBy,
-      date: f.createdAt,
-    })),
-    ...diaryFolders.map((f) => ({
-      id: f.id,
-      type: "Pasta de Diário",
-      icon: FolderOpen,
-      color: "text-yellow-400",
-      bg: "bg-yellow-950/30 border-yellow-900/50",
-      name: f.name,
-      campaign: f.campaign.name,
-      addedBy: f.addedBy,
-      updatedBy: f.updatedBy,
-      date: f.createdAt,
-    })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const getActionIcon = (action: string) => {
+    if (action === "CRIOU") return <Plus className="h-4 w-4" />;
+    if (action === "EDITOU") return <Edit className="h-4 w-4" />;
+    if (action === "EXCLUIU") return <Trash2 className="h-4 w-4" />;
+    return null;
+  };
 
-  // Estatísticas por usuário
-  const statsByUser: Record<string, { added: number; updated: number }> = {};
-  for (const e of events) {
-    if (e.addedBy) {
-      if (!statsByUser[e.addedBy]) statsByUser[e.addedBy] = { added: 0, updated: 0 };
-      statsByUser[e.addedBy].added++;
-    }
-    if (e.updatedBy) {
-      if (!statsByUser[e.updatedBy]) statsByUser[e.updatedBy] = { added: 0, updated: 0 };
-      statsByUser[e.updatedBy].updated++;
-    }
-  }
+  const getActionColor = (action: string) => {
+    if (action === "CRIOU") return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+    if (action === "EDITOU") return "text-blue-400 bg-blue-400/10 border-blue-400/20";
+    if (action === "EXCLUIU") return "text-red-400 bg-red-400/10 border-red-400/20";
+    return "text-gray-400 bg-gray-400/10 border-gray-400/20";
+  };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-950/40 ring-2 ring-red-900/50">
-          <Shield className="h-5 w-5 text-red-400" />
+    <div className="mx-auto max-w-5xl space-y-8 px-4 sm:px-6 lg:px-8 py-8">
+      {/* Cabeçalho */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-accent-purple)]/10 ring-1 ring-[var(--color-accent-purple)]/20">
+          <Shield className="h-6 w-6 text-[var(--color-accent-purple)]" />
         </div>
         <div>
-          <h1 className="font-fantasy text-2xl font-bold text-[var(--color-text-primary)]">
-            Painel de Auditoria
+          <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)]">
+            Auditoria Global
           </h1>
-          <p className="text-sm text-[var(--color-text-muted)]">
-            Visível apenas para o Mestre — rastreia quem criou ou editou cada item.
+          <p className="text-[var(--color-text-secondary)]">
+            Registro detalhado de todas as atividades no sistema.
           </p>
         </div>
       </div>
 
-      {/* Estatísticas por jogador */}
-      {Object.keys(statsByUser).length > 0 && (
-        <div>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
-            Contribuições por Jogador
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {Object.entries(statsByUser).map(([user, stats]) => (
-              <div
-                key={user}
-                className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-4"
-              >
-                <p className="font-semibold text-[var(--color-text-primary)]">@{user}</p>
-                <div className="mt-2 flex gap-4 text-xs text-[var(--color-text-muted)]">
-                  <span className="flex items-center gap-1">
-                    <Plus className="h-3 w-3 text-green-400" />
-                    {stats.added} criados
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Edit2 className="h-3 w-3 text-yellow-400" />
-                    {stats.updated} editados
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Resumo */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">
+          <p className="text-sm font-medium text-[var(--color-text-muted)]">Criações</p>
+          <p className="mt-2 text-3xl font-bold text-emerald-400">{stats.CRIOU}</p>
         </div>
-      )}
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">
+          <p className="text-sm font-medium text-[var(--color-text-muted)]">Edições</p>
+          <p className="mt-2 text-3xl font-bold text-blue-400">{stats.EDITOU}</p>
+        </div>
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">
+          <p className="text-sm font-medium text-[var(--color-text-muted)]">Exclusões</p>
+          <p className="mt-2 text-3xl font-bold text-red-400">{stats.EXCLUIU}</p>
+        </div>
+      </div>
 
-      {/* Timeline de eventos */}
-      <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
-          Histórico de Atividades ({events.length} registros)
-        </h2>
-
-        {events.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[var(--color-border)] py-16 text-center">
-            <Shield className="mx-auto h-10 w-10 text-[var(--color-text-muted)] mb-3" />
-            <p className="text-[var(--color-text-secondary)]">
-              Nenhuma atividade registrada ainda.
-            </p>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              Os registros aparecem aqui assim que os jogadores criarem ou editarem itens.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {events.map((event) => {
-              const Icon = event.icon;
-              return (
-                <div
-                  key={event.type + event.id}
-                  className={`flex items-center gap-4 rounded-lg border p-4 ${event.bg}`}
-                >
-                  <div className="shrink-0">
-                    <Icon className={`h-5 w-5 ${event.color}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className={`text-xs font-semibold uppercase tracking-wide ${event.color}`}>
-                        {event.type}
+      {/* Tabela de Logs */}
+      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-[var(--color-text-secondary)]">
+            <thead className="bg-[var(--color-bg-elevated)] text-xs uppercase text-[var(--color-text-muted)]">
+              <tr>
+                <th className="px-6 py-4 font-semibold">Data / Hora</th>
+                <th className="px-6 py-4 font-semibold">Usuário</th>
+                <th className="px-6 py-4 font-semibold">Ação</th>
+                <th className="px-6 py-4 font-semibold">Entidade</th>
+                <th className="px-6 py-4 font-semibold">Detalhes</th>
+                <th className="px-6 py-4 font-semibold">Campanha</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--color-border)]">
+              {logs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-8 text-center text-[var(--color-text-muted)]">
+                    Nenhum log registrado ainda.
+                  </td>
+                </tr>
+              ) : (
+                logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-[var(--color-bg-elevated)] transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-[var(--color-text-primary)]">
+                          {formatDate(log.createdAt)}
+                        </span>
+                        <span className="text-xs text-[var(--color-text-muted)]">
+                          {format(log.createdAt, "HH:mm", { locale: ptBR })}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="font-medium text-[var(--color-accent-gold-light)]">
+                        {log.user}
                       </span>
-                      <span className="text-xs text-[var(--color-text-muted)]">·</span>
-                      <span className="text-xs text-[var(--color-text-muted)]">{event.campaign}</span>
-                    </div>
-                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                      {event.name}
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-right space-y-1">
-                    {event.addedBy && (
-                      <p className="flex items-center gap-1 text-xs text-green-400 justify-end">
-                        <Plus className="h-3 w-3" />
-                        {event.addedBy}
-                      </p>
-                    )}
-                    {event.updatedBy && (
-                      <p className="flex items-center gap-1 text-xs text-yellow-400 justify-end">
-                        <Edit2 className="h-3 w-3" />
-                        {event.updatedBy}
-                      </p>
-                    )}
-                    <p className="text-[10px] text-[var(--color-text-muted)]">
-                      {formatDate(event.date)}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${getActionColor(log.action)}`}>
+                        {getActionIcon(log.action)}
+                        {log.action}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-[var(--color-text-primary)] font-medium">
+                        {log.entityType}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-[var(--color-text-primary)] font-medium">
+                        {log.entityName}
+                      </span>
+                      {log.details && (
+                        <p className="text-xs mt-1 text-[var(--color-text-muted)]">
+                          {log.details}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-xs text-[var(--color-text-muted)]">
+                      {log.campaign.name}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

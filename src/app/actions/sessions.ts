@@ -4,66 +4,77 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createSession(campaignId: string, formData: FormData) {
-  const session = await requireAuth("player");
+  const sessionUser = await requireAuth("player");
 
   const title = formData.get("title") as string;
+  const dateStr = formData.get("date") as string;
   const summary = formData.get("summary") as string;
-  const dateRaw = formData.get("date") as string;
   const participants = formData.getAll("participants") as string[];
 
-  if (!title || !summary || !dateRaw) return;
+  if (!title || !dateStr || !summary) return;
 
-  const newSession = await prisma.session.create({
+  const session = await prisma.session.create({
     data: {
-      campaignId,
       title,
+      date: new Date(dateStr),
       summary,
-      date: new Date(dateRaw),
       participants: participants.join(", "),
-      addedBy: session.username,
+      campaignId,
+      addedBy: sessionUser.username,
     },
   });
 
+  await logAudit(campaignId, sessionUser.username, "CRIOU", "Sessão", title);
+
   revalidatePath(`/campaigns/${campaignId}/sessions`);
-  redirect(`/campaigns/${campaignId}/sessions/${newSession.id}`);
+  redirect(`/campaigns/${campaignId}/sessions/${session.id}`);
 }
 
 export async function updateSession(
-  id: string,
+  sessionId: string,
   campaignId: string,
   formData: FormData
 ) {
-  const session = await requireAuth("player");
+  const sessionUser = await requireAuth("player");
 
   const title = formData.get("title") as string;
+  const dateStr = formData.get("date") as string;
   const summary = formData.get("summary") as string;
-  const dateRaw = formData.get("date") as string;
   const participants = formData.getAll("participants") as string[];
 
-  if (!title || !summary || !dateRaw) return;
+  if (!title || !dateStr || !summary) return;
 
   await prisma.session.update({
-    where: { id },
+    where: { id: sessionId },
     data: {
       title,
+      date: new Date(dateStr),
       summary,
-      date: new Date(dateRaw),
       participants: participants.join(", "),
-      updatedBy: session.username,
+      updatedBy: sessionUser.username,
     },
   });
 
+  await logAudit(campaignId, sessionUser.username, "EDITOU", "Sessão", title);
+
   revalidatePath(`/campaigns/${campaignId}/sessions`);
-  revalidatePath(`/campaigns/${campaignId}/sessions/${id}`);
-  redirect(`/campaigns/${campaignId}/sessions/${id}`);
+  revalidatePath(`/campaigns/${campaignId}/sessions/${sessionId}`);
+  redirect(`/campaigns/${campaignId}/sessions/${sessionId}`);
 }
 
-export async function deleteSession(id: string, campaignId: string) {
-  await requireAuth("player");
+export async function deleteSession(sessionId: string, campaignId: string) {
+  const sessionUser = await requireAuth("player");
 
-  await prisma.session.delete({ where: { id } });
+  const session = await prisma.session.findUnique({ where: { id: sessionId } });
+  if (!session) return;
+
+  await prisma.session.delete({ where: { id: sessionId } });
+
+  await logAudit(campaignId, sessionUser.username, "EXCLUIU", "Sessão", session.title);
+
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   redirect(`/campaigns/${campaignId}/sessions`);
 }

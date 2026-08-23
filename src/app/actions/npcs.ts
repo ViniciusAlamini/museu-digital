@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createNpc(campaignId: string, formData: FormData) {
   const session = await requireAuth("player");
@@ -29,6 +30,8 @@ export async function createNpc(campaignId: string, formData: FormData) {
       addedBy: session.username,
     },
   });
+
+  await logAudit(campaignId, session.username, "CRIOU", "NPC", name);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   redirect(`/campaigns/${campaignId}/npcs/${npc.id}`);
@@ -63,18 +66,22 @@ export async function updateNpc(
     },
   });
 
+  await logAudit(campaignId, session.username, "EDITOU", "NPC", name);
+
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   revalidatePath(`/campaigns/${campaignId}/npcs/${npcId}`);
   redirect(`/campaigns/${campaignId}/npcs/${npcId}`);
 }
 
 export async function deleteNpc(npcId: string, campaignId: string) {
-  await requireAuth("player");
+  const session = await requireAuth("player");
 
   const npc = await prisma.npc.findUnique({ where: { id: npcId } });
   if (!npc) return;
 
   await prisma.npc.delete({ where: { id: npcId } });
+
+  await logAudit(campaignId, session.username, "EXCLUIU", "NPC", npc.name);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   redirect(`/campaigns/${campaignId}/npcs${npc.folderId ? `?folder=${npc.folderId}` : ""}`);
