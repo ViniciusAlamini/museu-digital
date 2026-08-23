@@ -28,7 +28,7 @@ export default async function CampaignPage({
     where: { id },
     include: {
       _count: {
-        select: { characters: true, artworks: true, posts: true },
+        select: { characters: true, artworks: true, sessions: true },
       },
     },
   });
@@ -49,10 +49,10 @@ export default async function CampaignPage({
       href: `/campaigns/${id}/artworks`,
     },
     {
-      label: "Posts",
-      value: campaign._count.posts,
+      label: "Sessões",
+      value: campaign._count.sessions,
       icon: FileText,
-      href: `/campaigns/${id}/posts`,
+      href: `/campaigns/${id}/sessions`,
     },
   ];
 

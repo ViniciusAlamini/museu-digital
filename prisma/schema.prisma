@@ -27,7 +27,7 @@ model Campaign {
   characters     Character[]
   artworks       Artwork[]
   artworkFolders ArtworkFolder[]
-  posts          Post[]
+  sessions       Session[]
   messages       Message[]
   folders        DiaryFolder[]
   entries        DiaryEntry[]
@@ -83,18 +83,18 @@ model Artwork {
   updatedBy   String?
 }
 
-model Post {
-  id          String   @id @default(cuid())
-  campaignId  String
-  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  title       String
-  content     String
-  image       String?
-  author      String
-  publishedAt DateTime @default(now())
-  createdAt   DateTime @default(now())
-  addedBy     String?
-  updatedBy   String?
+model Session {
+  id           String   @id @default(cuid())
+  campaignId   String
+  campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title        String
+  summary      String
+  date         DateTime
+  participants String   // Nomes separados por vírgula, ex: "Theron (Lucas), Aria (Maria)"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  addedBy      String?
+  updatedBy    String?
 }
 
 model Message {

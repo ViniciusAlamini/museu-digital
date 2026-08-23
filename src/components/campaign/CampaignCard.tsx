@@ -9,7 +9,7 @@ interface CampaignCardProps {
     _count: {
       characters: number;
       artworks: number;
-      posts: number;
+      sessions: number;
     };
   };
 }
@@ -67,7 +67,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             </div>
             <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
               <FileText className="h-3.5 w-3.5 text-[var(--color-accent-purple)]" />
-              <span>{campaign._count.posts} posts</span>
+              <span>{campaign._count.sessions} sessões</span>
             </div>
           </div>
         </div>

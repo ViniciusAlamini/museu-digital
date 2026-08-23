@@ -13,7 +13,7 @@ export default async function HomePage() {
         select: {
           characters: true,
           artworks: true,
-          posts: true,
+          sessions: true,
         },
       },
     },

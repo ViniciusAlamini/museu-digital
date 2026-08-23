@@ -65,7 +65,7 @@ export async function deleteCampaign(id: string) {
 
   const campaign = await prisma.campaign.findUnique({
     where: { id },
-    include: { characters: true, artworks: true, posts: true },
+    include: { characters: true, artworks: true, sessions: true },
   });
 
   if (!campaign) return;
@@ -75,7 +75,6 @@ export async function deleteCampaign(id: string) {
     campaign.coverImage,
     ...campaign.characters.map((c) => c.image),
     ...campaign.artworks.map((a) => a.image),
-    ...campaign.posts.map((p) => p.image),
   ];
 
   for (const imgPath of imagesToDelete) {

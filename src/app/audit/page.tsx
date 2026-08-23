@@ -22,7 +22,7 @@ export default async function AuditPage() {
   }
 
   // Busca tudo que tem addedBy/updatedBy
-  const [characters, artworks, diaryEntries, posts, messages, artworkFolders, diaryFolders] =
+  const [characters, artworks, diaryEntries, sessions, messages, artworkFolders, diaryFolders] =
     await Promise.all([
       prisma.character.findMany({
         where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
@@ -39,7 +39,7 @@ export default async function AuditPage() {
         include: { campaign: { select: { name: true } } },
         orderBy: { createdAt: "desc" },
       }),
-      prisma.post.findMany({
+      prisma.session.findMany({
         where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
         include: { campaign: { select: { name: true } } },
         orderBy: { createdAt: "desc" },
@@ -99,17 +99,17 @@ export default async function AuditPage() {
       updatedBy: d.updatedBy,
       date: d.createdAt,
     })),
-    ...posts.map((p) => ({
-      id: p.id,
-      type: "Post",
+    ...sessions.map((s) => ({
+      id: s.id,
+      type: "Sessão",
       icon: FileText,
       color: "text-blue-400",
       bg: "bg-blue-950/30 border-blue-900/50",
-      name: p.title,
-      campaign: p.campaign.name,
-      addedBy: p.addedBy,
-      updatedBy: p.updatedBy,
-      date: p.createdAt,
+      name: s.title,
+      campaign: s.campaign.name,
+      addedBy: s.addedBy,
+      updatedBy: s.updatedBy,
+      date: s.createdAt,
     })),
     ...messages.map((m) => ({
       id: m.id,
