@@ -8,6 +8,7 @@ interface CampaignCardProps {
   campaign: Campaign & {
     _count: {
       characters: number;
+      npcs: number;
       artworks: number;
       sessions: number;
     };
@@ -59,7 +60,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           <div className="mt-4 flex items-center gap-4 border-t border-[var(--color-border)] pt-4">
             <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
               <Users className="h-3.5 w-3.5 text-[var(--color-accent-purple)]" />
-              <span>{campaign._count.characters} personagens</span>
+              <span>{campaign._count.characters + campaign._count.npcs} personagens</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
               <ImageIcon className="h-3.5 w-3.5 text-[var(--color-accent-purple)]" />

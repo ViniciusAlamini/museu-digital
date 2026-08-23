@@ -12,6 +12,7 @@ export default async function HomePage() {
       _count: {
         select: {
           characters: true,
+          npcs: true,
           artworks: true,
           sessions: true,
         },

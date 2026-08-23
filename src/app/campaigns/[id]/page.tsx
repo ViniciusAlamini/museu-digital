@@ -28,7 +28,7 @@ export default async function CampaignPage({
     where: { id },
     include: {
       _count: {
-        select: { characters: true, artworks: true, sessions: true },
+        select: { characters: true, npcs: true, artworks: true, sessions: true },
       },
     },
   });
@@ -41,6 +41,12 @@ export default async function CampaignPage({
       value: campaign._count.characters,
       icon: Users,
       href: `/campaigns/${id}/characters`,
+    },
+    {
+      label: "NPCs",
+      value: campaign._count.npcs,
+      icon: Users,
+      href: `/campaigns/${id}/npcs`,
     },
     {
       label: "Desenhos",

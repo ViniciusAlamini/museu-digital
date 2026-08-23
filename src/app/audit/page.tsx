@@ -22,44 +22,63 @@ export default async function AuditPage() {
   }
 
   // Busca tudo que tem addedBy/updatedBy
-  const [characters, artworks, diaryEntries, sessions, messages, artworkFolders, diaryFolders] =
-    await Promise.all([
-      prisma.character.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.artwork.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.diaryEntry.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.session.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.message.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.artworkFolder.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.diaryFolder.findMany({
-        where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
-        include: { campaign: { select: { name: true } } },
-        orderBy: { createdAt: "desc" },
-      }),
-    ]);
+  const [
+    characters,
+    artworks,
+    diaryEntries,
+    sessions,
+    messages,
+    artworkFolders,
+    diaryFolders,
+    npcs,
+    npcFolders,
+  ] = await Promise.all([
+    prisma.character.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.artwork.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.diaryEntry.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.session.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.message.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.artworkFolder.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.diaryFolder.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.npc.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.npcFolder.findMany({
+      where: { OR: [{ addedBy: { not: null } }, { updatedBy: { not: null } }] },
+      include: { campaign: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   // Monta uma lista unificada de eventos de auditoria
   const events = [
@@ -98,6 +117,42 @@ export default async function AuditPage() {
       addedBy: d.addedBy,
       updatedBy: d.updatedBy,
       date: d.createdAt,
+    })),
+    ...diaryFolders.map((f) => ({
+      id: f.id,
+      type: "Pasta Diário",
+      icon: BookOpen,
+      color: "text-amber-400",
+      bg: "bg-amber-950/30 border-amber-900/50",
+      name: f.name,
+      campaign: f.campaign.name,
+      addedBy: f.addedBy,
+      updatedBy: f.updatedBy,
+      date: f.createdAt,
+    })),
+    ...npcs.map((n) => ({
+      id: n.id,
+      type: "NPC",
+      icon: Users,
+      color: "text-teal-400",
+      bg: "bg-teal-950/30 border-teal-900/50",
+      name: n.name,
+      campaign: n.campaign.name,
+      addedBy: n.addedBy,
+      updatedBy: n.updatedBy,
+      date: n.createdAt,
+    })),
+    ...npcFolders.map((nf) => ({
+      id: nf.id,
+      type: "Pasta NPC",
+      icon: Users,
+      color: "text-emerald-400",
+      bg: "bg-emerald-950/30 border-emerald-900/50",
+      name: nf.name,
+      campaign: nf.campaign.name,
+      addedBy: nf.addedBy,
+      updatedBy: nf.updatedBy,
+      date: nf.createdAt,
     })),
     ...sessions.map((s) => ({
       id: s.id,

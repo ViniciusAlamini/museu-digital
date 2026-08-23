@@ -8,6 +8,7 @@ import { Home, Users, ImageIcon, FileText, MessageSquare, BookOpen } from "lucid
 const tabs = [
   { label: "Início", href: "", icon: Home },
   { label: "Personagens", href: "/characters", icon: Users },
+  { label: "NPCs", href: "/npcs", icon: Users },
   { label: "Desenhos", href: "/artworks", icon: ImageIcon },
   { label: "Sessões", href: "/sessions", icon: FileText },
   { label: "Mensagens", href: "/messages", icon: MessageSquare },

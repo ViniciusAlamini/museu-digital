@@ -27,6 +27,8 @@ model Campaign {
   characters     Character[]
   artworks       Artwork[]
   artworkFolders ArtworkFolder[]
+  npcs           Npc[]
+  npcFolders     NpcFolder[]
   sessions       Session[]
   messages       Message[]
   folders        DiaryFolder[]
@@ -90,7 +92,7 @@ model Session {
   title        String
   summary      String
   date         DateTime
-  participants String   // Nomes separados por vírgula, ex: "Theron (Lucas), Aria (Maria)"
+  participants String // Nomes separados por vírgula, ex: "Theron (Lucas), Aria (Maria)"
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   addedBy      String?
@@ -145,4 +147,35 @@ model DiaryEntry {
   updatedAt          DateTime     @updatedAt
   addedBy            String?
   updatedBy          String?
+}
+
+model NpcFolder {
+  id             String      @id @default(cuid())
+  campaignId     String
+  campaign       Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  parentFolderId String?
+  parentFolder   NpcFolder?  @relation("NpcFolderHierarchy", fields: [parentFolderId], references: [id], onDelete: Cascade)
+  subfolders     NpcFolder[] @relation("NpcFolderHierarchy")
+  name           String
+  description    String?
+  createdAt      DateTime    @default(now())
+  npcs           Npc[]
+  addedBy        String?
+  updatedBy      String?
+}
+
+model Npc {
+  id          String     @id @default(cuid())
+  campaignId  String
+  campaign    Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  folderId    String?
+  folder      NpcFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  name        String
+  race        String?
+  occupation  String?
+  description String
+  image       String?
+  createdAt   DateTime   @default(now())
+  addedBy     String?
+  updatedBy   String?
 }
