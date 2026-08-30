@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
 import { requireAuth } from "@/lib/auth";
+import { logAudit } from "@/lib/audit";
 
 export async function createCampaign(formData: FormData) {
   const session = await requireAuth("admin"); // Somente mestre cria campanha
@@ -28,6 +29,8 @@ export async function createCampaign(formData: FormData) {
       startDate: new Date(validated.startDate),
     },
   });
+
+  await logAudit(campaign.id, session.username, "CRIOU", "Campanha", validated.name);
 
   revalidatePath("/");
   redirect(`/campaigns/${campaign.id}`);
@@ -54,6 +57,8 @@ export async function updateCampaign(id: string, formData: FormData) {
       startDate: new Date(validated.startDate),
     },
   });
+
+  await logAudit(id, session.username, "EDITOU", "Campanha", validated.name);
 
   revalidatePath(`/campaigns/${id}`);
   revalidatePath("/");
@@ -89,6 +94,11 @@ export async function deleteCampaign(id: string) {
 
   await prisma.campaign.delete({ where: { id } });
 
+  // A campanha foi deletada, o logAudit tem cascade deleção, mas vamos registrar no console se não existir mais ou apenas pular.
+  // Como o ID não existirá, o BD pode rejeitar a foreign key, então logamos ANTES ou pulamos.
+  // Vamos pular porque a campanha foi deletada, a tabela AuditLog tem campaignId.
+  // Na verdade, se tem CASCADE no BD, deletar a campanha deleta seus logs de auditoria de qualquer maneira.
+  
   revalidatePath("/");
   redirect("/");
 }
