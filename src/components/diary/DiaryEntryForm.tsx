@@ -36,6 +36,7 @@ export function DiaryEntryForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [editorContent, setEditorContent] = useState(defaultValues?.content ?? "");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState(defaultValues?.imageUrl || "");
 
   const {
     register,
@@ -164,8 +165,9 @@ export function DiaryEntryForm({
           <div className="w-full">
             <ImageUpload 
               label="" 
-              value={defaultValues?.imageUrl || ""} 
+              value={imageUrl} 
               onChange={(val) => {
+                setImageUrl(val);
                 const imgInput = document.createElement("input");
                 imgInput.type = "hidden";
                 imgInput.name = "imageUrl";

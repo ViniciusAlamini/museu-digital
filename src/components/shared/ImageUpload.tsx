@@ -49,10 +49,10 @@ export function ImageUpload({
       if (data.url) {
         onChange(data.url);
       } else {
-        setError("Erro ao enviar imagem.");
+        setError(data.error || "Erro desconhecido ao enviar imagem.");
       }
-    } catch {
-      setError("Erro ao enviar imagem.");
+    } catch (e: any) {
+      setError(e.message || "Erro de rede ao enviar imagem.");
     } finally {
       setUploading(false);
     }
