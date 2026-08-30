@@ -59,6 +59,8 @@ export const diaryFolderSchema = z.object({
 export const diaryEntrySchema = z.object({
   title: z.string().min(1, "Título obrigatório"),
   content: z.string().min(1, "O conteúdo não pode estar vazio"),
+  imageUrl: z.string().optional().nullable(),
+  fontFamily: z.string().optional(),
   author: z.string().min(2, "Autor é obrigatório"),
   relatedCharacterId: z.string().optional(),
   folderId: z.string().optional(),

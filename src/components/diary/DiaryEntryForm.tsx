@@ -10,17 +10,8 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import ImageExtension from "@tiptap/extension-image";
-import {
-  Bold,
-  Italic,
-  List,
-  ListOrdered,
-  Heading2,
-  Heading3,
-  Quote,
-  Minus,
-  ImageIcon,
-} from "lucide-react";
+import { Heading2, Heading3, Bold, Italic, List, ListOrdered, Quote, Minus, ImageIcon } from "lucide-react";
+import { ImageUpload } from "@/components/shared/ImageUpload";
 
 interface DiaryEntryFormProps {
   action: (formData: FormData) => Promise<void>;
@@ -57,6 +48,7 @@ export function DiaryEntryForm({
       title: defaultValues?.title ?? "",
       content: defaultValues?.content ?? "",
       author: defaultValues?.author ?? "",
+      fontFamily: defaultValues?.fontFamily ?? "inter",
       relatedCharacterId: defaultValues?.relatedCharacterId ?? "",
       folderId: defaultValues?.folderId ?? currentFolderId ?? "",
       date: defaultValues?.date
@@ -164,14 +156,47 @@ export function DiaryEntryForm({
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
         <div>
-          <label className={labelClass}>Vincular Personagem (Opcional)</label>
-          <select {...register("relatedCharacterId")} className={inputClass}>
-            <option value="">Nenhum</option>
-            {characters.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
+          <label className={labelClass}>Anexar Imagem (Opcional)</label>
+          <div className="w-full">
+            <ImageUpload 
+              label="" 
+              value={defaultValues?.imageUrl || ""} 
+              onChange={(val) => {
+                const imgInput = document.createElement("input");
+                imgInput.type = "hidden";
+                imgInput.name = "imageUrl";
+                imgInput.value = val;
+                formRef.current?.appendChild(imgInput);
+              }} 
+              folder="diary" 
+              aspectRatio="wide" 
+            />
+          </div>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <label className={labelClass}>Estilo da Letra (Fonte)</label>
+            <select name="fontFamily" defaultValue={defaultValues?.fontFamily || "inter"} className={inputClass}>
+              <option value="inter">Padrão</option>
+              <option value="cinzel">Épica (Cinzel)</option>
+              <option value="caveat">Manuscrito (Letra de Mão)</option>
+              <option value="courier">Máquina de Escrever</option>
+              <option value="playfair">Clássica (Livro Antigo)</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Vincular Personagem (Opcional)</label>
+            <select {...register("relatedCharacterId")} className={inputClass}>
+              <option value="">Nenhum</option>
+              {characters.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

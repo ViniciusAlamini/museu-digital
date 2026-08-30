@@ -140,6 +140,8 @@ model DiaryEntry {
   folder             DiaryFolder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   title              String
   content            String // Rich text (HTML) with images
+  imageUrl           String?
+  fontFamily         String       @default("inter")
   author             String
   relatedCharacterId String?
   relatedCharacter   Character?   @relation(fields: [relatedCharacterId], references: [id], onDelete: SetNull)

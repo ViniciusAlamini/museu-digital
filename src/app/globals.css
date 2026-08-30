@@ -15,6 +15,9 @@
 
   --font-cinzel: var(--font-cinzel);
   --font-inter: var(--font-inter);
+  --font-caveat: var(--font-caveat);
+  --font-courier: var(--font-courier);
+  --font-playfair: var(--font-playfair);
 }
 
 * {
@@ -90,3 +93,8 @@ h1, h2, h3, .font-fantasy {
 .glow-gold {
   box-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
 }
+
+.font-caveat { font-family: var(--font-caveat), cursive; }
+.font-courier { font-family: var(--font-courier), monospace; }
+.font-playfair { font-family: var(--font-playfair), serif; }
+

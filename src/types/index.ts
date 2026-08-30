@@ -82,6 +82,8 @@ export interface DiaryEntry {
   folderId?: string | null;
   title: string;
   content: string;
+  imageUrl?: string | null;
+  fontFamily: string;
   author: string;
   relatedCharacterId?: string | null;
   date: Date;
