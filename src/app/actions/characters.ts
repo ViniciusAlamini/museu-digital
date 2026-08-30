@@ -28,7 +28,7 @@ export async function createCharacter(campaignId: string, formData: FormData) {
       addedBy: session.username, ...validated, campaignId },
   });
 
-  await logAudit(campaignId, session.username, "CRIOU", "Personagem", character.name);
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Personagem", character.name);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   redirect(`/campaigns/${campaignId}/characters/${character.id}`);
@@ -57,7 +57,7 @@ export async function updateCharacter(
     data: { ...validated, updatedBy: session.username },
   });
 
-  await logAudit(campaignId, session.username, "EDITOU", "Personagem", validated.name);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Personagem", validated.name);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   revalidatePath(`/campaigns/${campaignId}/characters/${id}`);
@@ -79,7 +79,7 @@ export async function deleteCharacter(id: string, campaignId: string) {
 
   await prisma.character.delete({ where: { id } });
 
-  await logAudit(campaignId, session.username, "EXCLUIU", "Personagem", character?.name || "Personagem Excluído");
+  await logAudit(campaignId, session.username || "Desconhecido", "EXCLUIU", "Personagem", character?.name || "Personagem Excluído");
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   redirect(`/campaigns/${campaignId}/characters`);

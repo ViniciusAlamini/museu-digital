@@ -30,7 +30,7 @@ export async function createCampaign(formData: FormData) {
     },
   });
 
-  await logAudit(campaign.id, session.username, "CRIOU", "Campanha", validated.name);
+  await logAudit(campaign.id, session.username || "Desconhecido", "CRIOU", "Campanha", validated.name);
 
   revalidatePath("/");
   redirect(`/campaigns/${campaign.id}`);
@@ -58,7 +58,7 @@ export async function updateCampaign(id: string, formData: FormData) {
     },
   });
 
-  await logAudit(id, session.username, "EDITOU", "Campanha", validated.name);
+  await logAudit(id, session.username || "Desconhecido", "EDITOU", "Campanha", validated.name);
 
   revalidatePath(`/campaigns/${id}`);
   revalidatePath("/");
