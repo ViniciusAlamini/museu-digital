@@ -60,6 +60,7 @@ export const diaryEntrySchema = z.object({
   title: z.string().min(1, "Título obrigatório"),
   content: z.string().min(1, "O conteúdo não pode estar vazio"),
   imageUrl: z.string().optional().nullable(),
+  imageStyle: z.string().optional(),
   fontFamily: z.string().optional(),
   author: z.string().min(2, "Autor é obrigatório"),
   relatedCharacterId: z.string().optional(),

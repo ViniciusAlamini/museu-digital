@@ -50,6 +50,7 @@ export function DiaryEntryForm({
       content: defaultValues?.content ?? "",
       author: defaultValues?.author ?? "",
       fontFamily: defaultValues?.fontFamily ?? "inter",
+      imageStyle: defaultValues?.imageStyle ?? "polaroid",
       relatedCharacterId: defaultValues?.relatedCharacterId ?? "",
       folderId: defaultValues?.folderId ?? currentFolderId ?? "",
       date: defaultValues?.date
@@ -188,6 +189,15 @@ export function DiaryEntryForm({
               <option value="caveat">Manuscrito (Letra de Mão)</option>
               <option value="courier">Máquina de Escrever</option>
               <option value="playfair">Clássica (Livro Antigo)</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Estilo da Imagem</label>
+            <select name="imageStyle" defaultValue={defaultValues?.imageStyle || "polaroid"} className={inputClass}>
+              <option value="polaroid">Polaroid</option>
+              <option value="medieval">Moldura Medieval</option>
+              <option value="sketch">Desenhado à Lápis</option>
+              <option value="torn">Bordas Rasgadas</option>
             </select>
           </div>
           <div>

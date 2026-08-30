@@ -141,6 +141,7 @@ model DiaryEntry {
   title              String
   content            String // Rich text (HTML) with images
   imageUrl           String?
+  imageStyle         String       @default("medieval")
   fontFamily         String       @default("inter")
   author             String
   relatedCharacterId String?

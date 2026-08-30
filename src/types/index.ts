@@ -83,6 +83,7 @@ export interface DiaryEntry {
   title: string;
   content: string;
   imageUrl?: string | null;
+  imageStyle: string;
   fontFamily: string;
   author: string;
   relatedCharacterId?: string | null;

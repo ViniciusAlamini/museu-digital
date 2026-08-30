@@ -19,6 +19,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
   const folderId = formData.get("folderId") as string | null;
   const relatedCharacterId = formData.get("relatedCharacterId") as string | null;
   const imageUrl = formData.get("imageUrl") as string | null;
+  const imageStyle = formData.get("imageStyle") as string || "medieval";
   const fontFamily = formData.get("fontFamily") as string || "inter";
 
   await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Entrada no Diário", title);
@@ -34,6 +35,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
       folderId: folderId || null,
       relatedCharacterId: relatedCharacterId || null,
       imageUrl: imageUrl || null,
+      imageStyle,
       fontFamily,
     },
   });
@@ -56,6 +58,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
   const folderId = formData.get("folderId") as string | null;
   const relatedCharacterId = formData.get("relatedCharacterId") as string | null;
   const imageUrl = formData.get("imageUrl") as string | null;
+  const imageStyle = formData.get("imageStyle") as string || "medieval";
   const fontFamily = formData.get("fontFamily") as string || "inter";
 
   await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Entrada no Diário", title);
@@ -71,6 +74,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
       folderId: folderId || null,
       relatedCharacterId: relatedCharacterId || null,
       imageUrl: imageUrl || null,
+      imageStyle,
       fontFamily,
     },
   });

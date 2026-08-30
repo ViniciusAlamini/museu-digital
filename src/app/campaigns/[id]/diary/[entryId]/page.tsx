@@ -106,20 +106,48 @@ export default async function DiaryEntryDetailPage({
               </div>
             </div>
 
-            {/* Imagem em anexo estilo Polaroid colada */}
+            {/* Imagem em anexo com estilos diferentes */}
             {entry.imageUrl && (
-              <div className="mb-10 float-none lg:float-right lg:ml-8 lg:mb-6 rotate-1 hover:rotate-0 transition-transform duration-300">
-                <div className="bg-white p-3 pb-8 shadow-md border border-gray-200 rounded-sm w-full lg:w-72 relative">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 bg-white/40 border border-white/50 shadow-sm rotate-[-2deg] backdrop-blur-sm z-20 mix-blend-overlay"></div>
-                  <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
-                    <Image
-                      src={entry.imageUrl}
-                      alt="Anexo do Diário"
-                      fill
-                      className="object-cover sepia-[0.2] contrast-125"
-                    />
+              <div className={`mb-10 float-none lg:float-right lg:ml-8 lg:mb-6 transition-transform duration-500 ${
+                entry.imageStyle === 'polaroid' ? 'rotate-1 hover:rotate-0' : ''
+              }`}>
+                
+                {entry.imageStyle === 'polaroid' && (
+                  <div className="bg-white p-3 pb-8 shadow-md border border-gray-200 rounded-sm w-full lg:w-72 relative">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 bg-white/40 border border-white/50 shadow-sm rotate-[-2deg] backdrop-blur-sm z-20 mix-blend-overlay"></div>
+                    <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+                      <Image src={entry.imageUrl} alt="Anexo do Diário" fill className="object-cover sepia-[0.2] contrast-125" />
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {entry.imageStyle === 'medieval' && (
+                  <div className="w-full lg:w-72 relative p-2 bg-[#1a140f] border-4 border-[#8c7348] rounded-md shadow-2xl ring-2 ring-[#4a3a2a]">
+                    <div className="absolute inset-0 border border-[#b89f66] m-1 pointer-events-none z-10"></div>
+                    <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#1a140f]">
+                      <Image src={entry.imageUrl} alt="Retrato Medieval" fill className="object-cover sepia-[0.4] contrast-[1.1] brightness-[0.9]" />
+                    </div>
+                  </div>
+                )}
+
+                {entry.imageStyle === 'sketch' && (
+                  <div className="w-full lg:w-72 relative opacity-90 mix-blend-multiply filter grayscale sepia-[0.5] contrast-[1.4] brightness-[1.1] hover:grayscale-0 transition-all duration-1000">
+                    <div className="relative aspect-square w-full overflow-hidden mask-image-edges">
+                      <Image src={entry.imageUrl} alt="Rascunho" fill className="object-cover rounded-3xl blur-[0.5px]" />
+                    </div>
+                  </div>
+                )}
+
+                {entry.imageStyle === 'torn' && (
+                  <div className="w-full lg:w-72 relative p-1 bg-[#fff8e7] shadow-sm transform -rotate-1 hover:rotate-1 transition-transform">
+                    {/* Borda imitando rasgado */}
+                    <div className="absolute inset-0 border border-dashed border-[#8c7348]/40 -m-1"></div>
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 mix-blend-multiply opacity-90 sepia-[0.3]">
+                      <Image src={entry.imageUrl} alt="Papel Rasgado" fill className="object-cover" />
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
 
