@@ -35,8 +35,8 @@ async function main() {
         });
         patchedCount++;
       }
-    } catch (e) {
-      console.log(`Failed to patch log ${log.id}:`, e.message);
+    } catch (e: any) {
+      console.log(`Failed to patch log ${log.id}:`, e?.message || e);
     }
   }
 
