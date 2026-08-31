@@ -94,25 +94,16 @@ export default async function HomePage() {
               </div>
             ) : (
               <div className="relative border-l-2 border-[var(--color-border)] ml-4 space-y-8 pb-4">
-                {recentActivity.map((log) => (
-                  <div key={log.id} className="relative pl-6 group">
-                    {/* Timeline dot */}
-                    <div className="absolute -left-[17px] top-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-bg-card)] border-2 border-[var(--color-border)] text-[var(--color-text-muted)] group-hover:border-[var(--color-accent-purple)] group-hover:text-[var(--color-accent-purple)] transition-colors shadow-sm z-10">
-                      {log.action === "CRIOU" ? getIconForEntity(log.entityType) : <Edit className="h-4 w-4" />}
-                    </div>
-                    
-                    {/* Content Card */}
-                    <div className="flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md hover:border-[var(--color-accent-purple)]/30">
+                {recentActivity.map((log) => {
+                  const hasLink = log.details && log.details.startsWith("/");
+                  const CardContent = (
+                    <div className={`flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${hasLink ? "hover:border-[var(--color-accent-purple)]/50 cursor-pointer" : ""}`}>
                       <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
                         <span className="font-bold text-[var(--color-accent-purple)]">{log.user}</span>{" "}
                         {log.action === "CRIOU" ? "adicionou" : "editou"} {log.entityType.toLowerCase()}{" "}
-                        {log.details && log.details.startsWith("/") ? (
-                          <Link href={log.details} className="font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-accent-purple)] hover:underline transition-colors">
-                            {log.entityName}
-                          </Link>
-                        ) : (
-                          <span className="font-semibold text-[var(--color-text-primary)]">{log.entityName}</span>
-                        )}
+                        <span className={`font-semibold text-[var(--color-text-primary)] ${hasLink ? "group-hover:text-[var(--color-accent-purple)] transition-colors" : ""}`}>
+                          {log.entityName}
+                        </span>
                       </p>
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]/50">
                         <span className="text-xs font-medium text-[var(--color-text-muted)] truncate pr-2">
@@ -123,8 +114,26 @@ export default async function HomePage() {
                         </span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+
+                  return (
+                    <div key={log.id} className="relative pl-6 group">
+                      {/* Timeline dot */}
+                      <div className="absolute -left-[17px] top-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-bg-card)] border-2 border-[var(--color-border)] text-[var(--color-text-muted)] group-hover:border-[var(--color-accent-purple)] group-hover:text-[var(--color-accent-purple)] transition-colors shadow-sm z-10">
+                        {log.action === "CRIOU" ? getIconForEntity(log.entityType) : <Edit className="h-4 w-4" />}
+                      </div>
+                      
+                      {/* Content Card */}
+                      {hasLink ? (
+                        <Link href={log.details!} className="block focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-purple)] rounded-xl">
+                          {CardContent}
+                        </Link>
+                      ) : (
+                        CardContent
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
