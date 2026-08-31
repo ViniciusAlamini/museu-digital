@@ -27,7 +27,7 @@ export async function createSession(campaignId: string, formData: FormData) {
     },
   });
 
-  await logAudit(campaignId, sessionUser.username || "Desconhecido", "CRIOU", "Sessão", title);
+  await logAudit(campaignId, sessionUser.username || "Desconhecido", "CRIOU", "Sessão", title, `/campaigns/${campaignId}/sessions/${session.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   redirect(`/campaigns/${campaignId}/sessions/${session.id}`);
@@ -58,7 +58,7 @@ export async function updateSession(
     },
   });
 
-  await logAudit(campaignId, sessionUser.username || "Desconhecido", "EDITOU", "Sessão", title);
+  await logAudit(campaignId, sessionUser.username || "Desconhecido", "EDITOU", "Sessão", title, `/campaigns/${campaignId}/sessions/${sessionId}`);
 
   revalidatePath(`/campaigns/${campaignId}/sessions`);
   revalidatePath(`/campaigns/${campaignId}/sessions/${sessionId}`);

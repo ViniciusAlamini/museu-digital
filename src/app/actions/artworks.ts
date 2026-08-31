@@ -28,7 +28,7 @@ export async function createArtwork(campaignId: string, formData: FormData) {
       addedBy: session.username, ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Arte", validated.title);
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Arte", validated.title, `/campaigns/${campaignId}/artworks/${artwork.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   // Redireciona de volta para a lista daquela pasta ou da raiz
@@ -59,7 +59,7 @@ export async function updateArtwork(
       updatedBy: session.username, ...validated, date: new Date(validated.date) },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Arte", validated.title);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Arte", validated.title, `/campaigns/${campaignId}/artworks/${id}`);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   revalidatePath(`/campaigns/${campaignId}/artworks/${id}`);

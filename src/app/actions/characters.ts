@@ -28,7 +28,7 @@ export async function createCharacter(campaignId: string, formData: FormData) {
       addedBy: session.username, ...validated, campaignId },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Personagem", character.name);
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Personagem", character.name, `/campaigns/${campaignId}/characters/${character.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   redirect(`/campaigns/${campaignId}/characters/${character.id}`);
@@ -57,7 +57,7 @@ export async function updateCharacter(
     data: { ...validated, updatedBy: session.username },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Personagem", validated.name);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Personagem", validated.name, `/campaigns/${campaignId}/characters/${id}`);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   revalidatePath(`/campaigns/${campaignId}/characters/${id}`);

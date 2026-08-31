@@ -106,7 +106,13 @@ export default async function HomePage() {
                       <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
                         <span className="font-bold text-[var(--color-accent-purple)]">{log.user}</span>{" "}
                         {log.action === "CRIOU" ? "adicionou" : "editou"} {log.entityType.toLowerCase()}{" "}
-                        <span className="font-semibold text-[var(--color-text-primary)]">{log.entityName}</span>
+                        {log.details && log.details.startsWith("/") ? (
+                          <Link href={log.details} className="font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-accent-purple)] hover:underline transition-colors">
+                            {log.entityName}
+                          </Link>
+                        ) : (
+                          <span className="font-semibold text-[var(--color-text-primary)]">{log.entityName}</span>
+                        )}
                       </p>
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]/50">
                         <span className="text-xs font-medium text-[var(--color-text-muted)] truncate pr-2">

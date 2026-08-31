@@ -22,9 +22,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
   const imageStyle = formData.get("imageStyle") as string || "medieval";
   const fontFamily = formData.get("fontFamily") as string || "inter";
 
-  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Entrada no Diário", title);
-
-  await prisma.diaryEntry.create({
+  const entry = await prisma.diaryEntry.create({
     data: {
       addedBy: session.username,
       campaignId,
@@ -39,6 +37,8 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
       fontFamily,
     },
   });
+
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "Entrada no Diário", title, `/campaigns/${campaignId}/diary/${entry.id}`);
 
   const query = folderId ? `?folderId=${folderId}` : "";
   revalidatePath(`/campaigns/${campaignId}/diary`);
@@ -61,7 +61,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
   const imageStyle = formData.get("imageStyle") as string || "medieval";
   const fontFamily = formData.get("fontFamily") as string || "inter";
 
-  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Entrada no Diário", title);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "Entrada no Diário", title, `/campaigns/${campaignId}/diary/${entryId}`);
 
   await prisma.diaryEntry.update({
     where: { id: entryId },

@@ -31,7 +31,7 @@ export async function createNpc(campaignId: string, formData: FormData) {
     },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "NPC", name);
+  await logAudit(campaignId, session.username || "Desconhecido", "CRIOU", "NPC", name, `/campaigns/${campaignId}/npcs/${npc.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   redirect(`/campaigns/${campaignId}/npcs/${npc.id}`);
@@ -66,7 +66,7 @@ export async function updateNpc(
     },
   });
 
-  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "NPC", name);
+  await logAudit(campaignId, session.username || "Desconhecido", "EDITOU", "NPC", name, `/campaigns/${campaignId}/npcs/${npcId}`);
 
   revalidatePath(`/campaigns/${campaignId}/npcs`);
   revalidatePath(`/campaigns/${campaignId}/npcs/${npcId}`);
