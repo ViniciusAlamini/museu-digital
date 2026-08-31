@@ -16,6 +16,16 @@ function getIconForEntity(entityType: string) {
   return <Shield className="h-4 w-4" />;
 }
 
+function getFallbackUrl(entityType: string, campaignId: string) {
+  const type = entityType.toLowerCase();
+  if (type.includes("arte")) return `/campaigns/${campaignId}/artworks`;
+  if (type.includes("npc")) return `/campaigns/${campaignId}/npcs`;
+  if (type.includes("personagem")) return `/campaigns/${campaignId}/characters`;
+  if (type.includes("diário")) return `/campaigns/${campaignId}/diary`;
+  if (type.includes("sessão")) return `/campaigns/${campaignId}/sessions`;
+  return `/campaigns/${campaignId}`;
+}
+
 export default async function HomePage() {
   const campaigns = await prisma.campaign.findMany({
     orderBy: { createdAt: "desc" },
@@ -95,13 +105,13 @@ export default async function HomePage() {
             ) : (
               <div className="relative border-l-2 border-[var(--color-border)] ml-4 space-y-8 pb-4">
                 {recentActivity.map((log) => {
-                  const hasLink = log.details && log.details.startsWith("/");
+                  const href = log.details && log.details.startsWith("/") ? log.details : getFallbackUrl(log.entityType, log.campaignId);
                   const CardContent = (
-                    <div className={`flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md ${hasLink ? "hover:border-[var(--color-accent-purple)]/50 cursor-pointer" : ""}`}>
+                    <div className="flex flex-col rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md hover:border-[var(--color-accent-purple)]/50 cursor-pointer">
                       <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
                         <span className="font-bold text-[var(--color-accent-purple)]">{log.user}</span>{" "}
                         {log.action === "CRIOU" ? "adicionou" : "editou"} {log.entityType.toLowerCase()}{" "}
-                        <span className={`font-semibold text-[var(--color-text-primary)] ${hasLink ? "group-hover:text-[var(--color-accent-purple)] transition-colors" : ""}`}>
+                        <span className="font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-purple)] transition-colors">
                           {log.entityName}
                         </span>
                       </p>
@@ -124,13 +134,9 @@ export default async function HomePage() {
                       </div>
                       
                       {/* Content Card */}
-                      {hasLink ? (
-                        <Link href={log.details!} className="block focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-purple)] rounded-xl">
-                          {CardContent}
-                        </Link>
-                      ) : (
-                        CardContent
-                      )}
+                      <Link href={href} className="block focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-purple)] rounded-xl">
+                        {CardContent}
+                      </Link>
                     </div>
                   );
                 })}
