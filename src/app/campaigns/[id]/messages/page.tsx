@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { MessageCard } from "@/components/message/MessageCard";
 import { Plus, MessageSquare } from "lucide-react";
+import { getSession } from "@/lib/auth";
 
 export default async function MessagesPage({
   params,
@@ -9,6 +10,7 @@ export default async function MessagesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const session = await getSession();
 
   const messages = await prisma.message.findMany({
     where: { campaignId: id },
@@ -17,6 +19,8 @@ export default async function MessagesPage({
       character: {
         select: { name: true, image: true },
       },
+      reactions: true,
+      comments: { orderBy: { createdAt: "asc" } },
     },
   });
 
@@ -59,7 +63,7 @@ export default async function MessagesPage({
       ) : (
         <div className="mx-auto max-w-3xl space-y-6">
           {messages.map((msg) => (
-            <MessageCard key={msg.id} message={msg} campaignId={id} />
+            <MessageCard key={msg.id} message={msg} campaignId={id} currentUser={session.username || ""} />
           ))}
         </div>
       )}

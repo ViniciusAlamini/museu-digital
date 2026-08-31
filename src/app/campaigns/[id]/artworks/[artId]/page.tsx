@@ -6,6 +6,9 @@ import { deleteArtwork } from "@/app/actions/artworks";
 import { DeleteDialog } from "@/components/shared/DeleteDialog";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, Edit, Trash2, Palette, Calendar, User } from "lucide-react";
+import { ReactionBar } from "@/components/shared/ReactionBar";
+import { CommentSection } from "@/components/shared/CommentSection";
+import { getSession } from "@/lib/auth";
 
 export default async function ArtworkDetailPage({
   params,
@@ -13,8 +16,15 @@ export default async function ArtworkDetailPage({
   params: Promise<{ id: string; artId: string }>;
 }) {
   const { id, artId } = await params;
+  const session = await getSession();
 
-  const artwork = await prisma.artwork.findUnique({ where: { id: artId } });
+  const artwork = await prisma.artwork.findUnique({ 
+    where: { id: artId },
+    include: {
+      comments: { orderBy: { createdAt: "asc" } },
+      reactions: true,
+    }
+  });
 
   if (!artwork || artwork.campaignId !== id) notFound();
 
@@ -53,14 +63,24 @@ export default async function ArtworkDetailPage({
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-        {/* Image */}
-        <div className="relative w-full overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]">
-          <Image
-            src={artwork.image}
-            alt={artwork.title}
-            width={1200}
-            height={900}
-            className="w-full h-auto"
+        {/* Image & Comments */}
+        <div className="space-y-6">
+          <div className="relative w-full overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)]">
+            <Image
+              src={artwork.image}
+              alt={artwork.title}
+              width={1200}
+              height={900}
+              className="w-full h-auto"
+            />
+          </div>
+
+          <CommentSection
+            campaignId={id}
+            entityType="artwork"
+            entityId={artwork.id}
+            comments={artwork.comments}
+            currentUser={session.username || ""}
           />
         </div>
 
@@ -80,6 +100,14 @@ export default async function ArtworkDetailPage({
                 <span>{formatDate(artwork.date)}</span>
               </div>
             </div>
+
+            <ReactionBar
+              campaignId={id}
+              entityType="artwork"
+              entityId={artwork.id}
+              reactions={artwork.reactions}
+              currentUser={session.username || ""}
+            />
           </div>
 
           <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">

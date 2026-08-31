@@ -84,6 +84,8 @@ model Artwork {
   createdAt   DateTime       @default(now())
   addedBy     String?
   updatedBy   String?
+  comments    Comment[]
+  reactions   Reaction[]
 }
 
 model Session {
@@ -115,6 +117,8 @@ model Message {
   createdAt   DateTime   @default(now())
   addedBy     String?
   updatedBy   String?
+  comments    Comment[]
+  reactions   Reaction[]
 }
 
 model DiaryFolder {
@@ -151,6 +155,8 @@ model DiaryEntry {
   updatedAt          DateTime     @updatedAt
   addedBy            String?
   updatedBy          String?
+  comments    Comment[]
+  reactions   Reaction[]
 }
 
 model NpcFolder {
@@ -182,6 +188,8 @@ model Npc {
   createdAt   DateTime   @default(now())
   addedBy     String?
   updatedBy   String?
+  comments    Comment[]
+  reactions   Reaction[]
 }
 
 model AuditLog {
@@ -194,4 +202,35 @@ model AuditLog {
   entityName String
   details    String?
   createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  content     String
+  author      String
+  createdAt   DateTime @default(now())
+
+  artworkId   String?
+  artwork     Artwork? @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  npcId       String?
+  npc         Npc?     @relation(fields: [npcId], references: [id], onDelete: Cascade)
+  messageId   String?
+  message     Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  diaryEntryId String?
+  diaryEntry  DiaryEntry? @relation(fields: [diaryEntryId], references: [id], onDelete: Cascade)
+}
+
+model Reaction {
+  id          String   @id @default(cuid())
+  emoji       String
+  user        String
+
+  artworkId   String?
+  artwork     Artwork? @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  npcId       String?
+  npc         Npc?     @relation(fields: [npcId], references: [id], onDelete: Cascade)
+  messageId   String?
+  message     Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  diaryEntryId String?
+  diaryEntry  DiaryEntry? @relation(fields: [diaryEntryId], references: [id], onDelete: Cascade)
 }

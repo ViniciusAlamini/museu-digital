@@ -2,10 +2,12 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getSessionRole } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { deleteNpc } from "@/app/actions/npcs";
 import { DeleteDialog } from "@/components/shared/DeleteDialog";
 import { ArrowLeft, Edit, Trash2, Users } from "lucide-react";
+import { ReactionBar } from "@/components/shared/ReactionBar";
+import { CommentSection } from "@/components/shared/CommentSection";
 
 export default async function NpcDetailPage({
   params,
@@ -13,11 +15,16 @@ export default async function NpcDetailPage({
   params: Promise<{ id: string; npcId: string }>;
 }) {
   const { id, npcId } = await params;
-  const role = await getSessionRole();
+  const session = await getSession();
+  const role = session.role;
 
   const npc = await prisma.npc.findUnique({
     where: { id: npcId },
-    include: { folder: true },
+    include: { 
+      folder: true,
+      comments: { orderBy: { createdAt: "asc" } },
+      reactions: true,
+    },
   });
 
   if (!npc) notFound();
@@ -111,6 +118,16 @@ export default async function NpcDetailPage({
                 </p>
               </div>
             </div>
+            
+            <div className="mt-4">
+              <ReactionBar
+                campaignId={id}
+                entityType="npc"
+                entityId={npc.id}
+                reactions={npc.reactions}
+                currentUser={session.username || ""}
+              />
+            </div>
 
             {npc.addedBy && (
               <div className="mt-8 border-t border-[var(--color-border)] pt-6 text-right">
@@ -126,6 +143,16 @@ export default async function NpcDetailPage({
             )}
           </div>
         </div>
+      </div>
+      
+      <div className="mt-8">
+        <CommentSection
+          campaignId={id}
+          entityType="npc"
+          entityId={npc.id}
+          comments={npc.comments}
+          currentUser={session.username || ""}
+        />
       </div>
     </div>
   );

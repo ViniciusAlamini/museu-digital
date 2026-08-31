@@ -3,10 +3,17 @@ import Link from "next/link";
 import { Message } from "@/types";
 import { formatDate } from "@/lib/utils";
 import { User, Calendar, MessageCircle } from "lucide-react";
+import { ReactionBar } from "@/components/shared/ReactionBar";
+import { CommentSection } from "@/components/shared/CommentSection";
 
 interface MessageCardProps {
-  message: Message & { character?: { name: string; image: string | null } | null };
+  message: Message & { 
+    character?: { name: string; image: string | null } | null;
+    reactions: { emoji: string; user: string }[];
+    comments: { id: string; content: string; author: string; createdAt: Date }[];
+  };
   campaignId: string;
+  currentUser: string;
 }
 
 const typeColors: Record<string, string> = {
@@ -17,7 +24,7 @@ const typeColors: Record<string, string> = {
   "Registro de um momento": "bg-rose-900/30 text-rose-400 border-rose-900/50",
 };
 
-export function MessageCard({ message, campaignId }: MessageCardProps) {
+export function MessageCard({ message, campaignId, currentUser }: MessageCardProps) {
   const badgeClass = typeColors[message.type] || "bg-[var(--color-bg-elevated)] text-[var(--color-text-secondary)] border-[var(--color-border)]";
 
   return (
@@ -69,6 +76,14 @@ export function MessageCard({ message, campaignId }: MessageCardProps) {
         </div>
       )}
 
+      <ReactionBar
+        campaignId={campaignId}
+        entityType="message"
+        entityId={message.id}
+        reactions={message.reactions}
+        currentUser={currentUser}
+      />
+
       <div className="mt-4 flex items-center justify-between border-t border-[var(--color-border)] pt-4">
         {message.eventDate && (
           <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
@@ -85,6 +100,24 @@ export function MessageCard({ message, campaignId }: MessageCardProps) {
             Editar
           </Link>
         </div>
+      </div>
+      
+      <div className="mt-4">
+        <details className="group/comments">
+          <summary className="flex cursor-pointer items-center gap-1.5 text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors list-none">
+            <MessageCircle className="h-4 w-4" />
+            {message.comments.length > 0 ? `${message.comments.length} comentários` : "Comentar"}
+          </summary>
+          <div className="mt-4 border-t border-[var(--color-border)] pt-2">
+            <CommentSection
+              campaignId={campaignId}
+              entityType="message"
+              entityId={message.id}
+              comments={message.comments}
+              currentUser={currentUser}
+            />
+          </div>
+        </details>
       </div>
     </div>
   );
