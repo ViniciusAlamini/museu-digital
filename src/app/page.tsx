@@ -53,61 +53,6 @@ export default async function HomePage() {
           </p>
         </div>
         <Link
-import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { CampaignCard } from "@/components/campaign/CampaignCard";
-import { Plus, Swords, Activity, Image as ImageIcon, Users, User, FileText, Shield, Edit } from "lucide-react";
-import { formatTimeAgo } from "@/lib/utils";
-
-export const revalidate = 0;
-
-function getIconForEntity(entityType: string) {
-  const type = entityType.toLowerCase();
-  if (type.includes("arte")) return <ImageIcon className="h-4 w-4" />;
-  if (type.includes("npc")) return <Users className="h-4 w-4" />;
-  if (type.includes("personagem")) return <User className="h-4 w-4" />;
-  if (type.includes("diário")) return <FileText className="h-4 w-4" />;
-  if (type.includes("sessão")) return <Swords className="h-4 w-4" />;
-  return <Shield className="h-4 w-4" />;
-}
-
-export default async function HomePage() {
-  const campaigns = await prisma.campaign.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      _count: {
-        select: {
-          characters: true,
-          npcs: true,
-          artworks: true,
-          sessions: true,
-        },
-      },
-    },
-  });
-
-  const recentActivity = await prisma.auditLog.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 15,
-    include: { campaign: { select: { name: true } } },
-    where: {
-      action: { in: ["CRIOU", "EDITOU"] }
-    }
-  });
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between mb-12">
-        <div>
-          <h1 className="font-fantasy text-4xl font-bold text-[var(--color-text-primary)] sm:text-5xl">
-            Acervo de Campanhas
-          </h1>
-          <p className="mt-3 text-[var(--color-text-secondary)] max-w-xl">
-            Todas as suas aventuras, personagens e histórias em um só lugar.
-          </p>
-        </div>
-        <Link
           href="/campaigns/new"
           className="flex items-center gap-2 rounded-lg bg-[var(--color-accent-purple)] px-5 py-3 text-sm font-semibold text-white hover:bg-purple-700 transition-colors shrink-0 self-start sm:self-auto"
         >
