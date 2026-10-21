@@ -1,13 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { ArtworkExplorer } from "@/components/artwork/ArtworkExplorer";
-
+import { PageHeader } from "@/components/shared/PageHeader";
 export default async function ArtworksPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
   const [folders, artworks] = await Promise.all([
     prisma.artworkFolder.findMany({
       where: { campaignId: id },
@@ -18,16 +17,14 @@ export default async function ArtworksPage({
       orderBy: { date: "desc" },
     }),
   ]);
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-fantasy text-2xl font-semibold text-[var(--color-text-primary)]">
-          Acervo de Desenhos e Mapas
-        </h2>
-      </div>
-
+    <section>
+      <PageHeader
+        eyebrow={`O atlas · ${artworks.length} obras`}
+        title="Desenhos & mapas"
+        description="Lugares, criaturas e visões que ganharam forma fora da imaginação."
+      />
       <ArtworkExplorer campaignId={id} folders={folders} artworks={artworks} />
-    </div>
+    </section>
   );
 }

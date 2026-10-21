@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { recordAudit } from "@/lib/audit";
 
 export async function createCampaign(formData: FormData) {
   const raw = {
@@ -24,6 +25,7 @@ export async function createCampaign(formData: FormData) {
       startDate: new Date(validated.startDate),
     },
   });
+  await recordAudit(campaign.id, "criou", "Campanha", campaign.name);
 
   revalidatePath("/");
   redirect(`/campaigns/${campaign.id}`);
@@ -47,6 +49,7 @@ export async function updateCampaign(id: string, formData: FormData) {
       startDate: new Date(validated.startDate),
     },
   });
+  await recordAudit(id, "editou", "Campanha", validated.name);
 
   revalidatePath(`/campaigns/${id}`);
   revalidatePath("/");

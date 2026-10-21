@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { recordAudit } from "@/lib/audit";
 
 export async function createPost(campaignId: string, formData: FormData) {
   const raw = {
@@ -25,6 +26,7 @@ export async function createPost(campaignId: string, formData: FormData) {
       publishedAt: new Date(validated.publishedAt),
     },
   });
+  await recordAudit(campaignId, "criou", "Post", post.title);
 
   revalidatePath(`/campaigns/${campaignId}/posts`);
   redirect(`/campaigns/${campaignId}/posts/${post.id}`);
@@ -52,6 +54,7 @@ export async function updatePost(
       publishedAt: new Date(validated.publishedAt),
     },
   });
+  await recordAudit(campaignId, "editou", "Post", validated.title);
 
   revalidatePath(`/campaigns/${campaignId}/posts`);
   revalidatePath(`/campaigns/${campaignId}/posts/${id}`);
@@ -60,6 +63,7 @@ export async function updatePost(
 
 export async function deletePost(id: string, campaignId: string) {
   const post = await prisma.post.findUnique({ where: { id } });
+  if (post) await recordAudit(campaignId, "excluiu", "Post", post.title);
 
   if (post?.image) {
     try {

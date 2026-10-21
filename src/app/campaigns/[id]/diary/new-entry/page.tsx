@@ -28,18 +28,17 @@ export default async function NewDiaryEntryPage({
   ]);
 
   return (
-    <div className="max-w-3xl">
+    <div className="form-page">
       <Link
         href={`/campaigns/${id}/diary${folderId ? `?folderId=${folderId}` : ""}`}
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+        className="btn btn-ghost mb-6"
       >
         <ArrowLeft className="h-4 w-4" />
         Voltar para o Diário
       </Link>
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8">
-        <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)] mb-8">
-          Nova Entrada de Diário
-        </h1>
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Nova Entrada de Diário</h1>
         <DiaryEntryForm
           action={createDiaryEntry.bind(null, id)}
           characters={characters}

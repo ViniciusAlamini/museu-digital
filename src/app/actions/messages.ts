@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { recordAudit } from "@/lib/audit";
 
 export async function createMessage(campaignId: string, formData: FormData) {
   const content = formData.get("content") as string;
@@ -28,6 +29,7 @@ export async function createMessage(campaignId: string, formData: FormData) {
       type,
     },
   });
+  await recordAudit(campaignId, "criou", "Correspondência", title || type);
 
   revalidatePath(`/campaigns/${campaignId}/messages`);
   redirect(`/campaigns/${campaignId}/messages`);
@@ -57,12 +59,15 @@ export async function updateMessage(messageId: string, campaignId: string, formD
       type,
     },
   });
+  await recordAudit(campaignId, "editou", "Correspondência", title || type);
 
   revalidatePath(`/campaigns/${campaignId}/messages`);
   redirect(`/campaigns/${campaignId}/messages`);
 }
 
 export async function deleteMessage(messageId: string, campaignId: string) {
+  const message = await prisma.message.findUnique({ where: { id: messageId } });
+  if (message) await recordAudit(campaignId, "excluiu", "Correspondência", message.title || message.type);
   await prisma.message.delete({ where: { id: messageId } });
   revalidatePath(`/campaigns/${campaignId}/messages`);
 }

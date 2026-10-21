@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { recordAudit } from "@/lib/audit";
 
 export async function createArtwork(campaignId: string, formData: FormData) {
   const raw = {
@@ -22,6 +23,7 @@ export async function createArtwork(campaignId: string, formData: FormData) {
   const artwork = await prisma.artwork.create({
     data: { ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
+  await recordAudit(campaignId, "criou", "Obra", artwork.title);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   // Redireciona de volta para a lista daquela pasta ou da raiz
@@ -48,6 +50,7 @@ export async function updateArtwork(
     where: { id },
     data: { ...validated, date: new Date(validated.date) },
   });
+  await recordAudit(campaignId, "editou", "Obra", validated.title);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   revalidatePath(`/campaigns/${campaignId}/artworks/${id}`);
@@ -56,6 +59,7 @@ export async function updateArtwork(
 
 export async function deleteArtwork(id: string, campaignId: string) {
   const artwork = await prisma.artwork.findUnique({ where: { id } });
+  if (artwork) await recordAudit(campaignId, "excluiu", "Obra", artwork.title);
 
   if (artwork?.image) {
     try {

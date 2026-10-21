@@ -24,6 +24,32 @@ model Campaign {
   messages       Message[]
   folders        DiaryFolder[]
   entries        DiaryEntry[]
+  auditLogs      AuditLog[]
+}
+
+model User {
+  id           String   @id
+  username     String   @unique
+  passwordHash String   @map("password")
+  role         String   @default("MEMBER")
+  createdAt    DateTime @default(now())
+
+  @@map("User")
+}
+
+model AuditLog {
+  id         String   @id
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user       String
+  action     String
+  entityType String
+  entityName String
+  details    String?
+  createdAt  DateTime @default(now())
+
+  @@index([campaignId, createdAt])
+  @@map("AuditLog")
 }
 
 model Character {

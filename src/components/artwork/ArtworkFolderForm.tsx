@@ -1,6 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import {
+  formDataFromValues,
+  FormFeedback,
+  useFormFeedback,
+} from "@/components/shared/FormFeedback";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,9 +20,14 @@ interface ArtworkFolderFormProps {
   cancelHref: string;
 }
 
-export function ArtworkFolderForm({ action, folders, currentParentId, cancelHref }: ArtworkFolderFormProps) {
+export function ArtworkFolderForm({
+  action,
+  folders,
+  currentParentId,
+  cancelHref,
+}: ArtworkFolderFormProps) {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const { formId, failure, saved, submit } = useFormFeedback(action);
 
   const {
     register,
@@ -33,46 +42,98 @@ export function ArtworkFolderForm({ action, folders, currentParentId, cancelHref
     },
   });
 
-  const inputClass =
-    "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors";
-  const labelClass = "block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5";
-  const errorClass = "mt-1 text-xs text-red-400";
+  const inputClass = "field";
+  const labelClass = "field-label";
+  const errorClass = "field-error";
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(() => action(new FormData(formRef.current!)))} className="space-y-6">
+    <form
+      onSubmit={handleSubmit((values) => submit(formDataFromValues(values)))}
+      className="archive-form"
+      noValidate
+      aria-busy={isSubmitting}
+    >
+      <p className="form-intro">
+        Os campos com * são obrigatórios. Registre os detalhes que deseja
+        guardar no acervo.
+      </p>
       <div>
-        <label className={labelClass}>Nome da Pasta *</label>
-        <input {...register("name")} placeholder="Ex: Mapas da Masmorra" className={inputClass} />
-        {errors.name && <p className={errorClass}>{errors.name.message}</p>}
+        <label htmlFor={`${formId}-name`} className={labelClass}>
+          Nome da Pasta *
+        </label>
+        <input
+          id={`${formId}-name`}
+          aria-required="true"
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? `${formId}-name-error` : undefined}
+          {...register("name")}
+          placeholder="Ex: Mapas da Masmorra"
+          className={inputClass}
+        />
+        {errors.name && (
+          <p id={`${formId}-name-error`} className={errorClass} role="alert">
+            {errors.name.message}
+          </p>
+        )}
       </div>
 
       <div>
-        <label className={labelClass}>Pasta Pai (Opcional)</label>
-        <select {...register("parentFolderId")} className={inputClass}>
+        <label htmlFor={`${formId}-parentFolderId`} className={labelClass}>
+          Pasta Pai (Opcional)
+        </label>
+        <select
+          id={`${formId}-parentFolderId`}
+          aria-invalid={Boolean(errors.parentFolderId)}
+          aria-describedby={
+            errors.parentFolderId ? `${formId}-parentFolderId-error` : undefined
+          }
+          {...register("parentFolderId")}
+          className={inputClass}
+        >
           <option value="">Raiz de Desenhos</option>
           {folders.map((f) => (
-            <option key={f.id} value={f.id}>{f.name}</option>
+            <option key={f.id} value={f.id}>
+              {f.name}
+            </option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className={labelClass}>Descrição (Opcional)</label>
-        <textarea {...register("description")} rows={3} className={inputClass} />
+        <label htmlFor={`${formId}-description`} className={labelClass}>
+          Descrição (Opcional)
+        </label>
+        <textarea
+          id={`${formId}-description`}
+          aria-invalid={Boolean(errors.description)}
+          aria-describedby={
+            errors.description ? `${formId}-description-error` : undefined
+          }
+          {...register("description")}
+          rows={3}
+          className={inputClass}
+        />
       </div>
 
-      <div className="flex gap-3 pt-2">
+      <FormFeedback
+        failure={failure}
+        saved={saved}
+        busy={isSubmitting}
+        invalid={Object.keys(errors).length > 0}
+      />
+
+      <div className="form-actions">
         <button
           type="button"
           onClick={() => router.push(cancelHref)}
-          className="flex-1 rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 rounded-lg bg-[var(--color-accent-purple)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 transition-colors"
+          className="btn btn-primary"
         >
           {isSubmitting ? "Criando..." : "Criar Pasta"}
         </button>

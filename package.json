@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:migrate": "prisma migrate dev --url file:./prisma/dev.db",
     "db:generate": "prisma generate",
+    "db:auth-setup": "node scripts/setup-auth.cjs",
     "db:studio": "prisma studio"
   },
   "dependencies": {
@@ -20,7 +21,8 @@
     "@tiptap/pm": "^3.30.2",
     "@tiptap/react": "^3.30.2",
     "@tiptap/starter-kit": "^3.30.2",
-    "better-sqlite3": "^13.0.3",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "12.6.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.33.0",
     "next": "16.3.2",

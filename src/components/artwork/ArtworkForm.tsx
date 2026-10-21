@@ -1,8 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
+import {
+  formDataFromValues,
+  FormFeedback,
+  useFormFeedback,
+} from "@/components/shared/FormFeedback";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { artworkSchema, ArtworkFormValues } from "@/lib/validations";
 import { ImageUpload } from "@/components/shared/ImageUpload";
@@ -22,13 +27,14 @@ export function ArtworkForm({
   cancelHref,
 }: ArtworkFormProps) {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const { formId, failure, saved, submit } = useFormFeedback(action);
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ArtworkFormValues>({
     resolver: zodResolver(artworkSchema),
@@ -44,78 +50,160 @@ export function ArtworkForm({
     },
   });
 
-  const image = watch("image");
+  const image = useWatch({ control, name: "image" });
 
-  async function onSubmit() {
-    const formData = new FormData(formRef.current!);
+  async function onSubmit(values: ArtworkFormValues) {
+    if (uploadingImage) return;
+    const formData = formDataFromValues(values);
     formData.set("image", image ?? "");
-    // Ensure folderId is captured correctly
-    const folderId = watch("folderId");
-    if (folderId) formData.set("folderId", folderId);
-    
-    await action(formData);
+
+    await submit(formData);
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors";
-  const labelClass = "block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5";
-  const errorClass = "mt-1 text-xs text-red-400";
+  const inputClass = "field";
+  const labelClass = "field-label";
+  const errorClass = "field-error";
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="archive-form"
+      noValidate
+      aria-busy={isSubmitting}
+    >
+      <p className="form-intro">
+        Os campos com * são obrigatórios. Registre os detalhes que deseja
+        guardar no acervo.
+      </p>
       <input type="hidden" {...register("folderId")} />
-      
-      <div className="grid gap-6 sm:grid-cols-2">
+
+      <div className="form-grid">
         <div>
-          <label className={labelClass}>Título *</label>
-          <input {...register("title")} placeholder="Título do desenho" className={inputClass} />
-          {errors.title && <p className={errorClass}>{errors.title.message}</p>}
+          <label htmlFor={`${formId}-title`} className={labelClass}>
+            Título *
+          </label>
+          <input
+            id={`${formId}-title`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.title)}
+            aria-describedby={
+              errors.title ? `${formId}-title-error` : undefined
+            }
+            {...register("title")}
+            placeholder="Título do desenho"
+            className={inputClass}
+          />
+          {errors.title && (
+            <p id={`${formId}-title-error`} className={errorClass} role="alert">
+              {errors.title.message}
+            </p>
+          )}
         </div>
         <div>
-          <label className={labelClass}>Artista *</label>
-          <input {...register("artist")} placeholder="Nome do artista" className={inputClass} />
-          {errors.artist && <p className={errorClass}>{errors.artist.message}</p>}
+          <label htmlFor={`${formId}-artist`} className={labelClass}>
+            Artista *
+          </label>
+          <input
+            id={`${formId}-artist`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.artist)}
+            aria-describedby={
+              errors.artist ? `${formId}-artist-error` : undefined
+            }
+            {...register("artist")}
+            placeholder="Nome do artista"
+            className={inputClass}
+          />
+          {errors.artist && (
+            <p
+              id={`${formId}-artist-error`}
+              className={errorClass}
+              role="alert"
+            >
+              {errors.artist.message}
+            </p>
+          )}
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>Data *</label>
-        <input {...register("date")} type="date" className={inputClass} />
-        {errors.date && <p className={errorClass}>{errors.date.message}</p>}
+        <label htmlFor={`${formId}-date`} className={labelClass}>
+          Data *
+        </label>
+        <input
+          id={`${formId}-date`}
+          aria-required="true"
+          aria-invalid={Boolean(errors.date)}
+          aria-describedby={errors.date ? `${formId}-date-error` : undefined}
+          {...register("date")}
+          type="date"
+          className={inputClass}
+        />
+        {errors.date && (
+          <p id={`${formId}-date-error`} className={errorClass} role="alert">
+            {errors.date.message}
+          </p>
+        )}
       </div>
 
       <div>
-        <label className={labelClass}>Descrição *</label>
+        <label htmlFor={`${formId}-description`} className={labelClass}>
+          Descrição
+        </label>
         <textarea
+          id={`${formId}-description`}
+          aria-invalid={Boolean(errors.description)}
+          aria-describedby={
+            errors.description ? `${formId}-description-error` : undefined
+          }
           {...register("description")}
           rows={3}
           placeholder="Descreva o desenho..."
-          className={`${inputClass} resize-none`}
+          className={inputClass}
         />
-        {errors.description && <p className={errorClass}>{errors.description.message}</p>}
+        {errors.description && (
+          <p
+            id={`${formId}-description-error`}
+            className={errorClass}
+            role="alert"
+          >
+            {errors.description.message}
+          </p>
+        )}
       </div>
 
       <ImageUpload
+        error={errors.image?.message}
+        required
+        onUploadChange={setUploadingImage}
         value={image}
-        onChange={(url) => setValue("image", url)}
+        onChange={(url) =>
+          setValue("image", url, { shouldValidate: true, shouldDirty: true })
+        }
         folder="artworks"
         label="Imagem *"
         aspectRatio="square"
       />
-      {errors.image && <p className={errorClass}>{String(errors.image.message)}</p>}
 
-      <div className="flex gap-3 pt-2">
+      <FormFeedback
+        failure={failure}
+        saved={saved}
+        busy={isSubmitting}
+        invalid={Object.keys(errors).length > 0}
+      />
+
+      <div className="form-actions">
         <button
           type="button"
           onClick={() => router.push(cancelHref)}
-          className="flex-1 rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="flex-1 rounded-lg bg-[var(--color-accent-purple)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 transition-colors"
+          disabled={isSubmitting || uploadingImage}
+          className="btn btn-primary"
         >
           {isSubmitting ? "Salvando..." : submitLabel}
         </button>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Image from "next/image";
-import { Upload, X, ImageIcon } from "lucide-react";
+import { useId, useRef, useState } from "react";
+import { ImageIcon, Upload, X } from "lucide-react";
+import { ArchiveImage } from "./ArchiveImage";
 
 interface ImageUploadProps {
   value?: string;
@@ -10,6 +10,9 @@ interface ImageUploadProps {
   folder: string;
   label?: string;
   aspectRatio?: "square" | "wide" | "portrait";
+  onUploadChange?: (uploading: boolean) => void;
+  error?: string;
+  required?: boolean;
 }
 
 export function ImageUpload({
@@ -18,110 +21,142 @@ export function ImageUpload({
   folder,
   label = "Imagem",
   aspectRatio = "wide",
+  onUploadChange,
+  error: validationError,
+  required,
 }: ImageUploadProps) {
+  const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const pending = useRef(false);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const aspectClass = {
-    square: "aspect-square",
-    wide: "aspect-video",
-    portrait: "aspect-[3/4]",
-  }[aspectRatio];
+  const [error, setError] = useState("");
+  const visibleError = error || validationError;
 
   async function handleFile(file: File) {
+    if (pending.current) return;
     if (!file.type.startsWith("image/")) {
-      setError("Por favor selecione uma imagem.");
+      setError("Por favor, selecione uma imagem.");
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      setError("A imagem deve ter menos de 10MB.");
+      setError("A imagem deve ter até 10 MB.");
       return;
     }
-    setError(null);
+    pending.current = true;
+    setError("");
     setUploading(true);
+    onUploadChange?.(true);
     try {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("folder", folder);
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.url) {
-        onChange(data.url);
-      } else {
-        setError("Erro ao enviar imagem.");
-      }
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok || !data.url) throw new Error("Upload failed");
+      onChange(data.url);
     } catch {
-      setError("Erro ao enviar imagem.");
+      setError("Não foi possível enviar a imagem. Tente novamente.");
     } finally {
+      pending.current = false;
       setUploading(false);
+      onUploadChange?.(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
   }
 
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  }
-
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-[var(--color-text-secondary)]">
+    <div
+      className="image-upload"
+      aria-busy={uploading}
+      onDrop={(event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        if (file) void handleFile(file);
+      }}
+      onDragOver={(event) => event.preventDefault()}
+    >
+      <label htmlFor={id} className="field-label">
         {label}
       </label>
-      <div
-        className={`relative ${aspectClass} rounded-lg border-2 border-dashed border-[var(--color-border)] overflow-hidden group cursor-pointer hover:border-[var(--color-accent-purple)] transition-colors`}
-        onClick={() => inputRef.current?.click()}
-        onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
-      >
-        {value ? (
-          <>
-            <Image
-              src={value}
-              alt="Preview"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <p className="text-white text-sm font-medium">Trocar imagem</p>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onChange("");
-              }}
-              className="absolute top-2 right-2 p-1 rounded-full bg-black/70 text-white hover:bg-red-600 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </>
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[var(--color-text-muted)]">
-            {uploading ? (
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-accent-purple)] border-t-transparent" />
-            ) : (
-              <>
-                <ImageIcon className="h-10 w-10" />
-                <p className="text-sm font-medium">Clique ou arraste uma imagem</p>
-                <p className="text-xs">PNG, JPG, WEBP até 10MB</p>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {value ? (
+        <div className="image-upload-preview" data-aspect={aspectRatio}>
+          <ArchiveImage
+            src={value}
+            alt={label.replace(/\s*\*$/, "")}
+            fill
+            variant={aspectRatio === "portrait" ? "portrait" : "artwork"}
+          />
+        </div>
+      ) : (
+        <div className="image-upload-empty">
+          <ImageIcon size={28} aria-hidden="true" />
+          <p>
+            Nenhuma imagem selecionada.
+            <br />
+            <span className="form-help">
+              Escolha um arquivo ou arraste-o para esta área.
+            </span>
+          </p>
+        </div>
+      )}
       <input
+        id={id}
         ref={inputRef}
         type="file"
         accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleFile(file);
+        disabled={uploading}
+        aria-required={required}
+        aria-describedby={`${id}-help${visibleError ? ` ${id}-error` : ""}`}
+        aria-invalid={Boolean(visibleError)}
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void handleFile(file);
         }}
       />
+      <div className="image-upload-actions">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled={uploading}
+          onClick={() => inputRef.current?.click()}
+        >
+          <Upload size={16} aria-hidden="true" />
+          {uploading
+            ? "Enviando…"
+            : value
+              ? "Trocar imagem"
+              : "Escolher imagem"}
+        </button>
+        {value && (
+          <button
+            type="button"
+            className="btn btn-ghost"
+            disabled={uploading}
+            onClick={() => onChange("")}
+          >
+            <X size={16} aria-hidden="true" />
+            Remover imagem
+          </button>
+        )}
+      </div>
+      <p id={`${id}-help`} className="form-help">
+        PNG, JPG ou WEBP · até 10 MB
+      </p>
+      <div aria-live="polite">
+        {uploading && (
+          <p className="form-help">
+            Aguarde o envio da imagem antes de salvar.
+          </p>
+        )}
+        {visibleError && (
+          <p id={`${id}-error`} className="field-error" role="alert">
+            {visibleError}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

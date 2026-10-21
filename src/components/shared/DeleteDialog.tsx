@@ -1,83 +1,121 @@
 "use client";
 
-import { useState } from "react";
-import { Trash2, AlertTriangle } from "lucide-react";
+import { useId, useRef, useState } from "react";
+import type { MouseEvent } from "react";
+import { Trash2 } from "lucide-react";
 
 interface DeleteDialogProps {
   title: string;
   description: string;
   onConfirm: () => Promise<void>;
-  trigger?: React.ReactNode;
+  triggerLabel?: string;
+  triggerClassName?: string;
 }
 
 export function DeleteDialog({
   title,
   description,
   onConfirm,
-  trigger,
+  triggerLabel = "Excluir",
+  triggerClassName = "btn-danger",
 }: DeleteDialogProps) {
-  const [open, setOpen] = useState(false);
+  const id = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+  const pending = useRef(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function handleConfirm() {
+  function open(event: MouseEvent<HTMLButtonElement>) {
+    openerRef.current = event.currentTarget;
+    setError("");
+    dialogRef.current?.showModal();
+  }
+
+  async function confirm() {
+    if (pending.current) return;
+    pending.current = true;
     setLoading(true);
+    setError("");
     try {
       await onConfirm();
-      setOpen(false);
+      dialogRef.current?.close();
+    } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "digest" in error &&
+        typeof error.digest === "string" &&
+        error.digest.startsWith("NEXT_REDIRECT")
+      )
+        throw error;
+      setError("Não foi possível excluir este registro. Tente novamente.");
     } finally {
+      pending.current = false;
       setLoading(false);
     }
   }
 
   return (
     <>
-      <div onClick={() => setOpen(true)}>
-        {trigger ?? (
-          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-colors">
-            <Trash2 className="h-4 w-4" />
-            Excluir
-          </button>
+      <button
+        type="button"
+        className={`btn delete-trigger ${triggerClassName}`}
+        aria-label={title}
+        aria-haspopup="dialog"
+        aria-controls={id}
+        onClick={open}
+      >
+        <Trash2 size={16} aria-hidden="true" />
+        {triggerLabel}
+      </button>
+      <dialog
+        ref={dialogRef}
+        id={id}
+        className="delete-dialog"
+        aria-labelledby={`${id}-title`}
+        aria-describedby={`${id}-description`}
+        onCancel={(event) => {
+          if (pending.current) event.preventDefault();
+        }}
+        onClose={() => openerRef.current?.focus()}
+      >
+        <p className="eyebrow">Remover do acervo</p>
+        <h2 id={`${id}-title`}>{title}</h2>
+        <p id={`${id}-description`} className="delete-dialog-description">
+          {description}
+        </p>
+        {error && (
+          <p className="field-error" role="alert">
+            {error}
+          </p>
         )}
-      </div>
-
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          />
-          <div className="relative z-10 w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6 shadow-2xl">
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-950/50">
-                <AlertTriangle className="h-5 w-5 text-red-400" />
-              </div>
-              <div>
-                <h3 className="font-fantasy text-lg font-semibold text-[var(--color-text-primary)]">
-                  {title}
-                </h3>
-                <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
-                  {description}
-                </p>
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setOpen(false)}
-                className="rounded-lg border border-[var(--color-border)] px-4 py-2 text-sm text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirm}
-                disabled={loading}
-                className="rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-60 transition-colors"
-              >
-                {loading ? "Excluindo..." : "Excluir"}
-              </button>
-            </div>
-          </div>
+        <p className="form-help" role="status">
+          {loading
+            ? "Excluindo o registro…"
+            : "Esta ação não pode ser desfeita."}
+        </p>
+        <div className="form-actions">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            autoFocus
+            disabled={loading}
+            onClick={() => dialogRef.current?.close()}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="btn btn-danger"
+            disabled={loading}
+            onClick={() => void confirm()}
+          >
+            <Trash2 size={16} aria-hidden="true" />
+            {loading ? "Excluindo…" : "Excluir"}
+          </button>
         </div>
-      )}
+      </dialog>
     </>
   );
 }

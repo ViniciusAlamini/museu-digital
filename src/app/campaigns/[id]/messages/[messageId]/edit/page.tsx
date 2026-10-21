@@ -4,7 +4,7 @@ import { updateMessage, deleteMessage } from "@/app/actions/messages";
 import { MessageForm } from "@/components/message/MessageForm";
 import { DeleteDialog } from "@/components/shared/DeleteDialog";
 import Link from "next/link";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 export default async function EditMessagePage({
   params,
@@ -12,7 +12,7 @@ export default async function EditMessagePage({
   params: Promise<{ id: string; messageId: string }>;
 }) {
   const { id, messageId } = await params;
-  
+
   const [message, characters] = await Promise.all([
     prisma.message.findUnique({ where: { id: messageId } }),
     prisma.character.findMany({
@@ -25,12 +25,9 @@ export default async function EditMessagePage({
   if (!message || message.campaignId !== id) notFound();
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-8 flex items-center justify-between">
-        <Link
-          href={`/campaigns/${id}/messages`}
-          className="inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
-        >
+    <div className="form-page">
+      <div className="detail-actions">
+        <Link href={`/campaigns/${id}/messages`} className="btn btn-ghost">
           <ArrowLeft className="h-4 w-4" />
           Voltar
         </Link>
@@ -41,19 +38,12 @@ export default async function EditMessagePage({
             "use server";
             await deleteMessage(messageId, id);
           }}
-          trigger={
-            <button className="flex items-center gap-2 rounded-lg border border-red-900/40 px-3 py-2 text-sm text-red-400 hover:border-red-700 hover:bg-red-950/20 transition-colors">
-              <Trash2 className="h-4 w-4" />
-              Excluir
-            </button>
-          }
         />
       </div>
-      
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8">
-        <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)] mb-8">
-          Editar Mensagem
-        </h1>
+
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Editar Mensagem</h1>
         <MessageForm
           action={updateMessage.bind(null, messageId, id)}
           defaultValues={message}

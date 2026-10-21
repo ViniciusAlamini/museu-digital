@@ -11,6 +11,7 @@ export default async function NewArtworkFolderPage(props: {
 }) {
   const { id } = await props.params;
   const { parentId } = await props.searchParams;
+  const backHref = `/campaigns/${id}/artworks${parentId ? `?folder=${parentId}` : ""}`;
 
   const folders = await prisma.artworkFolder.findMany({
     where: { campaignId: id },
@@ -19,30 +20,31 @@ export default async function NewArtworkFolderPage(props: {
 
   const action = async (formData: FormData) => {
     "use server";
-    await createArtworkFolder(id, formData.get("parentFolderId") as string | undefined, formData);
-    redirect(`/campaigns/${id}/artworks${parentId ? `?folder=${parentId}` : ""}`);
+    const selectedParent =
+      (formData.get("parentFolderId") as string) || undefined;
+    await createArtworkFolder(id, selectedParent, formData);
+    redirect(
+      `/campaigns/${id}/artworks${selectedParent ? `?folder=${selectedParent}` : ""}`,
+    );
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Link
-          href={`/campaigns/${id}/artworks`}
-          className="p-2 rounded-lg hover:bg-[var(--color-bg-elevated)] transition-colors text-[var(--color-text-secondary)]"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <h2 className="font-fantasy text-2xl font-semibold text-[var(--color-text-primary)]">
-          Nova Pasta
-        </h2>
-      </div>
-
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-6">
+    <div className="form-page">
+      <Link href={backHref} className="btn btn-ghost mb-6">
+        <ArrowLeft className="h-5 w-5" />
+        Voltar à galeria
+      </Link>
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Nova pasta de desenhos</h1>
         <ArtworkFolderForm
           action={action}
-          folders={folders.map((f: { id: string; name: string }) => ({ id: f.id, name: f.name }))}
+          folders={folders.map((f: { id: string; name: string }) => ({
+            id: f.id,
+            name: f.name,
+          }))}
           currentParentId={parentId}
-          cancelHref={`/campaigns/${id}/artworks`}
+          cancelHref={backHref}
         />
       </div>
     </div>

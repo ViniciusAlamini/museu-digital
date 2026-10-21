@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { unlink } from "fs/promises";
 import path from "path";
+import { recordAudit } from "@/lib/audit";
 
 export async function createCharacter(campaignId: string, formData: FormData) {
   const raw = {
@@ -22,6 +23,7 @@ export async function createCharacter(campaignId: string, formData: FormData) {
   const character = await prisma.character.create({
     data: { ...validated, campaignId },
   });
+  await recordAudit(campaignId, "criou", "Personagem", character.name);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   redirect(`/campaigns/${campaignId}/characters/${character.id}`);
@@ -47,6 +49,7 @@ export async function updateCharacter(
     where: { id },
     data: validated,
   });
+  await recordAudit(campaignId, "editou", "Personagem", validated.name);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   revalidatePath(`/campaigns/${campaignId}/characters/${id}`);
@@ -55,6 +58,7 @@ export async function updateCharacter(
 
 export async function deleteCharacter(id: string, campaignId: string) {
   const character = await prisma.character.findUnique({ where: { id } });
+  if (character) await recordAudit(campaignId, "excluiu", "Personagem", character.name);
 
   if (character?.image) {
     try {

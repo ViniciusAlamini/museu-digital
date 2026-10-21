@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { recordAudit } from "@/lib/audit";
 
 export async function createDiaryEntry(campaignId: string, formData: FormData) {
   const title = formData.get("title") as string;
@@ -26,6 +27,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
       relatedCharacterId: relatedCharacterId || null,
     },
   });
+  await recordAudit(campaignId, "criou", "Registro", title);
 
   const query = folderId ? `?folderId=${folderId}` : "";
   revalidatePath(`/campaigns/${campaignId}/diary`);
@@ -54,6 +56,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
       relatedCharacterId: relatedCharacterId || null,
     },
   });
+  await recordAudit(campaignId, "editou", "Registro", title);
 
   const query = folderId ? `?folderId=${folderId}` : "";
   revalidatePath(`/campaigns/${campaignId}/diary`);
@@ -69,6 +72,8 @@ export async function moveDiaryEntry(entryId: string, campaignId: string, newFol
 }
 
 export async function deleteDiaryEntry(entryId: string, campaignId: string, currentFolderId: string | null) {
+  const entry = await prisma.diaryEntry.findUnique({ where: { id: entryId } });
+  if (entry) await recordAudit(campaignId, "excluiu", "Registro", entry.title);
   await prisma.diaryEntry.delete({ where: { id: entryId } });
   revalidatePath(`/campaigns/${campaignId}/diary`);
 }

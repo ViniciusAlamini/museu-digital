@@ -1,8 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
+import {
+  formDataFromValues,
+  FormFeedback,
+  useFormFeedback,
+} from "@/components/shared/FormFeedback";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { campaignSchema, CampaignFormValues } from "@/lib/validations";
 import { ImageUpload } from "@/components/shared/ImageUpload";
@@ -20,13 +25,14 @@ export function CampaignForm({
   submitLabel = "Criar Campanha",
 }: CampaignFormProps) {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const { formId, failure, saved, submit } = useFormFeedback(action);
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<CampaignFormValues>({
     resolver: zodResolver(campaignSchema),
@@ -41,87 +47,167 @@ export function CampaignForm({
     },
   });
 
-  const coverImage = watch("coverImage");
+  const coverImage = useWatch({ control, name: "coverImage" });
 
-  async function onSubmit() {
-    const formData = new FormData(formRef.current!);
+  async function onSubmit(values: CampaignFormValues) {
+    if (uploadingImage) return;
+    const formData = formDataFromValues(values);
     formData.set("coverImage", coverImage ?? "");
-    await action(formData);
+    await submit(formData);
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors";
-  const labelClass = "block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5";
-  const errorClass = "mt-1 text-xs text-red-400";
+  const inputClass = "field";
+  const labelClass = "field-label";
+  const errorClass = "field-error";
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid gap-6 sm:grid-cols-2">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="archive-form"
+      noValidate
+      aria-busy={isSubmitting}
+    >
+      <p className="form-intro">
+        Os campos com * são obrigatórios. Registre os detalhes que deseja
+        guardar no acervo.
+      </p>
+      <div className="form-grid">
         <div>
-          <label className={labelClass}>Nome da Campanha *</label>
+          <label htmlFor={`${formId}-name`} className={labelClass}>
+            Nome da Campanha *
+          </label>
           <input
+            id={`${formId}-name`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? `${formId}-name-error` : undefined}
             {...register("name")}
             placeholder="Ex: A Maldição de Strahd"
             className={inputClass}
           />
-          {errors.name && <p className={errorClass}>{errors.name.message}</p>}
+          {errors.name && (
+            <p id={`${formId}-name-error`} className={errorClass} role="alert">
+              {errors.name.message}
+            </p>
+          )}
         </div>
         <div>
-          <label className={labelClass}>Sistema de RPG *</label>
+          <label htmlFor={`${formId}-system`} className={labelClass}>
+            Sistema de RPG *
+          </label>
           <input
+            id={`${formId}-system`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.system)}
+            aria-describedby={
+              errors.system ? `${formId}-system-error` : undefined
+            }
             {...register("system")}
             placeholder="Ex: D&D 5e, Pathfinder, Vampire"
             className={inputClass}
           />
-          {errors.system && <p className={errorClass}>{errors.system.message}</p>}
+          {errors.system && (
+            <p
+              id={`${formId}-system-error`}
+              className={errorClass}
+              role="alert"
+            >
+              {errors.system.message}
+            </p>
+          )}
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>Descrição *</label>
+        <label htmlFor={`${formId}-description`} className={labelClass}>
+          Descrição *
+        </label>
         <textarea
+          id={`${formId}-description`}
+          aria-required="true"
+          aria-invalid={Boolean(errors.description)}
+          aria-describedby={
+            errors.description ? `${formId}-description-error` : undefined
+          }
           {...register("description")}
           rows={4}
           placeholder="Descreva a campanha..."
-          className={`${inputClass} resize-none`}
+          className={inputClass}
         />
         {errors.description && (
-          <p className={errorClass}>{errors.description.message}</p>
+          <p
+            id={`${formId}-description-error`}
+            className={errorClass}
+            role="alert"
+          >
+            {errors.description.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className={labelClass}>Data de Início *</label>
+        <label htmlFor={`${formId}-startDate`} className={labelClass}>
+          Data de Início *
+        </label>
         <input
+          id={`${formId}-startDate`}
+          aria-required="true"
+          aria-invalid={Boolean(errors.startDate)}
+          aria-describedby={
+            errors.startDate ? `${formId}-startDate-error` : undefined
+          }
           {...register("startDate")}
           type="date"
           className={inputClass}
         />
         {errors.startDate && (
-          <p className={errorClass}>{errors.startDate.message}</p>
+          <p
+            id={`${formId}-startDate-error`}
+            className={errorClass}
+            role="alert"
+          >
+            {errors.startDate.message}
+          </p>
         )}
       </div>
 
       <ImageUpload
+        onUploadChange={setUploadingImage}
         value={coverImage}
-        onChange={(url) => setValue("coverImage", url)}
+        onChange={(url) =>
+          setValue("coverImage", url, {
+            shouldValidate: true,
+            shouldDirty: true,
+          })
+        }
         folder="campaigns"
         label="Imagem de Capa"
         aspectRatio="wide"
       />
 
-      <div className="flex gap-3 pt-2">
+      <FormFeedback
+        failure={failure}
+        saved={saved}
+        busy={isSubmitting}
+        invalid={Object.keys(errors).length > 0}
+      />
+
+      <div className="form-actions">
         <button
           type="button"
-          onClick={() => router.back()}
-          className="flex-1 rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+          onClick={() =>
+            router.push(
+              defaultValues?.id ? `/campaigns/${defaultValues.id}` : "/",
+            )
+          }
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="flex-1 rounded-lg bg-[var(--color-accent-purple)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 transition-colors"
+          disabled={isSubmitting || uploadingImage}
+          className="btn btn-primary"
         >
           {isSubmitting ? "Salvando..." : submitLabel}
         </button>

@@ -11,18 +11,14 @@ export default async function NewPostPage({
   const { id } = await params;
 
   return (
-    <div className="max-w-3xl">
-      <Link
-        href={`/campaigns/${id}/posts`}
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
-      >
+    <div className="form-page">
+      <Link href={`/campaigns/${id}/posts`} className="btn btn-ghost mb-6">
         <ArrowLeft className="h-4 w-4" />
         Voltar
       </Link>
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8">
-        <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)] mb-8">
-          Novo Post
-        </h1>
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Novo Post</h1>
         <PostForm
           action={createPost.bind(null, id)}
           cancelHref={`/campaigns/${id}/posts`}

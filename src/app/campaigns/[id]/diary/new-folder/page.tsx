@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { createDiaryFolder } from "@/app/actions/diaryFolders";
 import { DiaryFolderForm } from "@/components/diary/DiaryFolderForm";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 export default async function NewDiaryFolderPage({
@@ -20,21 +21,30 @@ export default async function NewDiaryFolderPage({
     orderBy: { name: "asc" },
   });
 
+  async function saveFolder(formData: FormData) {
+    "use server";
+    const selectedParent =
+      (formData.get("parentFolderId") as string) || undefined;
+    await createDiaryFolder(id, selectedParent, formData);
+    redirect(
+      `/campaigns/${id}/diary${selectedParent ? `?folderId=${selectedParent}` : ""}`,
+    );
+  }
+
   return (
-    <div className="max-w-2xl">
+    <div className="form-page">
       <Link
         href={`/campaigns/${id}/diary${parentId ? `?folderId=${parentId}` : ""}`}
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+        className="btn btn-ghost mb-6"
       >
         <ArrowLeft className="h-4 w-4" />
         Voltar para o Diário
       </Link>
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8">
-        <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)] mb-8">
-          Nova Pasta
-        </h1>
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Nova Pasta</h1>
         <DiaryFolderForm
-          action={createDiaryFolder.bind(null, id, parentId)}
+          action={saveFolder}
           folders={folders}
           currentParentId={parentId}
           cancelHref={`/campaigns/${id}/diary${parentId ? `?folderId=${parentId}` : ""}`}

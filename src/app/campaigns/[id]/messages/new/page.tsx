@@ -10,7 +10,7 @@ export default async function NewMessagePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  
+
   const characters = await prisma.character.findMany({
     where: { campaignId: id },
     select: { id: true, name: true },
@@ -18,18 +18,14 @@ export default async function NewMessagePage({
   });
 
   return (
-    <div className="max-w-2xl">
-      <Link
-        href={`/campaigns/${id}/messages`}
-        className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
-      >
+    <div className="form-page">
+      <Link href={`/campaigns/${id}/messages`} className="btn btn-ghost mb-6">
         <ArrowLeft className="h-4 w-4" />
         Voltar
       </Link>
-      <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-8">
-        <h1 className="font-fantasy text-3xl font-bold text-[var(--color-text-primary)] mb-8">
-          Nova Mensagem
-        </h1>
+      <div className="paper">
+        <p className="eyebrow">À mesa do escriba</p>
+        <h1 className="form-title">Nova Mensagem</h1>
         <MessageForm
           action={createMessage.bind(null, id)}
           characters={characters}

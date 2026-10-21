@@ -1,8 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
+import {
+  formDataFromValues,
+  FormFeedback,
+  useFormFeedback,
+} from "@/components/shared/FormFeedback";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { messageSchema, MessageFormValues } from "@/lib/validations";
 import { ImageUpload } from "@/components/shared/ImageUpload";
@@ -32,13 +37,14 @@ export function MessageForm({
   cancelHref,
 }: MessageFormProps) {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const { formId, failure, saved, submit } = useFormFeedback(action);
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<MessageFormValues>({
     resolver: zodResolver(messageSchema),
@@ -55,90 +61,188 @@ export function MessageForm({
     },
   });
 
-  const image = watch("image");
+  const image = useWatch({ control, name: "image" });
 
-  async function onSubmit() {
-    const formData = new FormData(formRef.current!);
+  async function onSubmit(values: MessageFormValues) {
+    if (uploadingImage) return;
+    const formData = formDataFromValues(values);
     formData.set("image", image ?? "");
-    await action(formData);
+    await submit(formData);
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-4 py-2.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-accent-purple)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-purple)] transition-colors";
-  const labelClass = "block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5";
-  const errorClass = "mt-1 text-xs text-red-400";
+  const inputClass = "field";
+  const labelClass = "field-label";
+  const errorClass = "field-error";
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid gap-6 sm:grid-cols-2">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="archive-form"
+      noValidate
+      aria-busy={isSubmitting}
+    >
+      <p className="form-intro">
+        Os campos com * são obrigatórios. Registre os detalhes que deseja
+        guardar no acervo.
+      </p>
+      <div className="form-grid">
         <div>
-          <label className={labelClass}>Autor *</label>
-          <input {...register("author")} placeholder="Seu nome" className={inputClass} />
-          {errors.author && <p className={errorClass}>{errors.author.message}</p>}
+          <label htmlFor={`${formId}-author`} className={labelClass}>
+            Autor *
+          </label>
+          <input
+            id={`${formId}-author`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.author)}
+            aria-describedby={
+              errors.author ? `${formId}-author-error` : undefined
+            }
+            {...register("author")}
+            placeholder="Seu nome"
+            className={inputClass}
+          />
+          {errors.author && (
+            <p
+              id={`${formId}-author-error`}
+              className={errorClass}
+              role="alert"
+            >
+              {errors.author.message}
+            </p>
+          )}
         </div>
         <div>
-          <label className={labelClass}>Tipo de Mensagem *</label>
-          <select {...register("type")} className={inputClass}>
+          <label htmlFor={`${formId}-type`} className={labelClass}>
+            Tipo de Mensagem *
+          </label>
+          <select
+            id={`${formId}-type`}
+            aria-required="true"
+            aria-invalid={Boolean(errors.type)}
+            aria-describedby={errors.type ? `${formId}-type-error` : undefined}
+            {...register("type")}
+            className={inputClass}
+          >
             {MESSAGE_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
-          {errors.type && <p className={errorClass}>{errors.type.message}</p>}
+          {errors.type && (
+            <p id={`${formId}-type-error`} className={errorClass} role="alert">
+              {errors.type.message}
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="form-grid">
         <div>
-          <label className={labelClass}>Vincular Personagem (Opcional)</label>
-          <select {...register("characterId")} className={inputClass}>
+          <label htmlFor={`${formId}-characterId`} className={labelClass}>
+            Vincular Personagem (Opcional)
+          </label>
+          <select
+            id={`${formId}-characterId`}
+            aria-invalid={Boolean(errors.characterId)}
+            aria-describedby={
+              errors.characterId ? `${formId}-characterId-error` : undefined
+            }
+            {...register("characterId")}
+            className={inputClass}
+          >
             <option value="">Nenhum</option>
             {characters.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass}>Data do Acontecimento (Opcional)</label>
-          <input {...register("eventDate")} type="date" className={inputClass} />
+          <label htmlFor={`${formId}-eventDate`} className={labelClass}>
+            Data do Acontecimento (Opcional)
+          </label>
+          <input
+            id={`${formId}-eventDate`}
+            aria-invalid={Boolean(errors.eventDate)}
+            aria-describedby={
+              errors.eventDate ? `${formId}-eventDate-error` : undefined
+            }
+            {...register("eventDate")}
+            type="date"
+            className={inputClass}
+          />
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>Título (Opcional)</label>
-        <input {...register("title")} placeholder="Resumo do pensamento ou relato" className={inputClass} />
+        <label htmlFor={`${formId}-title`} className={labelClass}>
+          Título (Opcional)
+        </label>
+        <input
+          id={`${formId}-title`}
+          aria-invalid={Boolean(errors.title)}
+          aria-describedby={errors.title ? `${formId}-title-error` : undefined}
+          {...register("title")}
+          placeholder="Resumo do pensamento ou relato"
+          className={inputClass}
+        />
       </div>
 
       <div>
-        <label className={labelClass}>Conteúdo da Mensagem *</label>
+        <label htmlFor={`${formId}-content`} className={labelClass}>
+          Conteúdo da Mensagem *
+        </label>
         <textarea
+          id={`${formId}-content`}
+          aria-required="true"
+          aria-invalid={Boolean(errors.content)}
+          aria-describedby={
+            errors.content ? `${formId}-content-error` : undefined
+          }
           {...register("content")}
           rows={6}
           placeholder="O que está acontecendo..."
           className={inputClass}
         />
-        {errors.content && <p className={errorClass}>{errors.content.message}</p>}
+        {errors.content && (
+          <p id={`${formId}-content-error`} className={errorClass} role="alert">
+            {errors.content.message}
+          </p>
+        )}
       </div>
 
       <ImageUpload
+        onUploadChange={setUploadingImage}
         value={image}
-        onChange={(url) => setValue("image", url)}
+        onChange={(url) =>
+          setValue("image", url, { shouldValidate: true, shouldDirty: true })
+        }
         folder="posts"
         label="Imagem anexada (opcional)"
         aspectRatio="wide"
       />
 
-      <div className="flex gap-3 pt-2">
+      <FormFeedback
+        failure={failure}
+        saved={saved}
+        busy={isSubmitting}
+        invalid={Object.keys(errors).length > 0}
+      />
+
+      <div className="form-actions">
         <button
           type="button"
           onClick={() => router.push(cancelHref)}
-          className="flex-1 rounded-lg border border-[var(--color-border)] px-4 py-2.5 text-sm font-medium text-[var(--color-text-secondary)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+          className="btn btn-secondary"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="flex-1 rounded-lg bg-[var(--color-accent-purple)] px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-60 transition-colors"
+          disabled={isSubmitting || uploadingImage}
+          className="btn btn-primary"
         >
           {isSubmitting ? "Enviando..." : submitLabel}
         </button>

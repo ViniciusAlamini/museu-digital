@@ -1,13 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { DiaryExplorer } from "@/components/diary/DiaryExplorer";
-
+import { PageHeader } from "@/components/shared/PageHeader";
 export default async function DiaryPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
   const [folders, entries] = await Promise.all([
     prisma.diaryFolder.findMany({
       where: { campaignId: id },
@@ -18,13 +17,14 @@ export default async function DiaryPage({
       orderBy: { date: "desc" },
     }),
   ]);
-
   return (
-    <div className="space-y-6">
-      <h2 className="font-fantasy text-2xl font-semibold text-[var(--color-text-primary)]">
-        Diário da Campanha
-      </h2>
+    <section>
+      <PageHeader
+        eyebrow={`O códice · ${entries.length} registros`}
+        title="Diário de viagem"
+        description="Uma página para cada lembrança. Um índice para reencontrar o caminho."
+      />
       <DiaryExplorer campaignId={id} folders={folders} entries={entries} />
-    </div>
+    </section>
   );
 }

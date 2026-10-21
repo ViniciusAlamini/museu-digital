@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Folder, FolderOpen, FileText, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { FileText } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { DiaryFolder, DiaryEntry } from "@/types";
+import type { DiaryFolder, DiaryEntry } from "@/types";
 import { deleteDiaryFolder } from "@/app/actions/diaryFolders";
-import { deleteDiaryEntry } from "@/app/actions/diaryEntries";
-import { DeleteDialog } from "@/components/shared/DeleteDialog";
+import { FolderExplorer } from "@/components/shared/FolderExplorer";
 
 interface DiaryExplorerProps {
   campaignId: string;
@@ -15,163 +13,57 @@ interface DiaryExplorerProps {
   entries: DiaryEntry[];
 }
 
-export function DiaryExplorer({ campaignId, folders, entries }: DiaryExplorerProps) {
-  const searchParams = useSearchParams();
-  const currentFolderId = searchParams.get("folderId") || null;
-
-  const currentFolder = folders.find(f => f.id === currentFolderId);
-  const currentSubfolders = folders.filter(f => (f.parentFolderId || null) === currentFolderId);
-  const currentEntries = entries.filter(e => (e.folderId || null) === currentFolderId);
-
-  // Helper to build tree recursively
-  const renderTree = (parentId: string | null, depth = 0) => {
-    const children = folders.filter(f => (f.parentFolderId || null) === parentId);
-    if (!children.length) return null;
-
-    return (
-      <ul className="space-y-1">
-        {children.map(folder => {
-          const isActive = currentFolderId === folder.id;
-          return (
-            <li key={folder.id}>
-              <Link
-                href={`/campaigns/${campaignId}/diary?folderId=${folder.id}`}
-                className={`flex items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors ${
-                  isActive 
-                    ? "bg-[var(--color-accent-purple)]/20 text-[var(--color-accent-purple)]" 
-                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-elevated)] hover:text-[var(--color-text-primary)]"
-                }`}
-                style={{ paddingLeft: `${depth * 12 + 8}px` }}
-              >
-                {isActive ? <FolderOpen className="h-4 w-4 shrink-0" /> : <Folder className="h-4 w-4 shrink-0" />}
-                <span className="truncate">{folder.name}</span>
-              </Link>
-              {renderTree(folder.id, depth + 1)}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  };
+export function DiaryExplorer({
+  campaignId,
+  folders,
+  entries,
+}: DiaryExplorerProps) {
+  const basePath = `/campaigns/${campaignId}/diary`;
 
   return (
-    <div className="flex h-[700px] rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] overflow-hidden">
-      
-      {/* Sidebar - Folder Tree */}
-      <div className="w-64 shrink-0 border-r border-[var(--color-border)] bg-[var(--color-bg-elevated)]/50 hidden md:flex flex-col">
-        <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between">
-          <span className="font-fantasy font-semibold text-[var(--color-text-primary)]">Pastas</span>
-          <Link
-            href={`/campaigns/${campaignId}/diary/new-folder${currentFolderId ? `?parentId=${currentFolderId}` : ""}`}
-            className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent-purple)] transition-colors"
-            title="Nova Pasta"
-          >
-            <Plus className="h-4 w-4" />
-          </Link>
+    <FolderExplorer
+      basePath={basePath}
+      folderParam="folderId"
+      folders={folders}
+      items={entries}
+      rootLabel="Raiz do diário"
+      itemLabel="entradas"
+      newItemPath="new-entry"
+      newItemLabel="Nova entrada"
+      emptyTitle="As próximas páginas esperam sua história"
+      emptyDescription="Registre um acontecimento da campanha ou crie uma pasta para organizar as entradas deste diário."
+      onDeleteFolder={(folderId) => deleteDiaryFolder(folderId, campaignId)}
+    >
+      {(folderId) => (
+        <div className="explorer-entries">
+          {entries
+            .filter((entry) => (entry.folderId || null) === folderId)
+            .map((entry, index) => (
+              <Link
+                key={entry.id}
+                href={`${basePath}/${entry.id}`}
+                className="explorer-entry"
+              >
+                <span className="folio-number" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="explorer-entry-content">
+                  <span className="eyebrow">
+                    <FileText size={13} aria-hidden="true" /> Registro do diário
+                  </span>
+                  <h3>{entry.title}</h3>
+                  <p>
+                    <time dateTime={new Date(entry.date).toISOString()}>
+                      {formatDate(entry.date)}
+                    </time>
+                    <span aria-hidden="true"> · </span>
+                    {entry.author}
+                  </p>
+                </div>
+              </Link>
+            ))}
         </div>
-        <div className="flex-1 overflow-y-auto p-2">
-          <Link
-            href={`/campaigns/${campaignId}/diary`}
-            className={`flex items-center gap-2 rounded px-2 py-1.5 text-sm font-medium mb-2 transition-colors ${
-              !currentFolderId 
-                ? "bg-[var(--color-accent-purple)]/20 text-[var(--color-accent-purple)]" 
-                : "text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)]"
-            }`}
-          >
-            {!currentFolderId ? <FolderOpen className="h-4 w-4" /> : <Folder className="h-4 w-4" />}
-            Raiz do Diário
-          </Link>
-          {renderTree(null)}
-        </div>
-      </div>
-
-      {/* Main Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[var(--color-bg-card)]">
-        {/* Breadcrumb */}
-        <div className="h-14 border-b border-[var(--color-border)] px-6 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-primary)] truncate">
-            {currentFolder ? currentFolder.name : "Raiz do Diário"}
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Botão de Nova Pasta visível apenas no mobile */}
-            <Link
-              href={`/campaigns/${campaignId}/diary/new-folder${currentFolderId ? `?parentId=${currentFolderId}` : ""}`}
-              className="flex items-center gap-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-elevated)] px-3 py-1.5 text-xs font-semibold text-[var(--color-text-primary)] hover:bg-[var(--color-border-hover)] transition-colors md:hidden"
-            >
-              <Plus className="h-3.5 w-3.5" /> Pasta
-            </Link>
-
-            <Link
-              href={`/campaigns/${campaignId}/diary/new-entry${currentFolderId ? `?folderId=${currentFolderId}` : ""}`}
-              className="flex items-center gap-1.5 rounded bg-[var(--color-accent-purple)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-purple-700 transition-colors"
-            >
-              <Plus className="h-3.5 w-3.5" /> Entrada
-            </Link>
-            
-            {currentFolder && (
-              <DeleteDialog
-                title="Excluir Pasta"
-                description={`Tem certeza que deseja excluir a pasta "${currentFolder.name}" e TUDO que há nela?`}
-                onConfirm={async () => {
-                  await deleteDiaryFolder(currentFolder.id, campaignId);
-                }}
-                trigger={
-                  <button className="p-1.5 rounded border border-red-900/40 text-red-400 hover:bg-red-950/20 transition-colors" title="Excluir Pasta">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                }
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {(currentSubfolders.length === 0 && currentEntries.length === 0) ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-[var(--color-text-muted)] space-y-2">
-              <FolderOpen className="h-10 w-10 opacity-20" />
-              <p className="text-sm">Esta pasta está vazia</p>
-            </div>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Folders first */}
-              {currentSubfolders.map(folder => (
-                <Link
-                  key={folder.id}
-                  href={`/campaigns/${campaignId}/diary?folderId=${folder.id}`}
-                  className="group flex items-center gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 hover:border-[var(--color-accent-purple)] transition-colors"
-                >
-                  <Folder className="h-8 w-8 text-[var(--color-accent-gold-dark)]" />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-gold-light)] transition-colors">
-                      {folder.name}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-
-              {/* Entries next */}
-              {currentEntries.map(entry => (
-                <Link
-                  key={entry.id}
-                  href={`/campaigns/${campaignId}/diary/${entry.id}`}
-                  className="group flex items-start gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-elevated)] p-4 hover:border-[var(--color-border-hover)] transition-colors"
-                >
-                  <FileText className="h-8 w-8 shrink-0 text-blue-500/70" />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate font-semibold text-[var(--color-text-primary)] group-hover:text-blue-400 transition-colors">
-                      {entry.title}
-                    </div>
-                    <div className="text-xs text-[var(--color-text-muted)] mt-1 truncate">
-                      {formatDate(entry.date)} • {entry.author}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+      )}
+    </FolderExplorer>
   );
 }
