@@ -1,0 +1,265 @@
+/* The library surrounds each campaign; the pages keep their own world palette. */
+.app-shell:not([data-campaign-theme]) {
+  --parchment: #211c18;
+  --paper: #2c2520;
+  --inset: #191512;
+  --ink: #eee3cc;
+  --ink-secondary: #c2b299;
+  --ink-muted: #b0a087;
+  --wine: #d1aa70;
+  --wine-hover: #e3bf89;
+  --brass: #c9a66d;
+  --rule: rgb(211 177 121 / 18%);
+  --rule-strong: rgb(211 177 121 / 35%);
+  --paper-shadow: 0 10px 30px #08060433;
+  background: var(--parchment);
+  color: var(--ink);
+}
+body:has(.app-shell:not([data-campaign-theme])) {
+  background: #211c18;
+  color: #eee3cc;
+}
+.app-shell:not([data-campaign-theme]) .archive-main {
+  background:
+    radial-gradient(ellipse at 50% 0, #b58a4820, transparent 55%),
+    repeating-linear-gradient(92deg, #ffffff02 0 1px, transparent 1px 5px),
+    var(--parchment);
+}
+.app-shell :is(.archive-sidebar, .mobile-dialog) {
+  --parchment: #1b1714;
+  --paper: #29221c;
+  --inset: #120f0d;
+  --ink: #eee3cc;
+  --ink-secondary: #c2b299;
+  --ink-muted: #b0a087;
+  --wine: #d1aa70;
+  --wine-hover: #e3bf89;
+  --brass: #c9a66d;
+  --rule: rgb(211 177 121 / 18%);
+  --rule-strong: rgb(211 177 121 / 35%);
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, #0004, transparent 14%, transparent 92%, #0005),
+    repeating-linear-gradient(90deg, #bd915003 0 2px, transparent 2px 7px),
+    var(--parchment);
+  border-color: var(--rule-strong);
+}
+.app-shell .archive-sidebar .archive-brand strong,
+.app-shell .mobile-dialog .archive-brand strong {
+  font-family: var(--font-cormorant), Georgia, serif;
+  letter-spacing: -.025em;
+}
+.app-shell :is(.archive-sidebar, .mobile-dialog) .sidebar-link:is(:hover, [aria-current="page"]) {
+  color: var(--ink);
+  background: rgb(211 177 121 / 9%);
+}
+.app-shell :is(.archive-sidebar, .mobile-dialog) .sidebar-link[aria-current="page"] {
+  box-shadow: inset 2px 0 var(--brass);
+}
+.app-shell:not([data-campaign-theme]) .archive-topbar {
+  background: #211c18f5;
+  border-bottom-color: var(--rule);
+}
+.app-shell:not([data-campaign-theme]) .btn-primary {
+  background: #c9a66d;
+  color: #21180f;
+  border-color: #c9a66d;
+}
+.app-shell:not([data-campaign-theme]) .btn-primary:hover {
+  background: #dfbd88;
+}
+.app-shell:not([data-campaign-theme]) .search-field .field {
+  background: var(--inset);
+}
+.collection-heading h1 {
+  font-size: clamp(42px, 5vw, 66px);
+  max-width: 800px;
+}
+.collection-heading .eyebrow {
+  letter-spacing: .2em;
+}
+.collection-stats {
+  padding-block: 18px;
+  margin-bottom: 28px;
+}
+.campaign-grid {
+  gap: 48px clamp(32px, 6vw, 80px);
+  max-width: 1000px;
+  margin-inline: auto;
+  padding: 24px 8px 0;
+}
+.campaign-volume {
+  --book-cloth: #35444b;
+  --book-foil: #d4b782;
+  --book-edge: #d9c7a1;
+}
+.campaign-volume[data-book-theme="strahd"] {
+  --book-cloth: #32131e;
+  --book-foil: #e4c58c;
+}
+.campaign-volume[data-book-theme="icewind"] {
+  --book-cloth: #203b4b;
+  --book-foil: #d5eaf0;
+  --book-edge: #bfd5db;
+}
+.campaign-book-display {
+  position: relative;
+  perspective: 1400px;
+  padding: 0 12px 16px;
+  max-width: 390px;
+  margin-inline: auto;
+}
+.campaign-book-display::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline: 8%;
+  height: 20px;
+  border-radius: 50%;
+  background: #0008;
+  filter: blur(12px);
+  pointer-events: none;
+}
+.campaign-book-display .campaign-cover {
+  aspect-ratio: 2 / 3;
+  border-radius: 3px 6px 6px 3px;
+  border: 1px solid color-mix(in srgb, var(--book-foil) 50%, var(--book-cloth));
+  background: var(--book-cloth);
+  transform: rotateY(-7deg);
+  transform-origin: left center;
+  box-shadow: 6px 2px 0 -1px var(--book-edge), 8px 3px 0 var(--book-cloth), 14px 18px 28px #0007;
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+.campaign-book-display .campaign-cover::after {
+  z-index: 2;
+  border: none;
+  background:
+    linear-gradient(90deg, #0007, #ffffff14 2%, #0006 4%, transparent 7%, transparent 96%, #0005),
+    linear-gradient(180deg, #08070bb3, transparent 28%, transparent 50%, #08070bba 77%, #08070bf0);
+}
+.campaign-volume:is(:hover, :focus-visible) .campaign-cover {
+  transform: rotateY(-2deg) translateY(-6px);
+  box-shadow: 5px 2px 0 -1px var(--book-edge), 7px 3px 0 var(--book-cloth), 12px 24px 34px #0008;
+}
+.campaign-volume .campaign-cover img {
+  object-position: center;
+  transform: none;
+}
+.campaign-volume:hover .campaign-cover img {
+  transform: none;
+}
+.campaign-cover .campaign-cover-number {
+  z-index: 3;
+  top: 22px;
+  left: 30px;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: .2em;
+  color: var(--book-foil);
+}
+.book-cover-type {
+  position: absolute;
+  z-index: 3;
+  inset: 56px 30px 28px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: var(--book-foil);
+  pointer-events: none;
+}
+.book-cover-series,
+.book-cover-edition {
+  font-size: 8px;
+  letter-spacing: .22em;
+  line-height: 1.8;
+  text-transform: uppercase;
+  text-shadow: 0 2px 5px #000;
+}
+.book-cover-title {
+  margin-top: auto;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: clamp(24px, 3vw, 38px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+  text-shadow: 0 2px 10px #000, 0 1px 1px #000;
+}
+[data-book-theme="strahd"] .book-cover-title {
+  font-family: "Unifraktur Cook", Georgia, serif;
+  font-size: clamp(38px, 4vw, 56px);
+  line-height: 1.05;
+}
+.book-cover-flourish {
+  margin: 12px 0 8px;
+  font-size: 15px;
+}
+.book-cover-corners {
+  position: absolute;
+  z-index: 4;
+  inset: 13px 13px 13px 20px;
+  border: 1px solid color-mix(in srgb, var(--book-foil) 40%, transparent);
+  background:
+    linear-gradient(var(--book-foil), var(--book-foil)) top left / 24px 2px,
+    linear-gradient(var(--book-foil), var(--book-foil)) top left / 2px 24px,
+    linear-gradient(var(--book-foil), var(--book-foil)) top right / 24px 2px,
+    linear-gradient(var(--book-foil), var(--book-foil)) top right / 2px 24px,
+    linear-gradient(var(--book-foil), var(--book-foil)) bottom left / 24px 2px,
+    linear-gradient(var(--book-foil), var(--book-foil)) bottom left / 2px 24px,
+    linear-gradient(var(--book-foil), var(--book-foil)) bottom right / 24px 2px,
+    linear-gradient(var(--book-foil), var(--book-foil)) bottom right / 2px 24px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.campaign-cover .archive-fallback {
+  background:
+    radial-gradient(ellipse at 60% 25%, #7fb7bd20, transparent 60%),
+    repeating-linear-gradient(40deg, #ffffff04 0 1px, transparent 1px 4px),
+    var(--book-cloth);
+  color: var(--book-foil);
+}
+.campaign-cover .archive-fallback-frame {
+  border: 0;
+  outline: 0;
+  justify-content: flex-start;
+  padding-top: 36%;
+}
+.campaign-cover :is(.archive-fallback-caption, .archive-fallback-title, .archive-fallback-ornament) {
+  display: none;
+}
+.campaign-cover .archive-fallback-emblem svg {
+  width: 80px;
+  height: 96px;
+  opacity: .6;
+}
+[data-book-theme="icewind"] .archive-fallback-emblem {
+  width: 88px;
+  height: 100px;
+  background: url("/icewind-snowflake.svg") center / 80px no-repeat;
+}
+[data-book-theme="icewind"] .archive-fallback-emblem svg {
+  visibility: hidden;
+}
+.campaign-caption {
+  margin-top: 8px;
+  padding: 20px 4px;
+}
+.campaign-caption h2 {
+  font-size: 27px;
+}
+.campaign-meta {
+  gap: 8px 14px;
+  line-height: 1.7;
+}
+@media (max-width: 639px) {
+  .collection-toolbar .toolbar-selects { flex-direction: column; }
+  .campaign-grid { gap: 36px; padding-inline: 0; }
+  .campaign-book-display { max-width: 340px; }
+  .book-cover-title { font-size: 28px; }
+  [data-book-theme="strahd"] .book-cover-title { font-size: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .campaign-book-display .campaign-cover { transition: none; transform: none; }
+  .campaign-volume:is(:hover, :focus-visible) .campaign-cover { transform: none; }
+}

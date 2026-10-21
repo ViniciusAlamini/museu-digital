@@ -74,7 +74,7 @@ export function AppShell({
             onClick={closeMenu}
           >
             <Library />
-            <span>O grande acervo</span>
+            <span>A biblioteca</span>
           </Link>
           {campaign && (
             <>

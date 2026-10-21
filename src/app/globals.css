@@ -222,17 +222,25 @@ body:has(.app-shell[data-campaign-theme="icewind"]) {
 body:has(.app-shell[data-campaign-theme="icewind"])::before {
   position: fixed;
   z-index: 15;
-  inset: -100vh 0;
+  inset: 0;
   pointer-events: none;
   content: "";
-  opacity: 0.33;
+  opacity: 0.44;
   background-image:
+    url("/icewind-snowfall.svg"),
+    url("/icewind-snowfall.svg"),
     radial-gradient(circle, rgb(255 255 255 / 95%) 0 1px, transparent 1.8px),
     radial-gradient(circle, rgb(102 151 170 / 38%) 0 1px, transparent 1.8px),
     radial-gradient(circle, rgb(255 255 255 / 80%) 0 1.4px, transparent 2.2px);
-  background-size: 97px 131px, 173px 211px, 257px 307px;
-  background-position: 0 0, 43px 31px, 119px 77px;
+  background-size: 337px 389px, 509px 547px, 97px 131px, 173px 211px, 257px 307px;
+  background-position: 0 0, 163px 97px, 0 0, 43px 31px, 119px 77px;
   animation: icewind-snowfall 36s linear infinite;
+}
+.app-shell[data-campaign-theme="icewind"] .archive-main {
+  background:
+    radial-gradient(ellipse at 90% 0, rgb(132 204 204 / 18%), transparent 42%),
+    radial-gradient(ellipse at 0 35%, rgb(174 205 236 / 20%), transparent 48%),
+    var(--parchment);
 }
 .app-shell[data-campaign-theme="icewind"] .archive-topbar {
   background:
@@ -263,8 +271,41 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(145deg, rgb(209 231 239 / 16%), transparent 58%);
-  box-shadow: inset 0 0 70px rgb(213 237 245 / 24%);
+  background:
+    linear-gradient(180deg, rgb(218 244 255 / 42%), transparent 25%, transparent 70%, rgb(218 244 255 / 54%)),
+    linear-gradient(110deg, rgb(35 71 94 / 24%), transparent 55%, rgb(19 51 66 / 52%));
+  box-shadow: inset 0 0 45px rgb(213 237 245 / 48%), inset 0 0 0 1px rgb(234 250 255 / 70%);
+}
+.app-shell[data-campaign-theme="icewind"] .campaign-opening-image::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: clamp(16px, 4vw, 48px);
+  width: 120px;
+  height: calc(100% - 24px);
+  background: url("/icewind-frostmaiden.svg") center / contain no-repeat;
+  filter: drop-shadow(0 4px 12px rgb(9 34 48 / 45%));
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="icewind"] .campaign-opening-heading {
+  position: relative;
+  padding: 8px 0 22px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.app-shell[data-campaign-theme="icewind"] .campaign-opening-heading::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: calc(50% - 15px);
+  width: 30px;
+  height: 30px;
+  background: url("/icewind-snowflake.svg") center / 26px no-repeat, var(--parchment);
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="icewind"] .paper {
+  border-top-color: rgb(117 166 187 / 45%);
+  box-shadow: inset 0 3px 0 rgb(255 255 255 / 65%), var(--paper-shadow);
 }
 .app-shell[data-campaign-theme="icewind"] h1,
 .app-shell[data-campaign-theme="icewind"] h2,
@@ -280,7 +321,12 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
 }
 @keyframes icewind-snowfall {
   to {
-    background-position: 0 131px, 43px 242px, 119px 384px;
+    background-position: 0 389px, 163px 644px, 0 262px, 43px 453px, 119px 691px;
+  }
+}
+@media (max-width: 640px) {
+  .app-shell[data-campaign-theme="icewind"] .campaign-opening-image::before {
+    width: 88px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -341,6 +387,35 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   .admin-table th, .admin-table td { padding: 10px; }
   .audit-list li p { flex-direction: column; gap: 3px; }
 }
+body:has(.app-shell[data-campaign-theme="strahd"])::before {
+  content: "";
+  position: fixed;
+  z-index: 15;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 90%, rgb(171 156 176 / 10%), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgb(162 130 150 / 12%), transparent 50%);
+  background-size: 160% 120%, 180% 140%;
+  animation: strahd-mist 28s ease-in-out infinite alternate;
+}
+body:has(.app-shell[data-campaign-theme="strahd"])::after {
+  content: "";
+  position: fixed;
+  z-index: 15;
+  inset: 64px 0 auto;
+  height: min(52vh, 440px);
+  pointer-events: none;
+  background: url("/strahd-night.svg") 0 0 / 640px 420px repeat-x;
+  opacity: 0.22;
+  mask-image: linear-gradient(#000 60%, transparent);
+}
+.app-shell[data-campaign-theme="strahd"] .archive-main {
+  background:
+    radial-gradient(ellipse at 95% 0, rgb(124 29 54 / 18%), transparent 45%),
+    radial-gradient(ellipse at 0 55%, rgb(78 56 84 / 14%), transparent 50%),
+    var(--parchment);
+}
 .app-shell[data-campaign-theme="strahd"] .archive-topbar {
   background:
     linear-gradient(90deg, rgb(125 32 49 / 14%), transparent 65%),
@@ -372,8 +447,55 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgb(48 11 20 / 38%), transparent 72%);
-  box-shadow: inset 0 0 70px rgb(83 13 26 / 28%);
+  background:
+    linear-gradient(0deg, rgb(21 10 18 / 68%), transparent 45%),
+    linear-gradient(110deg, rgb(75 14 34 / 38%), transparent 55%, rgb(27 9 19 / 60%));
+  box-shadow: inset 0 0 70px rgb(83 13 26 / 42%), inset 0 0 0 1px rgb(211 160 168 / 28%);
+}
+.app-shell[data-campaign-theme="strahd"] .campaign-opening-image::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: clamp(16px, 4vw, 48px);
+  width: 120px;
+  height: calc(100% - 24px);
+  background: url("/strahd-crest.svg") center / contain no-repeat;
+  filter: drop-shadow(0 4px 14px rgb(10 3 8 / 65%));
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="strahd"] .campaign-opening-heading {
+  position: relative;
+  padding: 8px 0 22px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.app-shell[data-campaign-theme="strahd"] .campaign-opening-heading::after {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  left: calc(50% - 24px);
+  width: 48px;
+  height: 26px;
+  background: url("/strahd-bat.svg") center / 40px no-repeat, var(--parchment);
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="strahd"] .paper {
+  border-top-color: rgb(180 64 82 / 48%);
+  box-shadow: inset 0 2px 0 rgb(211 160 168 / 8%), var(--paper-shadow);
+}
+@keyframes strahd-mist {
+  from { background-position: 0 0, 100% 0; }
+  to { background-position: 100% 0, 0 0; }
+}
+@media (max-width: 640px) {
+  .app-shell[data-campaign-theme="strahd"] .campaign-opening-image::before {
+    width: 88px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:has(.app-shell[data-campaign-theme="strahd"])::before {
+    animation: none;
+  }
 }
 .app-shell[data-campaign-theme="strahd"] .campaign-opening-heading h1 {
   text-shadow: 0 2px 28px rgb(180 64 82 / 17%);
@@ -1544,6 +1666,121 @@ body:has(dialog[open]) {
 .artwork-detail-image img {
   max-height: 75dvh;
   object-fit: contain;
+}
+/* Campaign ornaments stay on image edges, leaving captions and controls clear. */
+.app-shell[data-campaign-theme="strahd"] {
+  --archive-seal: url("/strahd-wax-seal.svg");
+  --frame-metal: #a57569;
+  --frame-shadow: rgb(15 3 9 / 42%);
+  --frame-glow: rgb(180 64 82 / 20%);
+}
+.app-shell[data-campaign-theme="icewind"] {
+  --archive-seal: url("/icewind-crystal-seal.svg");
+  --frame-metal: #9ecad9;
+  --frame-shadow: rgb(40 83 105 / 20%);
+  --frame-glow: rgb(157 225 243 / 48%);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait) {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--frame-metal);
+  box-shadow: 0 5px 18px var(--frame-shadow);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--frame-metal) 55%, transparent);
+  background:
+    linear-gradient(var(--frame-metal), var(--frame-metal)) top left / 24px 2px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) top left / 2px 24px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) top right / 24px 2px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) top right / 2px 24px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) bottom left / 24px 2px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) bottom left / 2px 24px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) bottom right / 24px 2px,
+    linear-gradient(var(--frame-metal), var(--frame-metal)) bottom right / 2px 24px;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 3px;
+  width: clamp(48px, 7vw, 66px);
+  aspect-ratio: 100 / 118;
+  background: var(--archive-seal) center / contain no-repeat;
+  filter: drop-shadow(0 3px 3px var(--frame-shadow));
+  transform: rotate(9deg);
+  transform-origin: center 35%;
+  transition: transform .25s ease;
+  pointer-events: none;
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-card, .character-card, .post-card):is(:hover, :focus-visible)
+  :is(.artwork-image, .character-portrait, .post-card-image)::after {
+  transform: rotate(-5deg) translateY(-3px);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-card, .character-card, .post-card):is(:hover, :focus-visible)
+  :is(.artwork-image, .character-portrait, .post-card-image) {
+  box-shadow: 0 5px 20px var(--frame-shadow), 0 0 18px var(--frame-glow);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .artwork-detail-image {
+  padding: clamp(14px, 2.5vw, 28px);
+  background: linear-gradient(135deg, var(--inset), var(--paper) 50%, var(--inset));
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-detail-image, .detail-portrait)::after {
+  width: clamp(60px, 9vw, 90px);
+  right: 12px;
+  bottom: 4px;
+}
+.app-shell[data-campaign-theme="icewind"]
+  :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::before {
+  box-shadow: inset 0 0 16px rgb(216 248 255 / 28%);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait):has(> .archive-fallback)::before {
+  content: none;
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .archive-fallback {
+  background: linear-gradient(145deg, var(--inset), var(--paper));
+  color: var(--ink-secondary);
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .archive-fallback-frame {
+  border-color: var(--rule-strong);
+  outline-color: var(--rule);
+}
+.archive-fallback-inline {
+  padding-block: 18px;
+}
+.archive-fallback-inline .archive-fallback-frame {
+  height: auto;
+  min-height: 224px;
+}
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .artwork-detail-image > .archive-fallback-inline {
+  min-height: min(420px, 65dvh);
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+    :is(.artwork-image, .character-portrait, .post-card-image)::after {
+    transition: none;
+  }
+  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+    .artwork-card img {
+    transition: none;
+  }
 }
 .artwork-detail-caption {
   display: grid;

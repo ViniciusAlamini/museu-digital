@@ -12,19 +12,36 @@ type CampaignCardProps = {
 };
 
 export function CampaignCard({ campaign, index = 0 }: CampaignCardProps) {
+  const name = campaign.name.toLocaleLowerCase("pt-BR");
+  const theme = name.includes("strahd")
+    ? "strahd"
+    : name.includes("icewind") ? "icewind" : "archive";
   return (
-    <Link href={`/campaigns/${campaign.id}`} className="campaign-volume">
-      <div className="campaign-cover">
-        <ArchiveImage
-          src={campaign.coverImage}
-          alt={campaign.name}
-          fill
-          variant="cover"
-          className="object-cover"
-        />
-        <span className="campaign-cover-number">
-          Vol. {String(index + 1).padStart(2, "0")}
-        </span>
+    <Link
+      href={`/campaigns/${campaign.id}`}
+      className="campaign-volume"
+      data-book-theme={theme}
+    >
+      <div className="campaign-book-display">
+        <div className="campaign-cover">
+          <ArchiveImage
+            src={campaign.coverImage}
+            alt={campaign.name}
+            fill
+            variant="cover"
+            className="object-cover"
+          />
+          <span className="campaign-cover-number">
+            Volume {String(index + 1).padStart(2, "0")}
+          </span>
+          <div className="book-cover-type" aria-hidden="true">
+            <span className="book-cover-series">Crônicas de nossas mesas</span>
+            <span className="book-cover-title">{campaign.name}</span>
+            <span className="book-cover-flourish">✦</span>
+            <span className="book-cover-edition">{campaign.system} · Museu Digital</span>
+          </div>
+          <span className="book-cover-corners" aria-hidden="true" />
+        </div>
       </div>
       <div className="campaign-caption">
         <div>

@@ -3,6 +3,7 @@
 import Image, { type ImageProps } from "next/image";
 import { useState } from "react";
 import { ArchiveMark } from "./ArchiveMark";
+import { resolveArchiveImageSrc } from "@/lib/image-source";
 
 type ArchiveImageProps = Omit<ImageProps, "src"> & {
   src?: string | null;
@@ -10,7 +11,7 @@ type ArchiveImageProps = Omit<ImageProps, "src"> & {
 };
 
 export function ArchiveImage({
-  src,
+  src: originalSrc,
   alt,
   variant = "artwork",
   fill,
@@ -19,6 +20,7 @@ export function ArchiveImage({
   unoptimized,
   ...props
 }: ArchiveImageProps) {
+  const src = resolveArchiveImageSrc(originalSrc);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const fingerprint =
     Array.from(alt).reduce((n, c) => (n * 33) ^ c.charCodeAt(0), 5381) >>> 0;
@@ -61,8 +63,9 @@ export function ArchiveImage({
       // can block direct cross-origin requests with ERR_BLOCKED_BY_ORB.
       unoptimized={
         unoptimized ??
-        (/^https?:\/\//.test(src) &&
-          !/^https:\/\/lh3\.googleusercontent\.com\/d\//.test(src))
+        (src.startsWith("/uploads/") || src.startsWith("/covers/") ||
+          (/^https?:\/\//.test(src) &&
+            !/^https:\/\/lh3\.googleusercontent\.com\/d\//.test(src)))
       }
       {...props}
       onError={(event) => {

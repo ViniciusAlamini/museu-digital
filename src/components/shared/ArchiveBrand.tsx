@@ -12,7 +12,7 @@ export function ArchiveBrand({ onNavigate }: { onNavigate?: () => void }) {
       <ArchiveMark />
       <span>
         <strong>Museu Digital</strong>
-        <small>Um arquivo de aventuras</small>
+        <small>Biblioteca de aventuras</small>
       </span>
     </Link>
   );

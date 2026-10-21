@@ -33,3 +33,10 @@ Início: volumes das campanhas. Campanha: folha de rosto. Personagens: retratos 
 When the active campaign name contains "Strahd", the app shell uses charcoal, candlelit paper, bone ink, ruby, and aged bronze tokens. The campaign opening receives a dark red image wash; selected navigation and primary actions use ruby with light text. Other campaigns retain the medieval parchment palette. The variant applies to all routes and the mobile menu.
 ## Campaign variation: Icewind Dale
 When the active campaign name contains "Icewind", the app shell switches to glacier blue, snow, and slate tokens, with Cinzel display titles. A fine, slow snowfall passes over the page and pauses for reduced-motion preferences. Missing campaign art uses a cold slate fallback. Other campaigns retain their current theme.
+
+## Biblioteca: galeria de volumes grandes
+A biblioteca usa madeira escura, marfim e dourado envelhecido. A navegação mantém esse acabamento nas campanhas; cada mundo conserva a própria paleta nas páginas de conteúdo. Capas verticais 2:3, até 390 px de largura, com lombada, borda de páginas e cantoneiras. Duas colunas no desktop e uma no celular. Título em HTML sobre a arte, metadados reais na legenda, foco de teclado e movimento reduzido. Implementação em `src/app/library.css`.
+
+Primeira capa ilustrada: Maldição de Strahd, pintura gótica criada a partir da referência enviada pelo usuário. Arte otimizada em `public/covers/strahd-painted-v1.webp`; a campanha local foi atualizada para esse caminho. Referência anterior: `/uploads/campaigns/1787365587090-pmh2uvvumzo.jpg` (arquivo ausente).
+
+Capa de Icewind: pintura glacial inspirada na referência enviada pelo usuário, com a figura de coruja com chifres, olhos luminosos, nevasca e um aventureiro em primeiro plano. Arte otimizada em `public/covers/icewind-painted-v1.webp`, aplicada à campanha local. Referência anterior: `/uploads/campaigns/1787364517666-4atk0r9c1c2.jpg` (arquivo ausente). Acabamento azul e prata, título em Cinzel; símbolo de floco permanece disponível quando a arte não carrega.

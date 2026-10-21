@@ -29,17 +29,16 @@ export default async function HomePage() {
   return (
     <>
       <header className="collection-heading">
-        <p className="eyebrow">O grande acervo · RPG & imaginação</p>
+        <p className="eyebrow">Biblioteca de aventuras · RPG & imaginação</p>
         <h1>
-          Toda aventura
+          Entre páginas,
           <br />
-          merece ser <em>lembrada.</em>
+          vivem <em>outros mundos.</em>
         </h1>
         <div className="collection-intro">
           <p>
-            Um lugar para guardar os mundos que visitamos,
-            <br className="hidden sm:block" /> os heróis que fomos e as
-            histórias que ficaram.
+            Cada campanha, um livro. Cada mesa, uma história.
+            <br className="hidden sm:block" /> Escolha um volume e volte aos mundos que visitamos.
           </p>
           <Link
             href="/campaigns/new"
