@@ -259,6 +259,136 @@ body:has(.app-shell:not([data-campaign-theme])) {
   .book-cover-title { font-size: 28px; }
   [data-book-theme="strahd"] .book-cover-title { font-size: 44px; }
 }
+.campaign-library-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-bottom: 16px;
+  color: var(--ink-secondary);
+  font-size: 12px;
+}
+.campaign-library-link:hover { color: var(--wine); }
+.campaign-titlepage {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
+  padding: clamp(24px, 3vw, 40px);
+  border: 1px solid var(--rule-strong);
+  background: linear-gradient(135deg, var(--paper), var(--parchment));
+  box-shadow: var(--paper-shadow);
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  background: var(--inset);
+  box-shadow: 5px 3px 0 var(--inset), 12px 12px 24px rgb(0 0 0 / 18%);
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-image img {
+  object-fit: contain;
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-image::before {
+  content: none;
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-image::after {
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-heading {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.app-shell .campaign-opening[data-overview="true"] .campaign-opening-heading::after {
+  content: none;
+}
+.campaign-titlepage .campaign-opening-heading h1 {
+  margin-top: 16px;
+  font-size: clamp(32px, 3.7vw, 52px);
+}
+.campaign-titlepage .campaign-opening-meta {
+  gap: 8px 12px;
+  margin-top: 20px;
+  line-height: 1.8;
+}
+.campaign-opening-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.campaign-opening-actions .btn { justify-content: center; }
+.campaign-opening[data-overview="true"] .campaign-mobile-tabs { display: none; }
+.campaign-overview { display: grid; gap: 36px; }
+.campaign-overview > section { min-width: 0; }
+.app-shell .campaign-synopsis h2.eyebrow {
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.campaign-synopsis .overview-intro { max-width: 900px; }
+.campaign-index-section { scroll-margin-top: 96px; }
+.campaign-index-section .section-title { margin-bottom: 0; }
+.campaign-index-section .overview-index {
+  gap: 12px;
+  margin-top: 20px;
+  border: 0;
+}
+.campaign-index-section .overview-index a {
+  min-width: 0;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  border-radius: 4px;
+}
+.campaign-index-section .overview-index a:is(:hover, :focus-visible) {
+  border-color: var(--wine);
+  background: color-mix(in srgb, var(--wine) 5%, var(--paper));
+}
+.campaign-index-section .index-icon { flex: 0 0 36px; width: 36px; height: 36px; }
+.campaign-index-section .index-copy { min-width: 0; }
+.campaign-index-section .overview-index h3 { font-size: 23px; }
+.campaign-index-section .overview-index p { line-height: 1.6; }
+.campaign-index-section .index-count { flex-shrink: 0; font-size: 28px; }
+.campaign-index-section .overview-index > a:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.campaign-overview > .mt-12 { margin-top: 0; }
+.campaign-management {
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-secondary);
+}
+.campaign-management summary { width: fit-content; font-size: 12px; font-weight: 600; }
+.campaign-management > p { margin-top: 16px; font-size: 12px; line-height: 1.7; }
+.campaign-management .detail-actions { margin: 16px 0 0; }
+@media (max-width: 767px) {
+  .campaign-titlepage { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .app-shell .campaign-opening[data-overview="true"] .campaign-opening-image {
+    max-width: 180px;
+    justify-self: center;
+  }
+  .campaign-titlepage .campaign-opening-heading h1 { font-size: 32px; }
+  .campaign-opening-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .campaign-index-section .overview-index { grid-template-columns: minmax(0, 1fr); }
+  .campaign-index-section .overview-index a { padding: 16px 12px; gap: 10px; }
+  .campaign-index-section .overview-index h3 { font-size: 22px; }
+  .campaign-index-section .overview-index p { font-size: 11px; }
+  .campaign-management .detail-actions { align-items: stretch; }
+  .campaign-overview .recent-record {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+  }
+  .campaign-overview .recent-record .folio-number { grid-column: 1; font-size: 12px; }
+  .campaign-overview .recent-record > div { grid-column: 1; grid-row: 2; }
+  .campaign-overview .recent-record > svg { grid-column: 2; grid-row: 1 / 3; }
+  .campaign-overview .recent-record h3 { font-size: 24px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .campaign-book-display .campaign-cover { transition: none; transform: none; }
   .campaign-volume:is(:hover, :focus-visible) .campaign-cover { transform: none; }

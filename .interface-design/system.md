@@ -40,3 +40,6 @@ A biblioteca usa madeira escura, marfim e dourado envelhecido. A navegação man
 Primeira capa ilustrada: Maldição de Strahd, pintura gótica criada a partir da referência enviada pelo usuário. Arte otimizada em `public/covers/strahd-painted-v1.webp`; a campanha local foi atualizada para esse caminho. Referência anterior: `/uploads/campaigns/1787365587090-pmh2uvvumzo.jpg` (arquivo ausente).
 
 Capa de Icewind: pintura glacial inspirada na referência enviada pelo usuário, com a figura de coruja com chifres, olhos luminosos, nevasca e um aventureiro em primeiro plano. Arte otimizada em `public/covers/icewind-painted-v1.webp`, aplicada à campanha local. Referência anterior: `/uploads/campaigns/1787364517666-4atk0r9c1c2.jpg` (arquivo ausente). Acabamento azul e prata, título em Cinzel; símbolo de floco permanece disponível quando a arte não carrega.
+
+## Abertura de aventura
+A página inicial da campanha mostra a capa inteira em proporção 2:3 (`object-fit: contain`), ao lado de título, sistema, data e ações de explorar/escrever no diário. No celular, capa e título ficam empilhados. A apresentação vem antes do índice de cinco seções, com contagens reais. A navegação em abas fica nas subpáginas, evitando duplicação no início. Editar/excluir ficam no disclosure nativo “Gerenciar campanha”. Registros recentes exibem a data acima do título no celular.

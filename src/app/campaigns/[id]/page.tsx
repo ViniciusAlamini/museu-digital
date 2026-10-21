@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
-  BookOpen,
   Users,
   ImageIcon,
   FileText,
@@ -74,25 +73,14 @@ export default async function CampaignPage({
     },
   ];
   return (
-    <div>
-      <RecordActions
-        backHref="/"
-        backLabel="Todas as campanhas"
-        editHref={base + "/edit"}
-        deleteTitle="Excluir campanha"
-        deleteDescription={`Excluir “${campaign.name}” também remove seus personagens, desenhos, mensagens e registros. Essa ação não pode ser desfeita.`}
-        onDelete={async () => {
-          "use server";
-          await deleteCampaign(id);
-        }}
-      />
-      <section className="paper">
-        <p className="eyebrow mb-4">O início da história</p>
+    <div className="campaign-overview">
+      <section className="paper campaign-synopsis" aria-labelledby="campaign-synopsis-title">
+        <h2 className="eyebrow mb-4" id="campaign-synopsis-title">O início da história</h2>
         <p className="overview-intro">{campaign.description}</p>
       </section>
-      <section className="mt-10">
+      <section className="campaign-index-section" id="indice-da-aventura" aria-labelledby="campaign-index-title">
         <div className="section-title">
-          <h2>As páginas desta aventura</h2>
+          <h2 id="campaign-index-title">As páginas desta aventura</h2>
           <span className="eyebrow">Índice do volume</span>
         </div>
         <div className="overview-index">
@@ -101,7 +89,7 @@ export default async function CampaignPage({
               <span className="index-icon">
                 <Icon />
               </span>
-              <div>
+              <div className="index-copy">
                 <h3>{title}</h3>
                 <p>{description}</p>
               </div>
@@ -111,16 +99,6 @@ export default async function CampaignPage({
               <ArrowUpRight size={16} className="text-[var(--brass)]" />
             </Link>
           ))}
-          <Link href={base + "/diary/new-entry"}>
-            <span className="index-icon">
-              <BookOpen />
-            </span>
-            <div>
-              <h3>Uma nova memória</h3>
-              <p>Abra a próxima página do diário</p>
-            </div>
-            <ArrowUpRight size={18} className="ml-auto text-[var(--brass)]" />
-          </Link>
         </div>
       </section>
       {campaign.entries.length > 0 && (
@@ -151,6 +129,21 @@ export default async function CampaignPage({
           </div>
         </section>
       )}
+      <details className="campaign-management">
+        <summary>Gerenciar campanha</summary>
+        <p>Altere os dados deste volume ou exclua a campanha e seus registros.</p>
+        <RecordActions
+          backHref="/"
+          backLabel="Voltar à biblioteca"
+          editHref={base + "/edit"}
+          deleteTitle="Excluir campanha"
+          deleteDescription={`Excluir “${campaign.name}” também remove seus personagens, desenhos, mensagens e registros. Essa ação não pode ser desfeita.`}
+          onDelete={async () => {
+            "use server";
+            await deleteCampaign(id);
+          }}
+        />
+      </details>
     </div>
   );
 }
