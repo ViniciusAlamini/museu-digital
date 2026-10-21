@@ -16,7 +16,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
   const folderId = formData.get("folderId") as string | null;
   const relatedCharacterId = formData.get("relatedCharacterId") as string | null;
 
-  await prisma.diaryEntry.create({
+  const entry = await prisma.diaryEntry.create({
     data: {
       campaignId,
       title,
@@ -27,7 +27,7 @@ export async function createDiaryEntry(campaignId: string, formData: FormData) {
       relatedCharacterId: relatedCharacterId || null,
     },
   });
-  await recordAudit(campaignId, "criou", "Registro", title);
+  await recordAudit(campaignId, "criou", "Registro", title, `/campaigns/${campaignId}/diary/${entry.id}`);
 
   const query = folderId ? `?folderId=${folderId}` : "";
   revalidatePath(`/campaigns/${campaignId}/diary`);
@@ -56,7 +56,7 @@ export async function updateDiaryEntry(entryId: string, campaignId: string, form
       relatedCharacterId: relatedCharacterId || null,
     },
   });
-  await recordAudit(campaignId, "editou", "Registro", title);
+  await recordAudit(campaignId, "editou", "Registro", title, `/campaigns/${campaignId}/diary/${entryId}`);
 
   const query = folderId ? `?folderId=${folderId}` : "";
   revalidatePath(`/campaigns/${campaignId}/diary`);

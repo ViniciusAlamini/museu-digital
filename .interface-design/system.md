@@ -43,3 +43,9 @@ Capa de Icewind: pintura glacial inspirada na referência enviada pelo usuário,
 
 ## Abertura de aventura
 A página inicial da campanha mostra a capa inteira em proporção 2:3 (`object-fit: contain`), ao lado de título, sistema, data e ações de explorar/escrever no diário. No celular, capa e título ficam empilhados. A apresentação vem antes do índice de cinco seções, com contagens reais. A navegação em abas fica nas subpáginas, evitando duplicação no início. Editar/excluir ficam no disclosure nativo “Gerenciar campanha”. Registros recentes exibem a data acima do título no celular.
+
+## Feed da biblioteca
+O início mostra as 12 atividades mais recentes de todas as campanhas, com quatro visíveis e as demais no disclosure nativo “Ver mais atividades”. No desktop amplo, o feed ocupa uma coluna de 300 px ao lado dos livros; em telas menores, aparece acima deles. Cada evento traz pessoa, ação, título, campanha e horário de São Paulo. Reutiliza AuditLog, compatível com os nomes antigos de tipos e ações, sem migração. Novos registros salvam o link em details e invalidam a página inicial. Links de registros já removidos voltam à seção correspondente. Estado vazio sem eventos fictícios.
+
+## Materiais de cada campanha
+`src/app/campaign-realms.css` aplica os acabamentos de cada mundo em todas as seções: contexto de capítulo com brasão, cabeçalhos com motivo, botões, fichas, histórias, mensagens, pastas, editor, campos e diálogos. Icewind usa prata, azul glacial e flocos; Strahd usa bronze, vinho e morcegos. Botões principais têm acabamento em relevo e motivo decorativo; rótulos e ícones das ações são preservados. Navegação acompanha o mundo atual. Foco, erros, desabilitado e movimento reduzido mantêm seus estados. No celular, salvar e cancelar ficam em linhas separadas. A página inicial da biblioteca mantém sua identidade própria.

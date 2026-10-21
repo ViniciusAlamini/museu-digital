@@ -23,7 +23,7 @@ export async function createCharacter(campaignId: string, formData: FormData) {
   const character = await prisma.character.create({
     data: { ...validated, campaignId },
   });
-  await recordAudit(campaignId, "criou", "Personagem", character.name);
+  await recordAudit(campaignId, "criou", "Personagem", character.name, `/campaigns/${campaignId}/characters/${character.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   redirect(`/campaigns/${campaignId}/characters/${character.id}`);
@@ -49,7 +49,7 @@ export async function updateCharacter(
     where: { id },
     data: validated,
   });
-  await recordAudit(campaignId, "editou", "Personagem", validated.name);
+  await recordAudit(campaignId, "editou", "Personagem", validated.name, `/campaigns/${campaignId}/characters/${id}`);
 
   revalidatePath(`/campaigns/${campaignId}/characters`);
   revalidatePath(`/campaigns/${campaignId}/characters/${id}`);

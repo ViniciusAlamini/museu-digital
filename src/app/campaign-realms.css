@@ -1,0 +1,251 @@
+/* World-specific materials, shared by every section of a campaign. */
+.app-shell[data-campaign-theme="icewind"] {
+  --realm-metal: #7ca4b5;
+  --realm-highlight: #cceaf4;
+  --realm-accent: #2f657f;
+  --realm-shadow: rgb(35 79 103 / 15%);
+  --realm-panel: linear-gradient(135deg, #f7fcff, #e3eff4);
+  --realm-button: linear-gradient(135deg, #386e88, #214b65);
+  --realm-button-hover: linear-gradient(135deg, #2e617b, #173c53);
+  --realm-button-ink: #f3fbff;
+  --realm-motif: url("/icewind-snowflake.svg");
+  --realm-crest: url("/icewind-frostmaiden.svg");
+  --realm-radius: 6px;
+  --realm-font: "Cinzel", Georgia, serif;
+}
+.app-shell[data-campaign-theme="strahd"] {
+  --realm-metal: #a17d5b;
+  --realm-highlight: #d9b488;
+  --realm-accent: #b6455e;
+  --realm-shadow: rgb(9 3 8 / 32%);
+  --realm-panel: linear-gradient(135deg, #2e2228, #20191e);
+  --realm-button: linear-gradient(135deg, #9d354e, #6c2036);
+  --realm-button-hover: linear-gradient(135deg, #b2425c, #812740);
+  --realm-button-ink: #fff2e7;
+  --realm-motif: url("/strahd-bat.svg");
+  --realm-crest: url("/strahd-crest.svg");
+  --realm-radius: 2px;
+  --realm-font: "Cinzel", Georgia, serif;
+}
+
+/* The library remains recognizable while the navigation takes on its world. */
+.app-shell[data-campaign-theme="icewind"] :is(.archive-sidebar, .mobile-dialog) {
+  --parchment: #162630;
+  --paper: #203642;
+  --ink: #e5f2f7;
+  --ink-secondary: #b9cfd9;
+  --ink-muted: #a1bbc8;
+  --wine: #a6d5e8;
+  --brass: #a6d5e8;
+  --rule: rgb(166 213 232 / 17%);
+  --rule-strong: rgb(166 213 232 / 34%);
+  background: linear-gradient(110deg, #10212c, #1d303b 65%, #14232e);
+}
+.app-shell[data-campaign-theme="strahd"] :is(.archive-sidebar, .mobile-dialog) {
+  --parchment: #1e1419;
+  --paper: #302027;
+  --ink: #f0e0d5;
+  --ink-secondary: #cdb6aa;
+  --ink-muted: #bca093;
+  --wine: #d49d92;
+  --brass: #c8a27c;
+  --rule: rgb(200 162 124 / 18%);
+  --rule-strong: rgb(200 162 124 / 36%);
+  background: linear-gradient(110deg, #180e14, #2b1a22 65%, #1d1118);
+}
+.app-shell[data-campaign-theme] :is(.archive-sidebar, .mobile-dialog) .sidebar-rule::after {
+  content: "";
+  width: 30px;
+  height: 22px;
+  background: var(--realm-motif) center / 20px no-repeat, var(--parchment);
+}
+.app-shell[data-campaign-theme] :is(.archive-sidebar, .mobile-dialog) .sidebar-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--brass) 11%, transparent);
+  box-shadow: inset 2px 0 var(--brass);
+}
+
+/* Controls carry their materials without changing the action's meaning. */
+.app-shell[data-campaign-theme] .archive-main .btn {
+  min-height: 44px;
+  border-radius: var(--realm-radius);
+  letter-spacing: .025em;
+}
+.app-shell[data-campaign-theme] .archive-main .btn-primary {
+  color: var(--realm-button-ink);
+  background: var(--realm-button);
+  border-color: var(--realm-metal);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 18%), inset 0 -2px 0 rgb(0 0 0 / 16%), 0 3px 8px var(--realm-shadow);
+  font-family: var(--realm-font);
+  font-size: 11px;
+  font-weight: 700;
+}
+.app-shell[data-campaign-theme] .archive-main .btn-primary:not(.btn-icon)::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  background: var(--realm-motif) center / contain no-repeat;
+}
+.app-shell[data-campaign-theme] .archive-main .btn-primary:not(:disabled):hover {
+  background: var(--realm-button-hover);
+  border-color: var(--realm-highlight);
+  transform: translateY(-1px);
+}
+.app-shell[data-campaign-theme] .archive-main .btn-secondary {
+  background: var(--realm-panel);
+  border-color: var(--realm-metal);
+  color: var(--ink);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--realm-highlight) 15%, transparent);
+}
+.app-shell[data-campaign-theme] .archive-main .btn-secondary:not(:disabled):hover {
+  border-color: var(--realm-accent);
+  box-shadow: 0 2px 8px var(--realm-shadow);
+}
+.app-shell[data-campaign-theme] .archive-main .btn-ghost:not(:disabled):hover {
+  color: var(--wine);
+  background: color-mix(in srgb, var(--realm-accent) 8%, transparent);
+}
+.app-shell[data-campaign-theme] .archive-main .btn-danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  background: color-mix(in srgb, var(--danger) 5%, var(--paper));
+}
+.app-shell[data-campaign-theme] .archive-main .btn-danger:not(:disabled):hover {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, var(--paper));
+}
+.app-shell[data-campaign-theme] .archive-main .btn:focus-visible {
+  outline: 2px solid var(--wine);
+  outline-offset: 4px;
+}
+.app-shell[data-campaign-theme] .archive-main .btn:disabled { box-shadow: none; transform: none; }
+.app-shell[data-campaign-theme] .archive-main .btn:not(:disabled):active { transform: translateY(1px); }
+
+/* A chapter marker accompanies the title on every subpage. */
+.app-shell[data-campaign-theme] .campaign-context {
+  position: relative;
+  min-height: 112px;
+  justify-content: center;
+  padding: 20px 102px 20px 24px;
+  border: 1px solid var(--rule-strong);
+  border-left: 3px solid var(--realm-metal);
+  border-radius: var(--realm-radius);
+  background: var(--realm-panel);
+  box-shadow: 0 4px 14px var(--realm-shadow);
+}
+.app-shell[data-campaign-theme] .campaign-context::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  top: 16px;
+  width: 64px;
+  height: 80px;
+  background: var(--realm-crest) center / contain no-repeat;
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme] .page-header {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.app-shell[data-campaign-theme] .page-header .eyebrow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.app-shell[data-campaign-theme] .page-header .eyebrow::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: var(--realm-motif) center / contain no-repeat;
+  flex-shrink: 0;
+}
+.app-shell[data-campaign-theme] .archive-main :is(.paper, .reading-sheet, .message-card, .post-card, .character-card, .explorer-folder-card, .delete-dialog) {
+  border-color: color-mix(in srgb, var(--realm-metal) 45%, var(--paper));
+  border-radius: var(--realm-radius);
+  background: var(--realm-panel);
+  box-shadow: 0 5px 18px var(--realm-shadow);
+}
+.app-shell[data-campaign-theme] .archive-main :is(.reading-sheet, .delete-dialog) {
+  border-top: 3px solid var(--realm-metal);
+  outline: 1px solid var(--rule);
+  outline-offset: -8px;
+}
+.app-shell[data-campaign-theme] .archive-main :is(.character-tags span, .catalog-tag) {
+  border-color: var(--rule-strong);
+  border-radius: var(--realm-radius);
+  background: color-mix(in srgb, var(--realm-metal) 9%, var(--paper));
+  color: var(--ink-secondary);
+}
+.app-shell[data-campaign-theme] .archive-main :is(.catalog-properties, .section-title, .form-intro, .form-actions, .message-card-footer) {
+  border-color: color-mix(in srgb, var(--realm-metal) 35%, transparent);
+}
+.app-shell[data-campaign-theme] .archive-main .prose-rpg blockquote {
+  border-left-color: var(--realm-metal);
+  padding: 16px 20px;
+  background: color-mix(in srgb, var(--realm-metal) 7%, var(--paper));
+}
+
+/* Form fields, editor tools, and folders use the same world palette. */
+.app-shell[data-campaign-theme] .archive-main .field {
+  background: color-mix(in srgb, var(--inset) 75%, var(--paper));
+  border-radius: var(--realm-radius);
+  color-scheme: light;
+}
+.app-shell[data-campaign-theme="strahd"] .archive-main .field { color-scheme: dark; }
+.app-shell[data-campaign-theme] .archive-main .field:not([aria-invalid="true"]) {
+  border-color: color-mix(in srgb, var(--realm-metal) 65%, transparent);
+}
+.app-shell[data-campaign-theme] .archive-main .field:not([aria-invalid="true"]):focus {
+  border-color: var(--wine);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--realm-accent) 18%, transparent);
+}
+.app-shell[data-campaign-theme] .archive-main :is(.image-upload-empty, .manuscript-editor, .empty-state) {
+  background: var(--realm-panel);
+  border-color: var(--rule-strong);
+  border-radius: var(--realm-radius);
+}
+.app-shell[data-campaign-theme] .archive-main .editor-toolbar {
+  background: color-mix(in srgb, var(--realm-metal) 10%, var(--paper));
+  border-color: var(--rule-strong);
+}
+.app-shell[data-campaign-theme] .archive-main .editor-tool[aria-pressed="true"] {
+  color: var(--wine);
+  background: color-mix(in srgb, var(--realm-accent) 12%, var(--paper));
+  border-color: var(--realm-metal);
+}
+.app-shell[data-campaign-theme] .archive-main .explorer-index-link[aria-current="page"] {
+  color: var(--wine);
+  background: color-mix(in srgb, var(--realm-accent) 10%, var(--paper));
+  border-color: var(--realm-metal);
+}
+.app-shell[data-campaign-theme] .archive-main .explorer-folder-card:hover {
+  border-color: var(--realm-accent);
+  box-shadow: 0 4px 16px var(--realm-shadow);
+}
+.app-shell[data-campaign-theme] .archive-main .empty-state-symbol {
+  border-color: var(--realm-metal);
+  color: var(--realm-accent);
+  background: var(--paper);
+}
+.app-shell[data-campaign-theme] .archive-main .campaign-mobile-tabs a[aria-current="page"] {
+  background: var(--realm-button);
+  color: var(--realm-button-ink);
+  border: 1px solid var(--realm-metal);
+}
+.app-shell[data-campaign-theme] .archive-main .empty-state h2 {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+.app-shell[data-campaign-theme="icewind"] .character-caption h2 {
+  font-size: 24px;
+  letter-spacing: 0;
+}
+@media (max-width: 639px) {
+  .app-shell[data-campaign-theme] .campaign-context { padding: 18px 82px 18px 18px; }
+  .app-shell[data-campaign-theme] .campaign-context::after { width: 48px; height: 68px; right: 16px; top: 20px; }
+  .app-shell[data-campaign-theme] .archive-main .form-actions { flex-direction: column; }
+  .app-shell[data-campaign-theme] .archive-main .form-actions .btn { flex: 0 0 auto; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell[data-campaign-theme] .archive-main .btn { transition: none; }
+  .app-shell[data-campaign-theme] .archive-main .btn:not(:disabled):is(:hover, :active) { transform: none; }
+}

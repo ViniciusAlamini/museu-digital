@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { CampaignCollection } from "@/components/campaign/CampaignCollection";
+import { ActivityFeed } from "@/components/shared/ActivityFeed";
 
 export const revalidate = 0;
 
@@ -63,7 +64,10 @@ export default async function HomePage() {
           <strong>{String(records).padStart(2, "0")}</strong>registros
         </span>
       </div>
-      <CampaignCollection campaigns={campaigns} />
+      <div className="library-home-content">
+        <div className="library-volumes"><CampaignCollection campaigns={campaigns} /></div>
+        <ActivityFeed />
+      </div>
       <footer className="collection-colophon ornament-rule">
         <span>Que nenhuma boa história se perca pelo caminho.</span>
         <span>Museu Digital · Acervo de campanhas</span>

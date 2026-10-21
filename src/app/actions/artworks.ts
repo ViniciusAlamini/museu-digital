@@ -23,7 +23,7 @@ export async function createArtwork(campaignId: string, formData: FormData) {
   const artwork = await prisma.artwork.create({
     data: { ...validated, folderId: validated.folderId || null, campaignId, date: new Date(validated.date) },
   });
-  await recordAudit(campaignId, "criou", "Obra", artwork.title);
+  await recordAudit(campaignId, "criou", "Obra", artwork.title, `/campaigns/${campaignId}/artworks/${artwork.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   // Redireciona de volta para a lista daquela pasta ou da raiz
@@ -50,7 +50,7 @@ export async function updateArtwork(
     where: { id },
     data: { ...validated, date: new Date(validated.date) },
   });
-  await recordAudit(campaignId, "editou", "Obra", validated.title);
+  await recordAudit(campaignId, "editou", "Obra", validated.title, `/campaigns/${campaignId}/artworks/${id}`);
 
   revalidatePath(`/campaigns/${campaignId}/artworks`);
   revalidatePath(`/campaigns/${campaignId}/artworks/${id}`);

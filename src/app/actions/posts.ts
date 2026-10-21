@@ -26,7 +26,7 @@ export async function createPost(campaignId: string, formData: FormData) {
       publishedAt: new Date(validated.publishedAt),
     },
   });
-  await recordAudit(campaignId, "criou", "Post", post.title);
+  await recordAudit(campaignId, "criou", "Post", post.title, `/campaigns/${campaignId}/posts/${post.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/posts`);
   redirect(`/campaigns/${campaignId}/posts/${post.id}`);
@@ -54,7 +54,7 @@ export async function updatePost(
       publishedAt: new Date(validated.publishedAt),
     },
   });
-  await recordAudit(campaignId, "editou", "Post", validated.title);
+  await recordAudit(campaignId, "editou", "Post", validated.title, `/campaigns/${campaignId}/posts/${id}`);
 
   revalidatePath(`/campaigns/${campaignId}/posts`);
   revalidatePath(`/campaigns/${campaignId}/posts/${id}`);

@@ -17,7 +17,7 @@ export async function createMessage(campaignId: string, formData: FormData) {
   const eventDateRaw = formData.get("eventDate") as string | null;
   const image = formData.get("image") as string | null;
 
-  await prisma.message.create({
+  const message = await prisma.message.create({
     data: {
       campaignId,
       title: title || null,
@@ -29,7 +29,7 @@ export async function createMessage(campaignId: string, formData: FormData) {
       type,
     },
   });
-  await recordAudit(campaignId, "criou", "Correspondência", title || type);
+  await recordAudit(campaignId, "criou", "Correspondência", title || type, `/campaigns/${campaignId}/messages#message-${message.id}`);
 
   revalidatePath(`/campaigns/${campaignId}/messages`);
   redirect(`/campaigns/${campaignId}/messages`);
@@ -59,7 +59,7 @@ export async function updateMessage(messageId: string, campaignId: string, formD
       type,
     },
   });
-  await recordAudit(campaignId, "editou", "Correspondência", title || type);
+  await recordAudit(campaignId, "editou", "Correspondência", title || type, `/campaigns/${campaignId}/messages#message-${messageId}`);
 
   revalidatePath(`/campaigns/${campaignId}/messages`);
   redirect(`/campaigns/${campaignId}/messages`);

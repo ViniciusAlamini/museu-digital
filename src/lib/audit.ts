@@ -3,12 +3,14 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function recordAudit(
   campaignId: string,
   action: "criou" | "editou" | "excluiu",
   entityType: string,
   entityName: string,
+  entityHref?: string,
 ) {
   const user = await getCurrentUser();
   if (!user) return;
@@ -20,6 +22,8 @@ export async function recordAudit(
       action,
       entityType,
       entityName,
+      details: entityHref,
     },
   });
+  revalidatePath("/");
 }

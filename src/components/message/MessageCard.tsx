@@ -13,7 +13,7 @@ export function MessageCard({
   campaignId: string;
 }) {
   return (
-    <article className="message-card">
+    <article className="message-card" id={`message-${message.id}`}>
       <header className="message-card-header">
         <div className="message-author">
           <div className="message-avatar">
