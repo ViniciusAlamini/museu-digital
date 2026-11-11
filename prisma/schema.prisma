@@ -92,6 +92,37 @@ model Artwork {
   description String
   date        DateTime
   createdAt   DateTime       @default(now())
+  comments    Comment[]
+  reactions   Reaction[]
+}
+
+// Comment and Reaction reuse tables from an earlier feature. Only artwork
+// links are used today; the other columns stay so old rows remain valid.
+model Comment {
+  id           String   @id @default(cuid())
+  content      String
+  author       String
+  createdAt    DateTime @default(now())
+  artworkId    String?
+  artwork      Artwork? @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  npcId        String?
+  messageId    String?
+  diaryEntryId String?
+
+  @@map("Comment")
+}
+
+model Reaction {
+  id           String   @id @default(cuid())
+  emoji        String
+  user         String
+  artworkId    String?
+  artwork      Artwork? @relation(fields: [artworkId], references: [id], onDelete: Cascade)
+  npcId        String?
+  messageId    String?
+  diaryEntryId String?
+
+  @@map("Reaction")
 }
 
 model Post {

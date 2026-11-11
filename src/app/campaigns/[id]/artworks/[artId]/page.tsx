@@ -4,14 +4,40 @@ import { deleteArtwork } from "@/app/actions/artworks";
 import { RecordActions } from "@/components/shared/RecordActions";
 import { ArchiveImage } from "@/components/shared/ArchiveImage";
 import { formatDate } from "@/lib/utils";
+import { getCurrentUser } from "@/lib/auth";
+import { ArtworkReactions, type ReactionSummary } from "@/components/artwork/ArtworkReactions";
+import { ArtworkComments } from "@/components/artwork/ArtworkComments";
 export default async function ArtworkDetailPage({
   params,
 }: {
   params: Promise<{ id: string; artId: string }>;
 }) {
   const { id, artId } = await params;
-  const artwork = await prisma.artwork.findUnique({ where: { id: artId } });
+  const [artwork, user] = await Promise.all([
+    prisma.artwork.findUnique({
+      where: { id: artId },
+      include: {
+        comments: { orderBy: { createdAt: "asc" } },
+        reactions: { select: { emoji: true, user: true } },
+      },
+    }),
+    getCurrentUser(),
+  ]);
   if (!artwork || artwork.campaignId !== id) notFound();
+  const reactions: ReactionSummary[] = [];
+  for (const r of artwork.reactions) {
+    const name = r.user.trim();
+    const group = reactions.find((g) => g.emoji === r.emoji);
+    if (!group) reactions.push({ emoji: r.emoji, users: [name] });
+    else if (!group.users.includes(name)) group.users.push(name);
+  }
+  const comments = artwork.comments.map((c) => ({
+    id: c.id,
+    author: c.author.trim(),
+    content: c.content,
+    createdAt: c.createdAt.toISOString(),
+    canDelete: !!user && (user.role === "ADMIN" || c.author.trim() === user.username),
+  }));
   const back = `/campaigns/${id}/artworks${artwork.folderId ? "?folder=" + artwork.folderId : ""}`;
   return (
     <div>
@@ -56,6 +82,17 @@ export default async function ArtworkDetailPage({
           </dl>
         </div>
       </article>
+      <div className="artwork-feedback">
+        {user && (
+          <ArtworkReactions
+            campaignId={id}
+            artworkId={artId}
+            currentUser={user.username}
+            reactions={reactions}
+          />
+        )}
+        <ArtworkComments campaignId={id} artworkId={artId} comments={comments} />
+      </div>
     </div>
   );
 }

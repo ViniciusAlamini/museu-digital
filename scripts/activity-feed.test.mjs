@@ -28,3 +28,8 @@ test("old creation events fall back to the section after their target is deleted
   assert.equal(describeActivity(message, new Set()).href, "/campaigns/icewind/messages");
   assert.equal(describeActivity(message, new Set([message.details])).href, message.details);
 });
+
+test("artwork comments read as a comment on the drawing", () => {
+  const comment = { ...event, action: "criou", entityType: "Comentário" };
+  assert.deepEqual(describeActivity(comment), { text: "comentou em um desenho", kind: "artwork", href: event.details, deleted: false });
+});

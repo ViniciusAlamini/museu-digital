@@ -1926,6 +1926,142 @@ body:has(dialog[open]) {
     transition: none;
   }
 }
+/* Comments and reactions under an artwork. */
+.artwork-feedback {
+  display: grid;
+  gap: 32px;
+  max-width: 760px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+.artwork-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.reaction-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  min-width: 48px;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-secondary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .15s cubic-bezier(0.22, 1, 0.36, 1), border-color .15s cubic-bezier(0.22, 1, 0.36, 1), transform .12s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reaction-chip:hover {
+  border-color: var(--wine);
+}
+.reaction-chip:active {
+  transform: scale(.96);
+}
+.reaction-chip:focus-visible {
+  outline: 2px solid var(--wine);
+  outline-offset: 2px;
+}
+.reaction-chip[aria-pressed="true"] {
+  border-color: var(--wine);
+  background: color-mix(in srgb, var(--wine) 14%, var(--paper));
+  color: var(--ink);
+}
+.reaction-count {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.artwork-comments-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 500;
+}
+.artwork-comments-title span {
+  color: var(--ink-muted);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.comment-list {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+.comment-item {
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper);
+}
+.comment-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.comment-meta strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.comment-meta time {
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+.comment-delete {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.comment-delete:hover {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+.comment-delete:focus-visible {
+  outline: 2px solid var(--wine);
+}
+.comment-content {
+  color: var(--ink-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.comment-empty {
+  margin-bottom: 24px;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+.comment-form .field {
+  min-height: 96px;
+  resize: vertical;
+}
+.comment-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+@media (max-width: 639px) {
+  .comment-form-actions .btn { width: 100%; }
+}
 .artwork-detail-caption {
   display: grid;
   gap: 24px;

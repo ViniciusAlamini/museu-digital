@@ -21,6 +21,7 @@ const types: Record<string, ActivityType> = {
   "pasta de artes": { noun: "uma pasta de desenhos", path: "/artworks", kind: "folder", verb: "criou" },
   "pasta do diario": { noun: "uma pasta do diário", path: "/diary", kind: "folder", verb: "criou" },
   campanha: { noun: "uma campanha", path: "", kind: "campaign", verb: "criou" },
+  comentario: { noun: "um desenho", path: "/artworks", kind: "artwork", verb: "comentou em" },
 };
 
 export function describeActivity(event: ActivitySource, existingRecordLinks?: ReadonlySet<string>) {
