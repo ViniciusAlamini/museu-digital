@@ -131,7 +131,7 @@ export function CampaignForm({
           }
           {...register("description")}
           rows={4}
-          placeholder="Descreva a campanha..."
+          placeholder="Resumo da campanha"
           className={inputClass}
         />
         {errors.description && (

@@ -63,7 +63,7 @@ export function CampaignCollection({
             id="campaign-search"
             type="search"
             className="field"
-            placeholder="Encontre uma campanha, uma aventura…"
+            placeholder="Buscar campanha"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />

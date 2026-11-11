@@ -5,8 +5,8 @@
   --realm-accent: #2f657f;
   --realm-shadow: rgb(35 79 103 / 15%);
   --realm-panel: linear-gradient(135deg, #f7fcff, #e3eff4);
-  --realm-button: linear-gradient(135deg, #386e88, #214b65);
-  --realm-button-hover: linear-gradient(135deg, #2e617b, #173c53);
+  --realm-button: #2b5d77;
+  --realm-button-hover: #214b65;
   --realm-button-ink: #f3fbff;
   --realm-motif: url("/icewind-snowflake.svg");
   --realm-crest: url("/icewind-frostmaiden.svg");
@@ -19,8 +19,8 @@
   --realm-accent: #b6455e;
   --realm-shadow: rgb(9 3 8 / 32%);
   --realm-panel: linear-gradient(135deg, #2e2228, #20191e);
-  --realm-button: linear-gradient(135deg, #9d354e, #6c2036);
-  --realm-button-hover: linear-gradient(135deg, #b2425c, #812740);
+  --realm-button: #852b42;
+  --realm-button-hover: #9a3550;
   --realm-button-ink: #fff2e7;
   --realm-motif: url("/strahd-bat.svg");
   --realm-crest: url("/strahd-crest.svg");
@@ -74,10 +74,10 @@
   color: var(--realm-button-ink);
   background: var(--realm-button);
   border-color: var(--realm-metal);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 18%), inset 0 -2px 0 rgb(0 0 0 / 16%), 0 3px 8px var(--realm-shadow);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 16%), 0 1px 2px var(--realm-shadow);
   font-family: var(--realm-font);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
 }
 .app-shell[data-campaign-theme] .archive-main .btn-primary:not(.btn-icon)::after {
   content: "";

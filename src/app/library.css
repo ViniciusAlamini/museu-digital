@@ -20,10 +20,7 @@ body:has(.app-shell:not([data-campaign-theme])) {
   color: #eee3cc;
 }
 .app-shell:not([data-campaign-theme]) .archive-main {
-  background:
-    radial-gradient(ellipse at 50% 0, #b58a4820, transparent 55%),
-    repeating-linear-gradient(92deg, #ffffff02 0 1px, transparent 1px 5px),
-    var(--parchment);
+  background: var(--parchment);
 }
 .app-shell :is(.archive-sidebar, .mobile-dialog) {
   --parchment: #1b1714;
@@ -75,9 +72,6 @@ body:has(.app-shell:not([data-campaign-theme])) {
   font-size: clamp(42px, 5vw, 66px);
   max-width: 800px;
 }
-.collection-heading .eyebrow {
-  letter-spacing: .2em;
-}
 .collection-stats {
   padding-block: 18px;
   margin-bottom: 28px;
@@ -101,6 +95,12 @@ body:has(.app-shell:not([data-campaign-theme])) {
   --book-cloth: #203b4b;
   --book-foil: #d5eaf0;
   --book-edge: #bfd5db;
+}
+.campaign-volume[data-book-theme="deltagreen"] {
+  --book-cloth: #1a2017;
+  --book-foil: #b9cfa6;
+  --book-edge: #cbbd94;
+  --book-stamp: #c25a45;
 }
 .campaign-book-display {
   position: relative;
@@ -195,6 +195,55 @@ body:has(.app-shell:not([data-campaign-theme])) {
   margin: 12px 0 8px;
   font-size: 15px;
 }
+/* Delta Green: a classified case file instead of a bound chronicle. */
+[data-book-theme="deltagreen"] .book-cover-title {
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+[data-book-theme="deltagreen"] :is(.book-cover-series, .book-cover-edition) {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+[data-book-theme="deltagreen"] .campaign-cover-number {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+svg.book-cover-flourish {
+  width: 16px;
+  height: 14px;
+}
+.book-cover-stamp {
+  position: absolute;
+  z-index: 3;
+  top: 30%;
+  right: 24px;
+  padding: 4px 8px;
+  border: 2px solid var(--book-stamp);
+  border-radius: 2px;
+  color: var(--book-stamp);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .9;
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+[data-book-theme="deltagreen"] .book-cover-corners {
+  border-style: dashed;
+}
+[data-book-theme="deltagreen"] .campaign-cover .archive-fallback {
+  background: url("/deltagreen-dossier.svg") center / cover no-repeat, var(--book-cloth);
+}
+[data-book-theme="deltagreen"] .archive-fallback-emblem {
+  visibility: hidden;
+}
 .book-cover-corners {
   position: absolute;
   z-index: 4;
@@ -214,7 +263,6 @@ body:has(.app-shell:not([data-campaign-theme])) {
 }
 .campaign-cover .archive-fallback {
   background:
-    radial-gradient(ellipse at 60% 25%, #7fb7bd20, transparent 60%),
     repeating-linear-gradient(40deg, #ffffff04 0 1px, transparent 1px 4px),
     var(--book-cloth);
   color: var(--book-foil);
@@ -258,6 +306,7 @@ body:has(.app-shell:not([data-campaign-theme])) {
   .campaign-book-display { max-width: 340px; }
   .book-cover-title { font-size: 28px; }
   [data-book-theme="strahd"] .book-cover-title { font-size: 44px; }
+  [data-book-theme="deltagreen"] .book-cover-title { font-size: 26px; }
 }
 .library-home-content {
   display: flex;
@@ -271,6 +320,7 @@ body:has(.app-shell:not([data-campaign-theme])) {
 .library-home-content .campaign-cover { container-type: inline-size; }
 .library-home-content .book-cover-title { font-size: clamp(22px, 8cqw, 38px); }
 .library-home-content [data-book-theme="strahd"] .book-cover-title { font-size: clamp(32px, 11cqw, 50px); }
+.library-home-content [data-book-theme="deltagreen"] .book-cover-title { font-size: clamp(20px, 7cqw, 32px); }
 .activity-feed {
   order: -1;
   min-width: 0;
@@ -304,7 +354,7 @@ body:has(.app-shell:not([data-campaign-theme])) {
 }
 .activity-copy { min-width: 0; flex: 1; }
 .activity-action { color: var(--ink-secondary); font-size: 11px; line-height: 1.7; }
-.activity-action strong { color: var(--ink); font-weight: 700; }
+.activity-action strong { color: var(--ink); font-weight: 600; }
 .activity-title {
   margin: 5px 0 8px;
   font-family: var(--font-cormorant), Georgia, serif;
@@ -412,7 +462,7 @@ body:has(.app-shell:not([data-campaign-theme])) {
 .campaign-overview > section { min-width: 0; }
 .app-shell .campaign-synopsis h2.eyebrow {
   font-family: var(--font-manrope), sans-serif;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
 }
 .campaign-synopsis .overview-intro { max-width: 900px; }

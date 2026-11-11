@@ -203,7 +203,7 @@ export function MessageForm({
           }
           {...register("content")}
           rows={6}
-          placeholder="O que está acontecendo..."
+          placeholder="O que está acontecendo"
           className={inputClass}
         />
         {errors.content && (

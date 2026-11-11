@@ -158,7 +158,7 @@ export function ArtworkForm({
           }
           {...register("description")}
           rows={3}
-          placeholder="Descreva o desenho..."
+          placeholder="Descrição do desenho"
           className={inputClass}
         />
         {errors.description && (

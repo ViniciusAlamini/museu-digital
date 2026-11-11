@@ -178,7 +178,7 @@ export function CharacterForm({
           }
           {...register("description")}
           rows={4}
-          placeholder="Histórico, personalidade, aparência..."
+          placeholder="Histórico, personalidade e aparência"
           className={inputClass}
         />
         {errors.description && (

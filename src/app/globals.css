@@ -237,16 +237,11 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   animation: icewind-snowfall 36s linear infinite;
 }
 .app-shell[data-campaign-theme="icewind"] .archive-main {
-  background:
-    radial-gradient(ellipse at 90% 0, rgb(132 204 204 / 18%), transparent 42%),
-    radial-gradient(ellipse at 0 35%, rgb(174 205 236 / 20%), transparent 48%),
-    var(--parchment);
+  background: var(--parchment);
 }
 .app-shell[data-campaign-theme="icewind"] .archive-topbar {
-  background:
-    linear-gradient(110deg, rgb(255 255 255 / 76%), rgb(225 239 244 / 82%)),
-    var(--parchment);
-  box-shadow: 0 5px 22px rgb(64 104 120 / 9%);
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgb(64 104 120 / 8%);
 }
 .app-shell[data-campaign-theme="icewind"] .sidebar-link:hover,
 .app-shell[data-campaign-theme="icewind"] .sidebar-link[aria-current="page"] {
@@ -340,9 +335,7 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   min-height: 100svh;
   place-items: center;
   padding: 24px;
-  background:
-    radial-gradient(ellipse at 50% 10%, color-mix(in srgb, var(--brass) 12%, transparent), transparent 55%),
-    var(--paper);
+  background: var(--paper);
 }
 .auth-card {
   width: min(100%, 460px);
@@ -374,7 +367,7 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
 .admin-table-wrap { overflow-x: auto; border: 1px solid var(--rule); background: var(--paper); }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .admin-table th, .admin-table td { padding: 12px 14px; border-bottom: 1px solid var(--rule); text-align: left; white-space: nowrap; }
-.admin-table th { color: var(--ink-muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.admin-table th { color: var(--ink-muted); font-size: 12px; font-weight: 500; }
 .admin-table tr:last-child td { border-bottom: 0; }
 .role-form .btn { min-height: 34px; padding: 7px 10px; font-size: 10px; }
 .audit-list { margin: 0; padding: 0; border-top: 1px solid var(--rule); list-style: none; }
@@ -386,18 +379,6 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   .auth-card { padding: 24px 20px; }
   .admin-table th, .admin-table td { padding: 10px; }
   .audit-list li p { flex-direction: column; gap: 3px; }
-}
-body:has(.app-shell[data-campaign-theme="strahd"])::before {
-  content: "";
-  position: fixed;
-  z-index: 15;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 15% 90%, rgb(171 156 176 / 10%), transparent 55%),
-    radial-gradient(ellipse at 85% 100%, rgb(162 130 150 / 12%), transparent 50%);
-  background-size: 160% 120%, 180% 140%;
-  animation: strahd-mist 28s ease-in-out infinite alternate;
 }
 body:has(.app-shell[data-campaign-theme="strahd"])::after {
   content: "";
@@ -411,16 +392,11 @@ body:has(.app-shell[data-campaign-theme="strahd"])::after {
   mask-image: linear-gradient(#000 60%, transparent);
 }
 .app-shell[data-campaign-theme="strahd"] .archive-main {
-  background:
-    radial-gradient(ellipse at 95% 0, rgb(124 29 54 / 18%), transparent 45%),
-    radial-gradient(ellipse at 0 55%, rgb(78 56 84 / 14%), transparent 50%),
-    var(--parchment);
+  background: var(--parchment);
 }
 .app-shell[data-campaign-theme="strahd"] .archive-topbar {
-  background:
-    linear-gradient(90deg, rgb(125 32 49 / 14%), transparent 65%),
-    var(--parchment);
-  box-shadow: 0 5px 20px #100b0d24;
+  background: var(--parchment);
+  box-shadow: 0 1px 2px #100b0d24;
 }
 .app-shell[data-campaign-theme="strahd"] .sidebar-link:hover,
 .app-shell[data-campaign-theme="strahd"] .sidebar-link[aria-current="page"] {
@@ -483,22 +459,10 @@ body:has(.app-shell[data-campaign-theme="strahd"])::after {
   border-top-color: rgb(180 64 82 / 48%);
   box-shadow: inset 0 2px 0 rgb(211 160 168 / 8%), var(--paper-shadow);
 }
-@keyframes strahd-mist {
-  from { background-position: 0 0, 100% 0; }
-  to { background-position: 100% 0, 0 0; }
-}
 @media (max-width: 640px) {
   .app-shell[data-campaign-theme="strahd"] .campaign-opening-image::before {
     width: 88px;
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  body:has(.app-shell[data-campaign-theme="strahd"])::before {
-    animation: none;
-  }
-}
-.app-shell[data-campaign-theme="strahd"] .campaign-opening-heading h1 {
-  text-shadow: 0 2px 28px rgb(180 64 82 / 17%);
 }
 .app-shell[data-campaign-theme="strahd"] h1,
 .app-shell[data-campaign-theme="strahd"] h2,
@@ -562,9 +526,7 @@ body:has(dialog[open]) {
 }
 .archive-topbar-note {
   display: none;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--ink-muted);
 }
 .archive-brand {
@@ -586,10 +548,8 @@ body:has(dialog[open]) {
 }
 .archive-brand small {
   display: block;
-  margin-top: 5px;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
+  margin-top: 4px;
+  font-size: 12px;
   color: var(--ink-secondary);
 }
 .sidebar-inner {
@@ -616,12 +576,10 @@ body:has(dialog[open]) {
   transform: translate(-50%, -50%);
 }
 .sidebar-label {
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
+  font-size: 12px;
   color: var(--ink-muted);
-  font-weight: 700;
-  margin: 24px 12px 10px;
+  font-weight: 500;
+  margin: 24px 12px 8px;
 }
 .sidebar-link {
   display: flex;
@@ -686,10 +644,8 @@ body:has(dialog[open]) {
   display: block;
   margin-top: 12px;
   font-family: var(--font-manrope), sans-serif;
-  font-size: 9px;
+  font-size: 12px;
   font-style: normal;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
   color: var(--ink-muted);
 }
 .mobile-menu-button {
@@ -728,11 +684,11 @@ body:has(dialog[open]) {
   color: var(--ink-secondary);
 }
 .eyebrow {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   line-height: 1.5;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.06em;
   color: var(--brass);
 }
 .page-header {
@@ -964,9 +920,8 @@ body:has(dialog[open]) {
   text-align: center;
 }
 .archive-fallback-caption {
-  font-size: 8px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.02em;
   opacity: 0.75;
 }
 .archive-fallback-emblem {
@@ -1113,10 +1068,8 @@ body:has(dialog[open]) {
 }
 .section-label h2 {
   font-family: var(--font-manrope), sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
 }
 .section-label > span {
   color: var(--ink-muted);
@@ -1147,12 +1100,6 @@ body:has(dialog[open]) {
   pointer-events: none;
   border: 1px solid #302c251a;
   border-radius: inherit;
-}
-.campaign-volume .campaign-cover img {
-  transition: transform 0.25s;
-}
-.campaign-volume:hover .campaign-cover img {
-  transform: scale(1.025);
 }
 .campaign-cover-number {
   position: absolute;
@@ -1214,8 +1161,7 @@ body:has(dialog[open]) {
   flex-direction: column;
   gap: 12px;
   color: var(--ink-muted);
-  font-size: 10px;
-  letter-spacing: 0.05em;
+  font-size: 12px;
 }
 .collection-colophon span:first-child {
   font-family: var(--font-cormorant), Georgia, serif;
@@ -1452,10 +1398,8 @@ body:has(dialog[open]) {
   padding: 4px 7px;
   border: 1px solid var(--rule);
   border-radius: 3px;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--ink-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
 }
 .artwork-card {
   display: block;
@@ -1468,12 +1412,6 @@ body:has(dialog[open]) {
   border: 1px solid var(--rule);
   border-radius: 4px;
   overflow: hidden;
-}
-.artwork-image img {
-  transition: transform 0.25s;
-}
-.artwork-card:hover img {
-  transform: scale(1.025);
 }
 .artwork-caption {
   padding: 14px 0 8px;
@@ -1641,9 +1579,7 @@ body:has(dialog[open]) {
   gap: 20px;
 }
 .catalog-properties dt {
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--ink-muted);
 }
 .catalog-properties dd {
@@ -1672,13 +1608,11 @@ body:has(dialog[open]) {
   --archive-seal: url("/strahd-wax-seal.svg");
   --frame-metal: #a57569;
   --frame-shadow: rgb(15 3 9 / 42%);
-  --frame-glow: rgb(180 64 82 / 20%);
 }
 .app-shell[data-campaign-theme="icewind"] {
   --archive-seal: url("/icewind-crystal-seal.svg");
   --frame-metal: #9ecad9;
   --frame-shadow: rgb(40 83 105 / 20%);
-  --frame-glow: rgb(157 225 243 / 48%);
 }
 .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait) {
@@ -1719,18 +1653,12 @@ body:has(dialog[open]) {
   filter: drop-shadow(0 3px 3px var(--frame-shadow));
   transform: rotate(9deg);
   transform-origin: center 35%;
-  transition: transform .25s ease;
   pointer-events: none;
 }
 .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
   :is(.artwork-card, .character-card, .post-card):is(:hover, :focus-visible)
-  :is(.artwork-image, .character-portrait, .post-card-image)::after {
-  transform: rotate(-5deg) translateY(-3px);
-}
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
-  :is(.artwork-card, .character-card, .post-card):is(:hover, :focus-visible)
   :is(.artwork-image, .character-portrait, .post-card-image) {
-  box-shadow: 0 5px 20px var(--frame-shadow), 0 0 18px var(--frame-glow);
+  box-shadow: 0 4px 16px var(--frame-shadow);
 }
 .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
   .artwork-detail-image {
@@ -1745,7 +1673,7 @@ body:has(dialog[open]) {
 }
 .app-shell[data-campaign-theme="icewind"]
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::before {
-  box-shadow: inset 0 0 16px rgb(216 248 255 / 28%);
+  box-shadow: inset 0 0 0 1px rgb(216 248 255 / 40%);
 }
 .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait):has(> .archive-fallback)::before {
