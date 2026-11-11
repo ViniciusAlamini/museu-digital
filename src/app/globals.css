@@ -186,7 +186,7 @@ body:has(.app-shell[data-campaign-theme="strahd"]) {
   background: #191518;
   color: #f0e6e1;
 }
-body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"]) {
+body:has(.app-shell[data-campaign-theme="icewind"]) {
   background: #e7f0f4;
   color: #243944;
 }
@@ -219,7 +219,7 @@ body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltag
   --color-border-hover: var(--rule-strong);
   --color-danger: var(--danger);
 }
-body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])::before {
+body:has(.app-shell[data-campaign-theme="icewind"])::before {
   position: fixed;
   z-index: 15;
   inset: 0;
@@ -325,7 +325,7 @@ body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltag
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])::before {
+  body:has(.app-shell[data-campaign-theme="icewind"])::before {
     animation: none;
   }
 }
