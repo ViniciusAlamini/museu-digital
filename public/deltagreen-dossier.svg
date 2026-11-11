@@ -1,20 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
-  <rect width="400" height="600" fill="#040604"/>
-  <!-- Terminal output -->
-  <g fill="#6fe07a" fill-opacity=".38">
-    <rect x="40" y="92" width="44" height="7"/><rect x="92" y="92" width="120" height="7"/>
-    <rect x="40" y="108" width="24" height="7"/><rect x="72" y="108" width="84" height="7"/><rect x="164" y="108" width="60" height="7"/>
-    <rect x="40" y="124" width="150" height="7"/>
+  <rect width="400" height="600" fill="#151a13"/>
+  <!-- Contour lines of a surveyed site -->
+  <g fill="none" stroke="#7f9a6c" stroke-opacity=".13" stroke-width="1">
+    <path d="M-20 120c60-30 120 10 180-12s110-60 170-30 80 40 100 30"/>
+    <path d="M-20 150c70-28 120 18 185-6s110-52 165-24 75 38 100 28"/>
+    <path d="M-20 182c75-22 125 22 190 2s110-44 160-18 70 34 100 26"/>
+    <path d="M40 300c0-40 50-70 110-64s90 40 82 80-60 62-110 52-82-30-82-68z"/>
+    <path d="M70 302c2-26 36-46 80-42s64 28 58 54-42 42-78 36-62-22-60-48z"/>
+    <path d="M102 304c2-14 22-24 46-22s36 16 32 30-24 22-44 18-36-12-34-26z"/>
+    <path d="M-20 470c80 20 130-30 200-14s120 50 180 28 50-20 60-24"/>
+    <path d="M-20 505c80 16 135-26 205-10s115 44 175 24 50-18 60-22"/>
+    <path d="M-20 540c85 12 140-22 210-8s110 38 170 20 50-16 60-20"/>
   </g>
-  <g fill="#6fe07a" fill-opacity=".16">
-    <rect x="40" y="140" width="96" height="7"/><rect x="144" y="140" width="44" height="7"/>
-  </g>
-  <rect x="236" y="106" width="96" height="11" fill="#000" stroke="#6fe07a" stroke-opacity=".25"/>
-  <rect x="200" y="122" width="132" height="11" fill="#000" stroke="#6fe07a" stroke-opacity=".25"/>
   <!-- Delta -->
-  <path d="M200 182 292 342H108Z" fill="none" stroke="#6fe07a" stroke-width="6" stroke-linejoin="miter"/>
-  <path d="M200 182 292 342H108Z" fill="none" stroke="#6fe07a" stroke-opacity=".18" stroke-width="18" stroke-linejoin="miter"/>
-  <!-- Scanlines -->
-  <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#000" fill-opacity=".45"/></pattern>
-  <rect width="400" height="600" fill="url(#scan)"/>
+  <g fill="none" stroke="#8fae78" stroke-linejoin="miter">
+    <path d="M200 160 290 316H110z" stroke-opacity=".55" stroke-width="3"/>
+    <path d="M200 196 259 298H141z" stroke-opacity=".25" stroke-width="1.5"/>
+  </g>
+  <!-- Registration marks -->
+  <g stroke="#8fae78" stroke-opacity=".35" stroke-width="1">
+    <path d="M200 142v12M200 330v14M86 263h14M300 263h14"/>
+  </g>
+  <!-- Redacted lines -->
+  <g fill="#050605">
+    <rect x="96" y="92" width="148" height="9" rx="1"/>
+    <rect x="96" y="108" width="96" height="9" rx="1"/>
+    <rect x="200" y="108" width="104" height="9" rx="1"/>
+    <rect x="96" y="124" width="190" height="9" rx="1"/>
+  </g>
+  <g fill="#8fae78" fill-opacity=".18">
+    <rect x="248" y="94" width="56" height="5"/>
+    <rect x="290" y="126" width="14" height="5"/>
+  </g>
 </svg>

@@ -97,10 +97,10 @@ body:has(.app-shell:not([data-campaign-theme])) {
   --book-edge: #bfd5db;
 }
 .campaign-volume[data-book-theme="deltagreen"] {
-  --book-cloth: #040604;
-  --book-foil: #6fe07a;
-  --book-edge: #2b322a;
-  --book-stamp: #e0b44f;
+  --book-cloth: #1a2017;
+  --book-foil: #b9cfa6;
+  --book-edge: #cbbd94;
+  --book-stamp: #c25a45;
 }
 .campaign-book-display {
   position: relative;
@@ -197,27 +197,19 @@ body:has(.app-shell:not([data-campaign-theme])) {
 }
 /* Delta Green: a classified case file instead of a bound chronicle. */
 [data-book-theme="deltagreen"] .book-cover-title {
-  font-family: ui-monospace, "SFMono-Regular", "Cascadia Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: clamp(22px, 2.6vw, 32px);
   font-weight: 600;
   line-height: 1.15;
-  letter-spacing: -0.01em;
-  text-shadow: none;
-}
-[data-book-theme="deltagreen"] .book-cover-title::before {
-  content: "> ";
-}
-[data-book-theme="deltagreen"] .book-cover-title::after {
-  content: "_";
+  letter-spacing: 0;
 }
 [data-book-theme="deltagreen"] :is(.book-cover-series, .book-cover-edition) {
-  font-family: ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 10px;
   letter-spacing: .12em;
 }
 [data-book-theme="deltagreen"] .campaign-cover-number {
-  top: 32px;
-  font-family: ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 11px;
   letter-spacing: .08em;
 }
@@ -227,18 +219,20 @@ svg.book-cover-flourish {
 }
 .book-cover-stamp {
   position: absolute;
-  z-index: 5;
-  top: 0;
-  inset-inline: 0;
+  z-index: 3;
+  top: 30%;
+  right: 24px;
   padding: 4px 8px;
-  background: var(--book-stamp);
-  color: #0b0b06;
-  text-align: center;
+  border: 2px solid var(--book-stamp);
+  border-radius: 2px;
+  color: var(--book-stamp);
   font-family: "Courier New", Courier, monospace;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
+  opacity: .9;
+  transform: rotate(-12deg);
   pointer-events: none;
 }
 [data-book-theme="deltagreen"] .book-cover-corners {
