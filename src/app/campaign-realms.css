@@ -28,18 +28,18 @@
   --realm-font: "Cinzel", Georgia, serif;
 }
 .app-shell[data-campaign-theme="deltagreen"] {
-  --realm-metal: #7d8a6a;
-  --realm-highlight: #c9d6b8;
-  --realm-accent: #355f32;
-  --realm-shadow: rgb(30 36 24 / 12%);
-  --realm-panel: #f5f3ea;
-  --realm-button: #2f4f2c;
-  --realm-button-hover: #3a5f36;
-  --realm-button-ink: #f1f5ec;
+  --realm-metal: #3f8a48;
+  --realm-highlight: #8cec95;
+  --realm-accent: #6fe07a;
+  --realm-shadow: transparent;
+  --realm-panel: #0b100b;
+  --realm-button: #6fe07a;
+  --realm-button-hover: #8cec95;
+  --realm-button-ink: #041004;
   --realm-motif: url("/deltagreen-delta.svg");
   --realm-crest: url("/deltagreen-crest.svg");
-  --realm-radius: 2px;
-  --realm-font: "Courier New", Courier, monospace;
+  --realm-radius: 0;
+  --realm-font: ui-monospace, "SFMono-Regular", "Cascadia Mono", "DejaVu Sans Mono", Menlo, Consolas, monospace;
 }
 
 /* The library remains recognizable while the navigation takes on its world. */
@@ -68,16 +68,40 @@
   background: linear-gradient(110deg, #180e14, #2b1a22 65%, #1d1118);
 }
 .app-shell[data-campaign-theme="deltagreen"] :is(.archive-sidebar, .mobile-dialog) {
-  --parchment: #141912;
-  --paper: #1f261c;
-  --ink: #e3e8dc;
-  --ink-secondary: #b8c2ad;
-  --ink-muted: #a3ae97;
-  --wine: #a9c79a;
-  --brass: #a9c79a;
-  --rule: rgb(169 199 154 / 16%);
-  --rule-strong: rgb(169 199 154 / 32%);
-  background: #141912;
+  --parchment: #040604;
+  --paper: #0b100b;
+  --ink: #c4e6bd;
+  --ink-secondary: #8fbf87;
+  --ink-muted: #75a56e;
+  --wine: #6fe07a;
+  --brass: #6fe07a;
+  --rule: rgb(111 224 122 / 16%);
+  --rule-strong: rgb(111 224 122 / 32%);
+  background: #040604;
+  border-right: 1px solid rgb(111 224 122 / 16%);
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .btn-primary {
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  box-shadow: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .btn-primary:not(.btn-icon)::after {
+  filter: brightness(0);
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .btn-secondary {
+  background: transparent;
+  color: var(--dg-phosphor);
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .btn:not(:disabled):hover {
+  transform: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .field { color-scheme: dark; }
+.app-shell[data-campaign-theme="deltagreen"] .archive-main :is(.paper, .reading-sheet, .message-card, .post-card, .character-card, .explorer-folder-card, .delete-dialog, .campaign-context) {
+  box-shadow: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main .prose-rpg blockquote {
+  border-left: 2px solid var(--dg-amber);
+  color: var(--ink-secondary);
 }
 .app-shell[data-campaign-theme] :is(.archive-sidebar, .mobile-dialog) .sidebar-rule::after {
   content: "";

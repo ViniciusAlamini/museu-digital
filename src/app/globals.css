@@ -330,26 +330,29 @@ body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltag
   }
 }
 
-/* Delta Green: case files of a covert program. Manila paper, typewriter, a green delta. */
+/* Delta Green: a Program terminal. Phosphor on black, everything monospace, classified banners. */
 body:has(.app-shell[data-campaign-theme="deltagreen"]) {
-  background: #e8e5d8;
-  color: #23271f;
+  background: #060906;
+  color: #c4e6bd;
 }
 .app-shell[data-campaign-theme="deltagreen"] {
-  --parchment: #e8e5d8;
-  --paper: #f5f3ea;
-  --inset: #dddac9;
-  --ink: #23271f;
-  --ink-secondary: #51574a;
-  --ink-muted: #5a604f;
-  --wine: #355f32;
-  --wine-hover: #284a26;
-  --brass: #5f6446;
-  --moss: #4d6b45;
-  --danger: #a8443a;
-  --rule: rgb(42 48 34 / 18%);
-  --rule-strong: rgb(42 48 34 / 32%);
-  --paper-shadow: 0 1px 2px #1e24180f, 0 12px 32px #1e241812;
+  --dg-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --dg-phosphor: #6fe07a;
+  --dg-amber: #e0b44f;
+  --parchment: #060906;
+  --paper: #0b100b;
+  --inset: #111811;
+  --ink: #c4e6bd;
+  --ink-secondary: #8fbf87;
+  --ink-muted: #75a56e;
+  --wine: #6fe07a;
+  --wine-hover: #8cec95;
+  --brass: #e0b44f;
+  --moss: #6fe07a;
+  --danger: #ff6b5a;
+  --rule: rgb(111 224 122 / 18%);
+  --rule-strong: rgb(111 224 122 / 36%);
+  --paper-shadow: none;
   --color-bg-primary: var(--parchment);
   --color-bg-card: var(--paper);
   --color-bg-elevated: var(--inset);
@@ -363,43 +366,95 @@ body:has(.app-shell[data-campaign-theme="deltagreen"]) {
   --color-border: var(--rule);
   --color-border-hover: var(--rule-strong);
   --color-danger: var(--danger);
+  font-family: var(--dg-mono);
+}
+.app-shell[data-campaign-theme="deltagreen"] :is(h1, h2, h3, h4, p, a, span, li, dt, dd, label, button, input, textarea, select, strong, small, blockquote, .btn, .field, .eyebrow, .prose-rpg, .prose-rpg *) {
+  font-family: var(--dg-mono);
+}
+.app-shell[data-campaign-theme="deltagreen"] ::selection {
+  background: var(--dg-phosphor);
+  color: #060906;
+}
+/* Static CRT scanlines, kept faint so text stays crisp. */
+body:has(.app-shell[data-campaign-theme="deltagreen"])::after {
+  content: "";
+  position: fixed;
+  z-index: 15;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgb(0 0 0 / 22%) 0 1px, transparent 1px 3px);
 }
 .app-shell[data-campaign-theme="deltagreen"] .archive-main {
   background: var(--parchment);
 }
+.app-shell[data-campaign-theme="deltagreen"] .archive-main::before {
+  content: "TOP SECRET // ORCON // DELTA GREEN";
+  display: block;
+  padding: 4px 16px;
+  background: var(--dg-amber);
+  color: #0b0b06;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .app-shell[data-campaign-theme="deltagreen"] .archive-topbar {
-  background: var(--paper);
-  box-shadow: 0 1px 0 var(--rule);
+  background: var(--parchment);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-topbar-note {
+  font-size: 0;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-topbar-note::after {
+  content: "CONEXÃO SEGURA · TERMINAL 7";
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--ink-muted);
 }
 .app-shell[data-campaign-theme="deltagreen"] .sidebar-link[aria-current="page"] {
   box-shadow: inset 2px 0 var(--wine);
 }
 .app-shell[data-campaign-theme="deltagreen"] .field {
-  background: #fbfaf5;
+  background: #040604;
+  color: var(--dg-phosphor);
+  caret-color: var(--dg-phosphor);
+}
+.app-shell[data-campaign-theme="deltagreen"] .field::placeholder {
+  color: var(--ink-muted);
 }
 .app-shell[data-campaign-theme="deltagreen"] .archive-fallback {
-  background: #1a2017;
-  color: #b9cfa6;
+  background: #040604;
+  color: var(--ink-secondary);
 }
 .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image .archive-fallback {
-  background: url("/deltagreen-dossier.svg") center / cover no-repeat, #1a2017;
+  background: url("/deltagreen-dossier.svg") center / cover no-repeat, #040604;
 }
 .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image .archive-fallback-frame {
   visibility: hidden;
 }
 .app-shell[data-campaign-theme="deltagreen"] .archive-fallback-frame {
-  border-color: rgb(185 207 166 / 35%);
-  outline-color: rgb(185 207 166 / 18%);
+  border-color: var(--rule-strong);
+  outline-color: var(--rule);
 }
-.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image img {
-  filter: saturate(.8) contrast(1.04);
+/* Images read as monitor captures; the real colors return on hover or focus. */
+.app-shell[data-campaign-theme="deltagreen"] :is(.campaign-opening-image, .artwork-image, .character-portrait, .post-card-image) img {
+  filter: grayscale(1) sepia(.5) hue-rotate(55deg) saturate(1.6) brightness(.9) contrast(1.08);
+  transition: filter .18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.app-shell[data-campaign-theme="deltagreen"] :is(.artwork-card, .character-card, .post-card, .campaign-opening-image):is(:hover, :focus-visible, :focus-within) img {
+  filter: none;
 }
 .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgb(185 207 166 / 45%);
+  background: repeating-linear-gradient(0deg, rgb(0 0 0 / 28%) 0 1px, transparent 1px 3px);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
 }
 .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::before {
   content: "";
@@ -409,46 +464,80 @@ body:has(.app-shell[data-campaign-theme="deltagreen"]) {
   right: clamp(16px, 4vw, 48px);
   width: 120px;
   height: calc(100% - 24px);
-  background: url("/deltagreen-crest.svg") center / contain no-repeat;
-  filter: drop-shadow(0 4px 12px rgb(10 14 8 / 45%));
+  background: url("/deltagreen-crest.svg") center top / contain no-repeat;
   pointer-events: none;
 }
 .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-heading {
   position: relative;
   padding: 8px 0 22px;
-  border-bottom: 1px solid var(--rule-strong);
+  border-bottom: 1px dashed var(--rule-strong);
 }
-.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-heading::after {
+/* Prompt and cursor: the one live detail of the terminal. */
+.app-shell[data-campaign-theme="deltagreen"] :is(.page-header, .campaign-opening-heading) h1::before {
+  content: "> ";
+  color: var(--dg-phosphor);
+}
+.app-shell[data-campaign-theme="deltagreen"] :is(.page-header, .campaign-opening-heading) h1::after {
   content: "";
-  position: absolute;
-  bottom: -14px;
-  left: calc(50% - 16px);
-  width: 32px;
-  height: 28px;
-  background: url("/deltagreen-delta.svg") center / 22px no-repeat, var(--parchment);
-  pointer-events: none;
+  display: inline-block;
+  width: .55em;
+  height: .9em;
+  margin-left: .12em;
+  vertical-align: -0.08em;
+  background: var(--dg-phosphor);
+  animation: dg-cursor 1.1s steps(1) infinite;
+}
+@keyframes dg-cursor {
+  50% { opacity: 0; }
+}
+.app-shell[data-campaign-theme="deltagreen"] .eyebrow {
+  font-variant-caps: normal;
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: var(--dg-amber);
+}
+.app-shell[data-campaign-theme="deltagreen"] .eyebrow::before {
+  content: "// ";
 }
 .app-shell[data-campaign-theme="deltagreen"] .paper {
-  border-top: 3px solid var(--wine);
+  border: 1px solid var(--rule-strong);
+  border-top: 1px solid var(--rule-strong);
+  border-radius: 0;
 }
 .app-shell[data-campaign-theme="deltagreen"] h1,
 .app-shell[data-campaign-theme="deltagreen"] h2,
 .app-shell[data-campaign-theme="deltagreen"] .archive-brand strong,
 .app-shell[data-campaign-theme="deltagreen"] .campaign-context a {
-  font-family: "Courier New", Courier, monospace;
-  font-weight: 700;
-  letter-spacing: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dg-phosphor);
 }
 .app-shell[data-campaign-theme="deltagreen"] h1,
 .app-shell[data-campaign-theme="deltagreen"] h2 {
   line-height: 1.15;
 }
-.app-shell[data-campaign-theme="deltagreen"] .page-header h1 {
-  font-size: clamp(30px, 4.2vw, 42px);
+.app-shell[data-campaign-theme="deltagreen"] .page-header h1,
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-heading h1 {
+  font-size: clamp(26px, 3.6vw, 38px);
+}
+.app-shell[data-campaign-theme="deltagreen"] .prose-rpg {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.app-shell[data-campaign-theme="deltagreen"] a:not(.btn):hover {
+  color: var(--dg-phosphor);
 }
 @media (max-width: 640px) {
   .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::before {
     width: 88px;
+  }
+  .app-shell[data-campaign-theme="deltagreen"] .archive-main::before {
+    content: "TOP SECRET // DELTA GREEN";
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell[data-campaign-theme="deltagreen"] :is(.page-header, .campaign-opening-heading) h1::after {
+    animation: none;
   }
 }
 
@@ -1733,8 +1822,8 @@ body:has(dialog[open]) {
 }
 .app-shell[data-campaign-theme="deltagreen"] {
   --archive-seal: url("/deltagreen-stamp.svg");
-  --frame-metal: #8b927a;
-  --frame-shadow: rgb(30 36 24 / 16%);
+  --frame-metal: #3f8a48;
+  --frame-shadow: transparent;
 }
 .app-shell[data-campaign-theme="icewind"] {
   --archive-seal: url("/icewind-crystal-seal.svg");

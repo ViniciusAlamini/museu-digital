@@ -39,7 +39,7 @@ export function CampaignCard({ campaign, index = 0 }: CampaignCardProps) {
           </span>
           <div className="book-cover-type" aria-hidden="true">
             <span className="book-cover-series">
-              {dossier ? "Arquivo confidencial" : "Crônicas de nossas mesas"}
+              {dossier ? "// arquivo da operação" : "Crônicas de nossas mesas"}
             </span>
             <span className="book-cover-title">{campaign.name}</span>
             {dossier ? (
@@ -52,7 +52,7 @@ export function CampaignCard({ campaign, index = 0 }: CampaignCardProps) {
             <span className="book-cover-edition">{campaign.system} · Museu Digital</span>
           </div>
           {dossier && (
-            <span className="book-cover-stamp" aria-hidden="true">Confidencial</span>
+            <span className="book-cover-stamp" aria-hidden="true">Top secret // ORCON</span>
           )}
           <span className="book-cover-corners" aria-hidden="true" />
         </div>
