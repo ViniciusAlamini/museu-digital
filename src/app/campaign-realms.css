@@ -27,6 +27,20 @@
   --realm-radius: 2px;
   --realm-font: "Cinzel", Georgia, serif;
 }
+.app-shell[data-campaign-theme="deltagreen"] {
+  --realm-metal: #7d8a6a;
+  --realm-highlight: #c9d6b8;
+  --realm-accent: #355f32;
+  --realm-shadow: rgb(30 36 24 / 12%);
+  --realm-panel: #f5f3ea;
+  --realm-button: #2f4f2c;
+  --realm-button-hover: #3a5f36;
+  --realm-button-ink: #f1f5ec;
+  --realm-motif: url("/deltagreen-delta.svg");
+  --realm-crest: url("/deltagreen-crest.svg");
+  --realm-radius: 2px;
+  --realm-font: "Courier New", Courier, monospace;
+}
 
 /* The library remains recognizable while the navigation takes on its world. */
 .app-shell[data-campaign-theme="icewind"] :is(.archive-sidebar, .mobile-dialog) {
@@ -52,6 +66,18 @@
   --rule: rgb(200 162 124 / 18%);
   --rule-strong: rgb(200 162 124 / 36%);
   background: linear-gradient(110deg, #180e14, #2b1a22 65%, #1d1118);
+}
+.app-shell[data-campaign-theme="deltagreen"] :is(.archive-sidebar, .mobile-dialog) {
+  --parchment: #141912;
+  --paper: #1f261c;
+  --ink: #e3e8dc;
+  --ink-secondary: #b8c2ad;
+  --ink-muted: #a3ae97;
+  --wine: #a9c79a;
+  --brass: #a9c79a;
+  --rule: rgb(169 199 154 / 16%);
+  --rule-strong: rgb(169 199 154 / 32%);
+  background: #141912;
 }
 .app-shell[data-campaign-theme] :is(.archive-sidebar, .mobile-dialog) .sidebar-rule::after {
   content: "";

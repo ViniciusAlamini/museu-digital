@@ -165,7 +165,9 @@ export function AppShell({
           ? "strahd"
           : campaign?.name.toLocaleLowerCase("pt-BR").includes("icewind")
             ? "icewind"
-            : undefined
+            : campaign?.name.toLocaleLowerCase("pt-BR").includes("delta green")
+              ? "deltagreen"
+              : undefined
       }
     >
       <a href="#conteudo" className="skip-link">

@@ -186,7 +186,7 @@ body:has(.app-shell[data-campaign-theme="strahd"]) {
   background: #191518;
   color: #f0e6e1;
 }
-body:has(.app-shell[data-campaign-theme="icewind"]) {
+body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"]) {
   background: #e7f0f4;
   color: #243944;
 }
@@ -219,7 +219,7 @@ body:has(.app-shell[data-campaign-theme="icewind"]) {
   --color-border-hover: var(--rule-strong);
   --color-danger: var(--danger);
 }
-body:has(.app-shell[data-campaign-theme="icewind"])::before {
+body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])::before {
   position: fixed;
   z-index: 15;
   inset: 0;
@@ -325,8 +325,130 @@ body:has(.app-shell[data-campaign-theme="icewind"])::before {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  body:has(.app-shell[data-campaign-theme="icewind"])::before {
+  body:has(.app-shell[data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])::before {
     animation: none;
+  }
+}
+
+/* Delta Green: case files of a covert program. Manila paper, typewriter, a green delta. */
+body:has(.app-shell[data-campaign-theme="deltagreen"]) {
+  background: #e8e5d8;
+  color: #23271f;
+}
+.app-shell[data-campaign-theme="deltagreen"] {
+  --parchment: #e8e5d8;
+  --paper: #f5f3ea;
+  --inset: #dddac9;
+  --ink: #23271f;
+  --ink-secondary: #51574a;
+  --ink-muted: #5a604f;
+  --wine: #355f32;
+  --wine-hover: #284a26;
+  --brass: #5f6446;
+  --moss: #4d6b45;
+  --danger: #a8443a;
+  --rule: rgb(42 48 34 / 18%);
+  --rule-strong: rgb(42 48 34 / 32%);
+  --paper-shadow: 0 1px 2px #1e24180f, 0 12px 32px #1e241812;
+  --color-bg-primary: var(--parchment);
+  --color-bg-card: var(--paper);
+  --color-bg-elevated: var(--inset);
+  --color-accent-purple: var(--wine);
+  --color-accent-gold: var(--brass);
+  --color-accent-gold-light: var(--wine);
+  --color-accent-gold-dark: var(--brass);
+  --color-text-primary: var(--ink);
+  --color-text-secondary: var(--ink-secondary);
+  --color-text-muted: var(--ink-muted);
+  --color-border: var(--rule);
+  --color-border-hover: var(--rule-strong);
+  --color-danger: var(--danger);
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-main {
+  background: var(--parchment);
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-topbar {
+  background: var(--paper);
+  box-shadow: 0 1px 0 var(--rule);
+}
+.app-shell[data-campaign-theme="deltagreen"] .sidebar-link[aria-current="page"] {
+  box-shadow: inset 2px 0 var(--wine);
+}
+.app-shell[data-campaign-theme="deltagreen"] .field {
+  background: #fbfaf5;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-fallback {
+  background: #1a2017;
+  color: #b9cfa6;
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image .archive-fallback {
+  background: url("/deltagreen-dossier.svg") center / cover no-repeat, #1a2017;
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image .archive-fallback-frame {
+  visibility: hidden;
+}
+.app-shell[data-campaign-theme="deltagreen"] .archive-fallback-frame {
+  border-color: rgb(185 207 166 / 35%);
+  outline-color: rgb(185 207 166 / 18%);
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image img {
+  filter: saturate(.8) contrast(1.04);
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgb(185 207 166 / 45%);
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: clamp(16px, 4vw, 48px);
+  width: 120px;
+  height: calc(100% - 24px);
+  background: url("/deltagreen-crest.svg") center / contain no-repeat;
+  filter: drop-shadow(0 4px 12px rgb(10 14 8 / 45%));
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-heading {
+  position: relative;
+  padding: 8px 0 22px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.app-shell[data-campaign-theme="deltagreen"] .campaign-opening-heading::after {
+  content: "";
+  position: absolute;
+  bottom: -14px;
+  left: calc(50% - 16px);
+  width: 32px;
+  height: 28px;
+  background: url("/deltagreen-delta.svg") center / 22px no-repeat, var(--parchment);
+  pointer-events: none;
+}
+.app-shell[data-campaign-theme="deltagreen"] .paper {
+  border-top: 3px solid var(--wine);
+}
+.app-shell[data-campaign-theme="deltagreen"] h1,
+.app-shell[data-campaign-theme="deltagreen"] h2,
+.app-shell[data-campaign-theme="deltagreen"] .archive-brand strong,
+.app-shell[data-campaign-theme="deltagreen"] .campaign-context a {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.app-shell[data-campaign-theme="deltagreen"] h1,
+.app-shell[data-campaign-theme="deltagreen"] h2 {
+  line-height: 1.15;
+}
+.app-shell[data-campaign-theme="deltagreen"] .page-header h1 {
+  font-size: clamp(30px, 4.2vw, 42px);
+}
+@media (max-width: 640px) {
+  .app-shell[data-campaign-theme="deltagreen"] .campaign-opening-image::before {
+    width: 88px;
   }
 }
 
@@ -1609,19 +1731,24 @@ body:has(dialog[open]) {
   --frame-metal: #a57569;
   --frame-shadow: rgb(15 3 9 / 42%);
 }
+.app-shell[data-campaign-theme="deltagreen"] {
+  --archive-seal: url("/deltagreen-stamp.svg");
+  --frame-metal: #8b927a;
+  --frame-shadow: rgb(30 36 24 / 16%);
+}
 .app-shell[data-campaign-theme="icewind"] {
   --archive-seal: url("/icewind-crystal-seal.svg");
   --frame-metal: #9ecad9;
   --frame-shadow: rgb(40 83 105 / 20%);
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait) {
   position: relative;
   isolation: isolate;
   border: 1px solid var(--frame-metal);
   box-shadow: 0 5px 18px var(--frame-shadow);
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::before {
   content: "";
   position: absolute;
@@ -1640,7 +1767,7 @@ body:has(dialog[open]) {
   background-repeat: no-repeat;
   pointer-events: none;
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::after {
   content: "";
   position: absolute;
@@ -1655,17 +1782,17 @@ body:has(dialog[open]) {
   transform-origin: center 35%;
   pointer-events: none;
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-card, .character-card, .post-card):is(:hover, :focus-visible)
   :is(.artwork-image, .character-portrait, .post-card-image) {
   box-shadow: 0 4px 16px var(--frame-shadow);
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   .artwork-detail-image {
   padding: clamp(14px, 2.5vw, 28px);
   background: linear-gradient(135deg, var(--inset), var(--paper) 50%, var(--inset));
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-detail-image, .detail-portrait)::after {
   width: clamp(60px, 9vw, 90px);
   right: 12px;
@@ -1675,16 +1802,16 @@ body:has(dialog[open]) {
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait)::before {
   box-shadow: inset 0 0 0 1px rgb(216 248 255 / 40%);
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   :is(.artwork-image, .character-portrait, .post-card-image, .artwork-detail-image, .detail-portrait):has(> .archive-fallback)::before {
   content: none;
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   .archive-fallback {
   background: linear-gradient(145deg, var(--inset), var(--paper));
   color: var(--ink-secondary);
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   .archive-fallback-frame {
   border-color: var(--rule-strong);
   outline-color: var(--rule);
@@ -1696,16 +1823,16 @@ body:has(dialog[open]) {
   height: auto;
   min-height: 224px;
 }
-.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+.app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
   .artwork-detail-image > .archive-fallback-inline {
   min-height: min(420px, 65dvh);
 }
 @media (prefers-reduced-motion: reduce) {
-  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
     :is(.artwork-image, .character-portrait, .post-card-image)::after {
     transition: none;
   }
-  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"])
+  .app-shell:is([data-campaign-theme="strahd"], [data-campaign-theme="icewind"], [data-campaign-theme="deltagreen"])
     .artwork-card img {
     transition: none;
   }
